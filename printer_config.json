@@ -1,0 +1,36 @@
+{
+  "mode": "escpos_network",
+  "soft_restaurant_db": {
+    "server": "localhost\\SOFTRESTAURANT",
+    "database": "SOFTRESTAURANT10",
+    "user": "sa",
+    "password": "your_password"
+  },
+  "printers": {
+    "sushi_bar": {
+      "ip": "192.168.1.101",
+      "port": 9100,
+      "name": "Impresora Sushi"
+    },
+    "hot_kitchen": {
+      "ip": "192.168.1.102",
+      "port": 9100,
+      "name": "Impresora Cocina Caliente"
+    },
+    "italian_kitchen": {
+      "ip": "192.168.1.103",
+      "port": 9100,
+      "name": "Impresora Italiana"
+    },
+    "snack_kitchen": {
+      "ip": "192.168.1.104",
+      "port": 9100,
+      "name": "Impresora Snacks"
+    },
+    "drinks_bar": {
+      "ip": "192.168.1.105",
+      "port": 9100,
+      "name": "Impresora Barra Bebidas"
+    }
+  }
+}

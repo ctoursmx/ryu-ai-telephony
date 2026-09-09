@@ -1,0 +1,134 @@
+{
+  "name": "Ryu - Agente IA WhatsApp y Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-webhook-ryu",
+        "options": {}
+      },
+      "id": "webhook-whatsapp-in",
+      "name": "Webhook WhatsApp (Evolution/Cloud API)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraer mensaje y remitente según el proveedor (Evolution API o WhatsApp Cloud API)\nconst body = $input.item.json.body || $input.item.json;\nlet fromNumber = '';\nlet messageText = '';\n\nif (body.data && body.data.key) {\n  // Formato Evolution API\n  fromNumber = body.data.key.remoteJid;\n  messageText = body.data.message?.conversation || body.data.message?.extendedTextMessage?.text || '';\n} else if (body.entry && body.entry[0]?.changes[0]?.value?.messages) {\n  // Formato Meta Cloud API\n  const msg = body.entry[0].changes[0].value.messages[0];\n  fromNumber = msg.from;\n  messageText = msg.text?.body || '';\n} else {\n  fromNumber = body.from || 'test_user';\n  messageText = body.message || body.text || '';\n}\n\nreturn {\n  json: {\n    sessionId: fromNumber,\n    fromNumber,\n    messageText,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "id": "code-extract-data",
+      "name": "Extraer Datos WhatsApp",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messageText }}",
+        "options": {
+          "systemMessage": "Eres RyuBot, el asistente oficial de pedidos del restaurante Ryu (P.º del Centenario 27, Tequila, Jal). Atiende al cliente con amabilidad, toma su pedido, valida los horarios de disponibilidad (Japonés 1pm-11pm todos los días; Italiano Vie-Dom 1pm-7pm; Snacks 7pm-11pm todos los días). Cuando el cliente confirme todos los datos (nombre, teléfono, dirección/recoger, método de pago), utiliza la herramienta de enviar comanda a Telegram."
+        }
+      },
+      "id": "ai-agent-ryu",
+      "name": "Agente IA de Pedidos Ryu",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "openai-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [700, 520]
+    },
+    {
+      "parameters": {
+        "sessionId": "={{ $('Extraer Datos WhatsApp').item.json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "id": "memory-chat",
+      "name": "Memoria de Chat",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [840, 520]
+    },
+    {
+      "parameters": {
+        "name": "enviar_comanda_telegram",
+        "description": "Envía el pedido confirmado al grupo de Telegram de la cocina y despacho de Ryu.",
+        "workflowId": "workflow-telegram-dispatcher"
+      },
+      "id": "tool-telegram",
+      "name": "Tool Enviar a Telegram",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [1000, 520]
+    }
+  ],
+  "connections": {
+    "Webhook WhatsApp (Evolution/Cloud API)": {
+      "main": [
+        [
+          {
+            "node": "Extraer Datos WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Agente IA de Pedidos Ryu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente IA de Pedidos Ryu",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria de Chat": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente IA de Pedidos Ryu",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool Enviar a Telegram": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente IA de Pedidos Ryu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

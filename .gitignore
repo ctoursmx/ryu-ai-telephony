@@ -1,0 +1,61 @@
+# Entornos y Credenciales Sensibles (NUNCA subir a GitHub)
+.env
+.env.*
+!.env.example
+
+# Archivos de Python y Compilación
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+ENV/
+
+# Archivos de audio generados y grabaciones dinámicas
+*.mp3
+*.wav
+*.ogg
+*.flac
+*.aac
+*.webm
+
+# Logs y bases de datos temporales
+*.log
+logs/
+*.sqlite3
+
+# Archivos temporales de agentes y desarrollo
+scratch/
+.system_generated/
+.tempmediaStorage/
+.user_uploaded/
+.gemini/
+
+# Editores y Sistemas Operativos
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db

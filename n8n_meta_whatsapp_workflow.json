@@ -1,0 +1,228 @@
+{
+  "name": "Ryu - Meta WhatsApp Cloud API + Agente IA + Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meta-whatsapp-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "meta-webhook-post",
+      "name": "Webhook Inbound (POST Messages)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [180, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "meta-whatsapp-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "meta-webhook-get",
+      "name": "Webhook Verification (GET Challenge)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [180, 100]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "meta-verify-response",
+      "name": "Responder Hub Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [400, 100]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"received\" }",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "meta-ack-response",
+      "name": "Responder 200 OK a Meta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraer y filtrar datos de Meta WhatsApp Cloud API\nconst body = $input.item.json.body || $input.item.json;\n\n// Validar si contiene un mensaje entrante (ignorar estados de lectura/entrega)\nif (body.entry && body.entry[0]?.changes[0]?.value?.messages) {\n  const value = body.entry[0].changes[0].value;\n  const message = value.messages[0];\n  const contact = value.contacts ? value.contacts[0] : {};\n  \n  let messageText = '';\n  if (message.type === 'text') {\n    messageText = message.text.body;\n  } else if (message.type === 'interactive') {\n    messageText = message.interactive.button_reply?.title || message.interactive.list_reply?.title || '';\n  }\n  \n  if (!messageText) {\n    return []; // Ignorar audios/stickers o manejar según se requiera\n  }\n\n  return {\n    json: {\n      phoneNumberId: value.metadata.phone_number_id,\n      fromNumber: message.from,\n      customerName: contact.profile?.name || 'Cliente',\n      messageId: message.id,\n      messageText: messageText,\n      timestamp: message.timestamp\n    }\n  };\n}\n\nreturn []; // Salir si es sólo notificación de estatus (sent, delivered, read)"
+      },
+      "id": "extract-meta-message",
+      "name": "Filtrar y Extraer Mensaje Meta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [620, 300]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messageText }}",
+        "options": {
+          "systemMessage": "=Eres RyuBot, el asistente oficial de pedidos por WhatsApp del restaurante Ryu (P.º del Centenario 27, Tequila, Jal). \n\nDatos del cliente actual:\n- Nombre en WhatsApp: {{ $json.customerName }}\n- Teléfono: {{ $json.fromNumber }}\n\nREGLAS DE HORARIOS Y DISPONIBILIDAD DE MENÚ:\n1. Menú Japonés (Sushi, Sopas, Yakimeshi, Fuertes, Teriyaki): Lunes a Domingo de 1:00 PM a 11:00 PM.\n2. Capri Cucina Italiana (Lasagna, Paninis, Pastas): Únicamente Viernes, Sábado y Domingo de 1:00 PM a 7:00 PM.\n3. Snacks & Promociones (Hamburguesas, Hot Dogs, Alitas, Combos, Paquetes): Lunes a Domingo de 7:00 PM a 11:00 PM.\n\nFLUJO:\n1. Saluda y pregunta si el pedido es A Domicilio o Para Recoger.\n2. Registra los platillos y opciones solicitadas.\n3. Si es a domicilio, solicita dirección completa y referencias. Si es para recoger, indica que pasarán a P.º del Centenario 27.\n4. Pregunta el método de pago (Efectivo y con cuánto paga para cambio, o Transferencia).\n5. Presenta el desglose con total final y pide confirmación.\n6. Cuando el cliente confirme el pedido, llama a la herramienta 'enviar_comanda_telegram' y agradécele."
+        }
+      },
+      "id": "ai-agent-ryu",
+      "name": "Agente IA de Pedidos Ryu",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [860, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "openai-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [860, 520]
+    },
+    {
+      "parameters": {
+        "sessionId": "={{ $('Filtrar y Extraer Mensaje Meta').item.json.fromNumber }}",
+        "contextWindowLength": 12
+      },
+      "id": "memory-chat",
+      "name": "Memoria por Teléfono",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [1000, 520]
+    },
+    {
+      "parameters": {
+        "name": "enviar_comanda_telegram",
+        "description": "Envía el resumen estructurado de la comanda al grupo de Telegram de Ryu cuando el cliente confirma su orden.",
+        "workflowId": "telegram-dispatcher"
+      },
+      "id": "tool-telegram",
+      "name": "Herramienta Telegram",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [1160, 520]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{ $('Filtrar y Extraer Mensaje Meta').item.json.phoneNumberId }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.META_WHATSAPP_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"messaging_product\": \"whatsapp\",\n  \"recipient_type\": \"individual\",\n  \"to\": \"{{ $('Filtrar y Extraer Mensaje Meta').item.json.fromNumber }}\",\n  \"type\": \"text\",\n  \"text\": {\n    \"preview_url\": false,\n    \"body\": {{ JSON.stringify($json.output) }}\n  }\n}"
+      },
+      "id": "meta-send-message",
+      "name": "Enviar Respuesta por WhatsApp Meta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1160, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Verification (GET Challenge)": {
+      "main": [
+        [
+          {
+            "node": "Responder Hub Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Inbound (POST Messages)": {
+      "main": [
+        [
+          {
+            "node": "Responder 200 OK a Meta",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filtrar y Extraer Mensaje Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar y Extraer Mensaje Meta": {
+      "main": [
+        [
+          {
+            "node": "Agente IA de Pedidos Ryu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente IA de Pedidos Ryu",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria por Teléfono": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente IA de Pedidos Ryu",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Herramienta Telegram": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente IA de Pedidos Ryu",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente IA de Pedidos Ryu": {
+      "main": [
+        [
+          {
+            "node": "Enviar Respuesta por WhatsApp Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

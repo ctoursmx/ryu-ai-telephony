@@ -1,0 +1,708 @@
+Base de Conocimiento para Asistente Virtual (Antigravity)
+Este documento contiene la estructuración completa de TODOS los menús, las reglas de negocio (horarios) y las descripciones precisas de cada platillo para que la Inteligencia Artificial pueda persuadir y explicar al cliente.
+1. Reglas de Disponibilidad y Horarios
+Instrucciones de sistema para el comportamiento del bot según el día y la hora:
+Lunes, Martes, Miércoles y Jueves:
+1:00 PM a 6:30 PM: SOLO está disponible el Menú Japonés.
+6:30 PM a 10:30 PM: SOLO está disponible el Menú de Snacks.
+Viernes, Sábados y Domingos:
+1:00 PM a 6:30 PM: Están disponibles el Menú Japonés y el Menú Italiano.
+6:30 PM a 10:30 PM: SOLO está disponible el Menú de Snacks.
+2. Menú Japonés (1:00 PM a 6:30 PM)
+Entremeses, Kushiage, Ensaladas y Sopas
+Categoría
+Platillo
+Precio
+Descripción / Notas
+Entremes
+Tataki (Ceviche)
+$160
+Finos cortes de proteína ligeramente sellados por fuera y crudos por dentro, preparados estilo ceviche fresco.
+Entremes
+Aguachile
+$170
+Mariscos frescos marinados en jugo de limón y chiles, con un toque picante y muy refrescante.
+Entremes
+Rollo Primavera
+$100
+Clásico rollo crujiente relleno de una deliciosa mezcla de vegetales.
+Entremes
+Gyosas (Res o Puerco)
+$110
+Empanadillas japonesas tradicionales, rellenas de carne jugosa, preparadas a la plancha.
+Kushiage (Brochetas)
+Res
+$105
+Brochetas japonesas finamente empanizadas y fritas hasta quedar crujientes.
+Kushiage (Brochetas)
+Camarón
+$110
+Brochetas japonesas finamente empanizadas y fritas hasta quedar crujientes.
+Kushiage (Brochetas)
+Pollo
+$105
+Brochetas japonesas finamente empanizadas y fritas hasta quedar crujientes.
+Ensaladas
+Pollo
+$95
+Mezcla de lechugas y vegetales frescos acompañados de la proteína de su elección.
+Ensaladas
+Res
+$95
+Mezcla de lechugas y vegetales frescos acompañados de la proteína de su elección.
+Ensaladas
+Mariscos
+$160
+Mezcla de lechugas y vegetales frescos acompañados de la proteína de su elección.
+Ensaladas
+Ensalada Verde
+$40
+Nuestra mezcla clásica y fresca de lechugas y vegetales de la casa.
+Sopas
+Udon
+$150
+Pasta gruesa japonesa con verduras.
+Sopas
+Sopa Especial
+$160
+Fideo transparente con mariscos.
+Sopas
+Ramen
+$190
+Fideo japonés con carne de cerdo, camarón o pollo y naruto. Toppings: elote, cebollín y huevo cocido.
+Sashimi y Nigiris
+Categoría
+Platillo
+Precio
+Descripción / Notas
+Sashimi
+Salmón
+$170
+Finos y delicados cortes de proteína cruda o sellada de la más alta calidad, ideal para paladares exigentes.
+Sashimi
+Res
+$150
+Finos y delicados cortes de proteína cruda o sellada de la más alta calidad, ideal para paladares exigentes.
+Sashimi
+Pescado
+$100
+Finos y delicados cortes de proteína cruda o sellada de la más alta calidad, ideal para paladares exigentes.
+Sashimi
+Pulpo
+$200
+Finos y delicados cortes de proteína cruda o sellada de la más alta calidad, ideal para paladares exigentes.
+Nigiris
+Ebi (Camarón)
+$20
+Bocado tradicional japonés: una base de arroz de sushi cubierta con un corte fresco de la proteína de su elección.
+Nigiris
+Tako (Pulpo)
+$20
+Bocado tradicional japonés: una base de arroz de sushi cubierta con un corte fresco de la proteína de su elección.
+Nigiris
+Kanikama (Cangrejo)
+$15
+Bocado tradicional japonés: una base de arroz de sushi cubierta con un corte fresco de la proteína de su elección.
+Nigiris
+Syake (Salmón)
+$20
+Bocado tradicional japonés: una base de arroz de sushi cubierta con un corte fresco de la proteína de su elección.
+Nigiris
+Banana (Plátano)
+$15
+Bocado tradicional japonés: una base de arroz de sushi cubierta con un corte fresco de la proteína de su elección.
+Yakimeshi (Arroz) y Teppanyaki / Teriyaki
+Categoría
+Platillo
+Precio
+Descripción / Notas
+Yakimeshi (Arroz)
+Verduras
+$40
+Clásico arroz frito japonés, preparado a la plancha con vegetales y la proteína seleccionada.
+Yakimeshi (Arroz)
+Camarón
+$80
+Clásico arroz frito japonés, preparado a la plancha con vegetales y la proteína seleccionada.
+Yakimeshi (Arroz)
+Carne
+$75
+Clásico arroz frito japonés, preparado a la plancha con vegetales y la proteína seleccionada.
+Yakimeshi (Arroz)
+Mixto
+$85
+Clásico arroz frito japonés, preparado a la plancha con vegetales y la proteína seleccionada.
+Yakimeshi (Arroz)
+Pollo
+$80
+Clásico arroz frito japonés, preparado a la plancha con vegetales y la proteína seleccionada.
+Yakimeshi (Arroz)
+Tonkotsu
+$95
+Clásico arroz frito japonés, preparado a la plancha con vegetales y la proteína seleccionada.
+Teppanyaki / Teriyaki
+Pollo
+$140
+Platillo cocinado a la plancha con vegetales frescos, que puede ir sazonado al estilo teppanyaki o bañado en nuestra salsa dulce teriyaki.
+Teppanyaki / Teriyaki
+Res
+$135
+Platillo cocinado a la plancha con vegetales frescos, que puede ir sazonado al estilo teppanyaki o bañado en nuestra salsa dulce teriyaki.
+Teppanyaki / Teriyaki
+Camarón
+$145
+Platillo cocinado a la plancha con vegetales frescos, que puede ir sazonado al estilo teppanyaki o bañado en nuestra salsa dulce teriyaki.
+Teppanyaki / Teriyaki
+Mixto
+$155
+Platillo cocinado a la plancha con vegetales frescos, que puede ir sazonado al estilo teppanyaki o bañado en nuestra salsa dulce teriyaki.
+Teppanyaki / Teriyaki
+Salmón
+$200
+Platillo cocinado a la plancha con vegetales frescos, que puede ir sazonado al estilo teppanyaki o bañado en nuestra salsa dulce teriyaki.
+Teppanyaki / Teriyaki
+Filete (Pescado)
+$130
+Platillo cocinado a la plancha con vegetales frescos, que puede ir sazonado al estilo teppanyaki o bañado en nuestra salsa dulce teriyaki.
+Platillos Fuertes
+Platillo
+Precio
+Descripción / Notas
+Sakana Furai
+$135
+Pescado empanizado acompañado de arroz y ensalada.
+Camarones Philadelphia
+$150
+Camarones con queso philadelphia acompañados de arroz y ensalada.
+Spaguetti de Mariscos
+$150
+Deliciosa pasta italiana preparada con una mezcla de mariscos frescos de la casa.
+Tori Karaage
+$140
+Pollo frito con especias, acompañado de arroz y verdura.
+Camarones Kimono
+$145
+Camarones con ensalada tampico.
+Tempura Ebi
+$150
+Camarones y verduras capeadas.
+Udon Plancha
+$140
+Pasta gruesa japonesa con verdura y camarón.
+Milanesa de Pollo o Res
+$140
+Filete empanizado con arroz y ensalada fresca.
+Verduras Salteadas
+$80
+Verduras sazonadas.
+Puerquitos Locos
+$170
+Camarones rellenos de queso envueltos en tocino, acompañados de arroz y ensalada fresca.
+Ebi Furai
+$135
+Camarones empanizados acompañados de arroz y ensalada fresca.
+Filete de Pescado Especial
+$150
+Filete de pescado con jamón y queso empanizado.
+Filete de Pollo Especial
+$165
+Filete de pollo con jamón y queso empanizado.
+Ebydon
+$150
+Cama de arroz con trocitos de aguacate y queso philadelphia con camarón empanizado.
+Fire Mixto
+$150
+Cama de arroz con cárnico enchiloso, pollo, res y camarón.
+Brochetas Yakitori
+$145
+Clásicas brochetas japonesas asadas y glaseadas con una rica salsa dulce tradicional.
+Chow Mein
+$140
+Fideos de trigo salteados con vegetales y proteína a tu elección (Pollo, res o camarón).
+Sushi y Especiales Ryü
+Categoría
+Platillo
+Precio
+Descripción / Notas
+Sushi
+Empanizado
+$95
+Nuestro rollo clásico cubierto por un empanizado perfectamente crujiente.
+Sushi
+Philadelphia
+$95
+Un rollo suave, relleno y cubierto con abundante queso crema.
+Sushi
+Masago
+$110
+Rollo especial cubierto con hueva de pez capelán, con una textura única.
+Sushi
+California
+$95
+Rollos frescos y ligeros elaborados a base de cangrejo, pepino y aguacate.
+Sushi
+Salmón Roll
+$105
+El favorito de muchos, un rollo tradicional donde el salmón fresco es el protagonista.
+Sushi
+Chipotle Roll
+$100
+Un rollo con un toque especial, cremoso y ligeramente picante de salsa chipotle.
+Sushi
+Kani Roll
+$95
+Rollos frescos y ligeros elaborados a base de cangrejo, pepino y aguacate.
+Sushi
+Avocado Roll
+$100
+Rollos frescos y ligeros elaborados a base de cangrejo, pepino y aguacate.
+Sushi
+Empanizado Especial
+$115
+Con ensalada tampico y camarón empanizado.
+Sushi
+Tocayo Roll
+$115
+Rollo capeado con camaron, salmón y surimi capeado.
+Sushi
+Mar y Tierra
+$115
+Con res, camarón por dentro, ensalada picosa y empanizado.
+Sushi
+México Roll
+$105
+Aguacate, queso y masago.
+Sushi
+Arcoiris Roll Especial
+$100
+Con varios mariscos.
+Sushi
+Philadelphia Emp.
+$105
+Nuestro rollo clásico cubierto por un empanizado perfectamente crujiente.
+Sushi
+Hulk
+$100
+Camaron empanizado por dentro y por fuera alga de soya.
+Sushi
+Furia Roll
+$105
+Camarón por dentro, kani, salmón y por fuera chipotle.
+Sushi
+Eby Roll
+$100
+Rollo clásico preparado con camarón fresco.
+Sushi
+Eby Roll Especial
+$120
+Camarón por fuera, ensalada tampico y camarón empanizado.
+Sushi
+Pink Salmón
+$105
+Coronado con salmon picoso en trozos.
+Sushi
+Mechudo
+$120
+Pulpo y camarón.
+Sushi
+Platano Roll
+$100
+Un delicioso rollo que combina lo dulce y lo salado, cubierto con láminas de plátano frito.
+Sushi
+Cheese Explosion
+$135
+El rollo ideal para los amantes del queso, coronado con una mezcla derretida espectacular.
+Especiales Ryü
+Especial Ryü
+$120
+Queso philadelphia por fuera acompañado de camarones.
+Especiales Ryü
+Esfera Dragón Ball
+$95
+Bola de arroz empanizada, por dentro aguacate, pepino, camarón y queso.
+Especiales Ryü
+Especial No. 1
+$120
+Salmón natural por fuera, ensalada picosa con surimi, tempura, limón y aguacate.
+Especiales Ryü
+Zizi Roll Especial
+$130
+Envuelto en alga tradicional, capeada y en cada bocadillo ensalada picosa con camarón.
+Especiales Ryü
+Oishi Roll Especial
+$105
+Por dentro camarón y tocino con queso philadelphia va empanizado.
+Especiales Ryü
+Flamin Hot
+$105
+Cubierto de flamin hot, coronado de res y camarón.
+Especiales Ryü
+Hulk Especial
+$130
+Camaron empanizado por dentro y por fuera alga de soya, arriba salmón, pulpo y ensalada.
+Especiales Ryü
+Tabla de Sushi Mixta
+$300
+(Incluye bebidas)
+Especiales Ryü
+Tuna Roll
+$130
+Coronado con ensalada de atún picosa.
+Especiales Ryü
+Panchito
+$140
+Relleno de res, empanizado, coronado con guacamole y tocino.
+Especiales Ryü
+Tocino Roll
+$150
+Envuelto en tocino, relleno de camarón y philadelphia.
+Bebidas y Postres (Menú Japonés)
+Categoría
+Producto
+Precio
+Descripción / Notas
+Bebidas
+Refresco
+$35
+Bebida carbonatada clásica.
+Bebidas
+Té
+$35 (Vaso) / $100 (Jarra 3.5L)
+Bebida refrescante.
+Bebidas
+Limonada/Naranjada
+$40
+Bebida refrescante.
+Bebidas
+Calpico 1/2 Lt.
+$30 (Vaso) / $110 (Jarra 3.5L)
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Calpico 1 Lt.
+$40
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Calpico Mineral 1/2 Lt.
+$35 (Vaso) / $120 (Jarra 3.5L)
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Calpico Mineral 1 Lt.
+$45
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Calpico Frutos Rojos
+$40
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Micheladas
+$90
+Cerveza preparada y escarchada con nuestra mezcla especial de salsas, clamato y limón.
+Postres
+Helado Frito
+$75
+Postre japonés por excelencia: una bola de helado envuelta en una costra dulce, frita y crujiente.
+Postres
+Brochetas
+$60
+Dulces trozos de plátano empanizado y frito, servidos en brocheta.
+3. Menú de Snacks (6:30 PM a 10:30 PM)
+Paquetes, Combos y Cajas
+Categoría
+Nombre
+Precio
+Descripción / Notas
+Paquetes
+Paquete Mix
+$200
+Medio sushi emp esp, 4 Boneless, 4 Dedos de queso, Papas a la francesa, 1 Agua fresca.
+Paquetes
+Pa Que Compartas
+$210
+2 Hamburguesas de res, Media orden de alitas, Media orden de boneles, 2 Aguas frescas.
+Paquetes
+Paquete 3
+$150
+1 Torta tercera, 4 Boneless o alitas, Papas a la francesa, 1 Agua fresca.
+Paquetes
+Promo Hot Dog
+$70
+3 Hot Dog.
+Paquetes
+Promo Tortas
+$200
+3 Tortas Teleras.
+Combos
+Combo Ryu Especial
+$150
+Medio sushi emp esp, Medio emp trad, 5 Alitas (sabor a elegir), Agua fresca.
+Combos
+Combo Individual 1
+$145
+1 Hamburguesa de res, 4 Alitas, Papas a la francesa, 1 Agua fresca.
+Combos
+Combo Individual 2
+$140
+2 Hot dog, 4 Alitas, Papas a la francesa, 1 Agua fresca.
+Combos
+Combo Nuggets
+$110
+1 Hamburguesa, 6 Nuggets, Papas a la francesa, 1 Agua fresca.
+Caja
+Caja Ryu Mix
+$420
+1 Sushi empanizado esp, 1 Orden de alitas, 1 Orden de boneless, 1 Orden de dedos de queso, 1 Orden de nuggets, Papas a la francesa, Salchichas fritas, 2 Aguas frescas.
+Hamburguesas, Hot Dogs y Tortas
+Categoría
+Platillo
+Precio
+Descripción / Notas
+Hamburguesas
+Hamburguesa de Res
+$55
+Clásica hamburguesa jugosa con vegetales frescos y su carne favorita.
+Hamburguesas
+Hamburguesa de Pollo a la Plancha
+$55
+Clásica hamburguesa jugosa con vegetales frescos y su carne favorita.
+Hamburguesas
+Hamburguesa de Pollo Emp
+$65
+Clásica hamburguesa jugosa con vegetales frescos y su carne favorita.
+Hamburguesas
+Hamburguesa de Camarón
+$70
+Clásica hamburguesa jugosa con vegetales frescos y su carne favorita.
+Hamburguesas
+Hamburguesa Ranchera Esp
+$125
+Carne de res, salchicha, tocino, queso parmesano y cebolla, guisado y guacamole, acompañada con papas a la francesa.
+Hamburguesas
+Hamburguesa Carolina Esp
+$125
+Camaron, salchicha, tocino, queso parmesano y cebolla, guisado y guacamole, acompañada con papas a la francesa.
+Hamburguesas
+Hamburguesa Especial
+$100
+Nuestra hamburguesa de la casa, preparada con ingredientes extra para mayor sabor.
+Hamburguesas
+Hamburguesa Hawaiana
+$80
+Jugosa hamburguesa clásica con un toque dulce de piña asada.
+Hamburguesas
+Hamburguesa Cielo Mar y Tierra
+$120
+La hamburguesa más completa, combinando res, pollo y camarón en un solo platillo.
+Hamburguesas
+Big Ryu
+$95
+Doble carne, tocino, cebolla asada y verduras.
+Hot Dogs
+Hot Dog
+$25
+El clásico y delicioso hot dog tradicional.
+Hot Dogs
+Hot Dog Supremo
+$90
+Hot dog mejorado con una abundante mezcla de toppings de la casa.
+Hot Dogs
+Hot Dog Godzilla
+$135
+Nuestro hot dog gigante y más equipado, especial para un hambre feroz.
+Tortas
+Torta de Telera
+$90
+Rellena de milanesa de pollo empanizado, aguacate, jitomate, lechuga, cebolla y queso mozzarella fundido.
+Snacks, Papas y Toppings
+Categoría
+Producto
+Precio
+Descripción / Notas
+Snacks
+Dedos de Queso
+$95
+Entradas clásicas, perfectamente crujientes por fuera y deliciosas por dentro.
+Snacks
+Alitas
+$100
+Jugosas piezas de pollo fritas, listas para bañarse en su salsa favorita.
+Snacks
+Boneless
+$110
+Jugosas piezas de pollo fritas, listas para bañarse en su salsa favorita.
+Snacks
+Aros de Cebolla
+$90
+Entradas clásicas, perfectamente crujientes por fuera y deliciosas por dentro.
+Papas
+Papas Gajo
+$80
+El acompañamiento perfecto, calientes y crujientes.
+Papas
+Papas a la Francesa
+$65
+El acompañamiento perfecto, calientes y crujientes.
+Toppings Extras
+Tocino
+$15
+Toppings Extras
+Queso Amarillo
+$5
+Toppings Extras
+Queso Oaxaca
+$15
+Toppings Extras
+Cebolla Asada
+$10
+Toppings Extras
+Piña
+$20
+Toppings Extras
+Jamón
+$10
+Toppings Extras
+Ranch
+$20
+Toppings Extras
+Aderezo
+$20
+Bebidas y Postres (Menú Snacks)
+Categoría
+Producto
+Precio
+Descripción / Notas
+Postres
+Helado frito
+$60
+Postre japonés por excelencia: una bola de helado envuelta en una costra dulce, frita y crujiente.
+Postres
+Brochetas de platano
+$55
+Dulces trozos de plátano empanizado y frito, servidos en brocheta.
+Bebidas
+Refresco
+$35
+Bebida carbonatada clásica.
+Bebidas
+Té
+$35
+Bebida refrescante.
+Bebidas
+Limonada / Naranjada
+$40
+Bebida refrescante.
+Bebidas
+Calpico 1/2 litro
+$30
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Calpico 1 litro
+$40
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Calpico Mineral 1/2 litro
+$35
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Calpico Mineral 1 litro
+$45
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Calpico de frutos rojos
+$40
+Refrescante bebida tradicional japonesa de sabor dulce, ligero y sin gas.
+Bebidas
+Michelada
+$90
+Cerveza preparada y escarchada con nuestra mezcla especial de salsas, clamato y limón.
+Bebidas
+Botella de agua de medio
+$12
+Bebidas
+Botella de agua de litro
+$15
+4. Menú Italiano (Viernes, Sábados y Domingos de 1:00 PM a 6:30 PM)
+Categoría
+Platillo
+Precio
+Descripción / Notas
+Pastas
+Lasagna
+$150
+Pasta, carne molida, salsa de tomate y queso mozzarella.
+Pastas
+Boloñesa
+$120
+Spaguetti con carne a la boloñesa.
+Pastas
+Fettuccine Alfredo
+$100
+Fettuccine, mantequilla y queso parmesano.
+Paninis & Pitas
+Bbq
+$100 / $120
+Delicioso sándwich italiano prensado en pan crujiente o en pan pita suave, relleno con la especialidad elegida y queso derretido.
+Paninis & Pitas
+Chipotle
+$100 / $120
+Delicioso sándwich italiano prensado en pan crujiente o en pan pita suave, relleno con la especialidad elegida y queso derretido.
+Paninis & Pitas
+Cheeseteak
+$100 / $120
+Delicioso sándwich italiano prensado en pan crujiente o en pan pita suave, relleno con la especialidad elegida y queso derretido.
+Paninis & Pitas
+Pollo Clasico
+$100 / $120
+Delicioso sándwich italiano prensado en pan crujiente o en pan pita suave, relleno con la especialidad elegida y queso derretido.
+Paninis & Pitas
+Pollo Crispy
+$100 / $120
+Delicioso sándwich italiano prensado en pan crujiente o en pan pita suave, relleno con la especialidad elegida y queso derretido.
+Paninis & Pitas
+Carnes Frias
+$100 / $120
+Delicioso sándwich italiano prensado en pan crujiente o en pan pita suave, relleno con la especialidad elegida y queso derretido.
+Ensaladas
+Bbq
+$110
+Refrescante cama de lechugas y vegetales de la casa, coronada con sus ingredientes favoritos y bañada en la salsa de su elección.
+Ensaladas
+Chipotle
+$110
+Refrescante cama de lechugas y vegetales de la casa, coronada con sus ingredientes favoritos y bañada en la salsa de su elección.
+Ensaladas
+Cheese-Ranch
+$110
+Refrescante cama de lechugas y vegetales de la casa, coronada con sus ingredientes favoritos y bañada en la salsa de su elección.
+Ensaladas
+Piña Hot
+$110
+Refrescante cama de lechugas y vegetales de la casa, coronada con sus ingredientes favoritos y bañada en la salsa de su elección.
+Ensaladas
+Crispy
+$110
+Refrescante cama de lechugas y vegetales de la casa, coronada con sus ingredientes favoritos y bañada en la salsa de su elección.
+Salsas a Elegir
+Varias
+-
+Bbq, Chipotle, Cheese-Ranch, Piña Hot, Crispy.
+Toppings Extras
+Champiñones
+$15.00
+Toppings Extras
+Elotes
+$15.00
+Toppings Extras
+Cebollita Caramelizada
+$15.00
+Sodas Italianas
+Fresa-Boba
+$45.00
+Bebidas refrescantes con perlas de boba.
+Sodas Italianas
+Piña-Boba
+$45.00
+Bebidas refrescantes con perlas de boba.
+Sodas Italianas
+Mora Azul-Boba
+$45.00
+Bebidas refrescantes con perlas de boba.

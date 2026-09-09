@@ -1,0 +1,44 @@
+# ==============================================================================
+# DOCKER COMPOSE - RESTAURANTE RYU (SISTEMA DE TELEFONÍA E IA EN PRODUCCIÓN)
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # Servicio Telefónico Principal (SIP Zadarma + Faster-Whisper + Edge-TTS + GPT-4o-mini)
+  ryu-telephony:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ryu-telephony-service
+    restart: unless-stopped
+    env_file:
+      - .env
+    # En servidores Linux (VPS / Bare Metal / Cloud), network_mode: host es el estándar de
+    # la industria para telefonía VoIP (SIP/RTP), garantizando cero jitter y recepción directa
+    # de paquetes UDP sin reenvíos de puertos complejos.
+    network_mode: host
+    
+    # Si ejecutas Docker Desktop en Windows o Mac donde network_mode: host no está soportado,
+    # comenta la línea 'network_mode: host' y descomenta los siguientes puertos:
+    # ports:
+    #   - "5060:5060/udp"
+    #   - "5061:5061/udp"
+    #   - "8000:8000/tcp"
+
+    volumes:
+      # Montaje en caliente: Modificar el menú o las instrucciones actualiza el bot sin reconstruir la imagen
+      - ./menu_ryu.json:/app/menu_ryu.json:ro
+      - ./prompt_voice_telephone_ryu.md:/app/prompt_voice_telephone_ryu.md:ro
+      - ./knowledge_base_ryu.md:/app/knowledge_base_ryu.md:ro
+      - ./logs:/app/logs
+
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TZ=America/Mexico_City
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "5"

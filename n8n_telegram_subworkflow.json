@@ -1,0 +1,102 @@
+{
+  "name": "Ryu - Despachador de Comandas a Telegram (Subworkflow)",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "customer_name",
+              "type": "string"
+            },
+            {
+              "name": "customer_phone",
+              "type": "string"
+            },
+            {
+              "name": "delivery_type",
+              "type": "string"
+            },
+            {
+              "name": "address",
+              "type": "string"
+            },
+            {
+              "name": "references",
+              "type": "string"
+            },
+            {
+              "name": "payment_method",
+              "type": "string"
+            },
+            {
+              "name": "payment_change_for",
+              "type": "number"
+            },
+            {
+              "name": "items_summary",
+              "type": "string"
+            },
+            {
+              "name": "total_amount",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "subworkflow-input",
+      "name": "Entrada de Comanda",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.item.json;\nconst now = new Date();\nconst dateStr = now.toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City' }) + ' ' + now.toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit' });\n\nconst delivType = input.delivery_type === 'domicilio' ? '🛵 A DOMICILIO' : '🥡 PARA LLEVAR (RECOGER)';\n\nlet message = `🍣 *NUEVO PEDIDO - RESTAURANTE RYU* 🍱\\n`;\nmessage += `━━━━━━━━━━━━━━━━━━━━━\\n`;\nmessage += `📅 *Fecha:* ${dateStr}\\n`;\nmessage += `👤 *Cliente:* ${input.customer_name || 'No especificado'}\\n`;\nmessage += `📱 *Teléfono:* ${input.customer_phone || 'No especificado'}\\n`;\nmessage += `📍 *Modalidad:* ${delivType}\\n`;\n\nif (input.delivery_type === 'domicilio') {\n  message += `🏠 *Dirección:* ${input.address || 'Pendiente'}\\n`;\n  if (input.references) message += `📌 *Referencias:* ${input.references}\\n`;\n}\n\nmessage += `━━━━━━━━━━━━━━━━━━━━━\\n`;\nmessage += `📝 *PLATILLOS PEDIDOS:*\\n${input.items_summary}\\n`;\nmessage += `━━━━━━━━━━━━━━━━━━━━━\\n`;\nmessage += `💵 *TOTAL A COBRAR:* $${input.total_amount} MXN\\n`;\nmessage += `💳 *Método de Pago:* ${input.payment_method || 'Efectivo'}\\n`;\n\nif (input.payment_change_for) {\n  const change = Number(input.payment_change_for) - Number(input.total_amount);\n  message += `💰 *Paga con:* $${input.payment_change_for} (Cambio: $${change >= 0 ? change : 0})\\n`;\n}\n\nmessage += `━━━━━━━━━━━━━━━━━━━━━\\n`;\nmessage += `⏳ *Estado:* 🟡 En Espera de Preparación`;\n\nreturn {\n  json: {\n    formattedMessage: message\n  }\n};"
+      },
+      "id": "format-telegram-ticket",
+      "name": "Construir Ticket Formateado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "={{ $json.formattedMessage }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-send-node",
+      "name": "Enviar a Telegram Cocina",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [720, 300]
+    }
+  ],
+  "connections": {
+    "Entrada de Comanda": {
+      "main": [
+        [
+          {
+            "node": "Construir Ticket Formateado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construir Ticket Formateado": {
+      "main": [
+        [
+          {
+            "node": "Enviar a Telegram Cocina",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

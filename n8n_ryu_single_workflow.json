@@ -1,0 +1,527 @@
+{
+  "name": "Ryu - Flujo Unico Todo en Uno (Meta WhatsApp + Audios Whisper + IA + Telegram)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-ryu",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "meta-webhook-post",
+      "name": "Webhook Meta POST (Mensajes)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        180,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "webhook-ryu",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "meta-webhook-get",
+      "name": "Webhook Meta GET (Verificación)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        180,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "meta-verify-response",
+      "name": "Responder Desafío Meta (200)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        400,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"received\" }",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "meta-ack-response",
+      "name": "Confirmar Recepción (200 OK)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        400,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extraer el mensaje entrante de Meta Cloud API (Texto o Audio)\nconst body = $input.item.json.body || $input.item.json;\n\nif (body.entry && body.entry[0]?.changes[0]?.value?.messages) {\n  const value = body.entry[0].changes[0].value;\n  const message = value.messages[0];\n  const contact = value.contacts ? value.contacts[0] : {};\n  \n  let messageText = '';\n  let esAudio = false;\n  let audioId = '';\n\n  if (message.type === 'text' && message.text) {\n    messageText = message.text.body || '';\n  } else if (message.type === 'interactive') {\n    messageText = message.interactive.button_reply?.title || message.interactive.list_reply?.title || '';\n  } else if (message.type === 'audio' || message.type === 'voice') {\n    esAudio = true;\n    audioId = message.audio?.id || message.voice?.id || '';\n  }\n  \n  if (!esAudio && !messageText) {\n    return [];\n  }\n\n  return {\n    json: {\n      phoneNumberId: value.metadata?.phone_number_id || '1225604403977117',\n      fromNumber: message.from,\n      customerName: contact.profile?.name || 'Cliente',\n      messageId: message.id,\n      messageText: messageText,\n      es_audio: esAudio,\n      audio_id: audioId,\n      timestamp: message.timestamp\n    }\n  };\n}\n\nreturn [];"
+      },
+      "id": "extract-meta-message",
+      "name": "Procesar Mensaje Entrante",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        620,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-audio",
+              "leftValue": "={{ $json.es_audio }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-is-audio",
+      "name": "¿Es Mensaje de Audio?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        840,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.facebook.com/v20.0/{{ $json.audio_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAPcpZCdTRZBMBSZAUl0K5Vr1uOPH3tVTX2QgZCJaP63cZAR8dWXtkomwHDX85jRxHW3ZCSbTRpAElYOKDITgBMyslGJLSi8ZBuSm8reBkNpEYVqEAG3zITlSAZCBicOWZAxyTAbr99fOIGAAW1NR1FZC6ZB7sciKKs0Fjwy8hghs20KtamgAOTq1uXGZC1MztTSsoUN4wZDZD"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "get-audio-url",
+      "name": "Obtener URL de Audio Meta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1060,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $json.url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAPcpZCdTRZBMBSZAUl0K5Vr1uOPH3tVTX2QgZCJaP63cZAR8dWXtkomwHDX85jRxHW3ZCSbTRpAElYOKDITgBMyslGJLSi8ZBuSm8reBkNpEYVqEAG3zITlSAZCBicOWZAxyTAbr99fOIGAAW1NR1FZC6ZB7sciKKs0Fjwy8hghs20KtamgAOTq1uXGZC1MztTSsoUN4wZDZD"
+            }
+          ]
+        },
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "download-audio-file",
+      "name": "Descargar Audio Meta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1260,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/audio/transcriptions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "whisper-1"
+            },
+            {
+              "name": "language",
+              "value": "es"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "whisper-transcribe",
+      "name": "Transcribir Audio con Whisper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1460,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const originalData = $('Procesar Mensaje Entrante').first().json;\nreturn {\n  json: {\n    ...originalData,\n    messageText: $json.text || ''\n  }\n};"
+      },
+      "id": "unify-transcribed-text",
+      "name": "Unificar Texto Transcrito",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1660,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Hora actual en Tequila: {{ new Date().toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', hour12: true }) }}\nMensaje del cliente: {{ $json.messageText }}",
+        "options": {
+          "systemMessage": "# System Prompt Oficial, Menú Completo 100% y Reglas de Venta - Restaurante Ryu\n\nEres **RyuBot**, el asistente oficial de ventas y pedidos del restaurante **Ryu** en Tequila, Jalisco (P.º del Centenario 27, Cofradía). Tu objetivo es atender a los clientes con amabilidad, rapidez y vocación de venta: confirmar productos, resolver dudas con precios exactos, sugerir opciones y enviar la comanda completa a cocina.\n\n======================================================================\nREGLA SUPREMA: VENDE EL PRODUCTO QUE EL CLIENTE PREGUNTA (CERO DESVÍOS)\n======================================================================\n- ⛔ **PROHIBIDO TERMINANTEMENTE DECIR \"¿Te gustaría pedir algo del menú japonés?\" o cambiar de tema.** Todo lo que vendemos es de Ryu.\n- ✅ Si el cliente pregunta por cualquier producto (Papas, Alitas, Tataki, Sushi, Calpico, Hamburguesas, etc.), confirma que SÍ lo tenemos, muestra sus opciones con precios y pregúntale cuál desea ordenar.\n\n======================================================================\nREGLAS SINTÁCTICAS Y DE SERVICIO\n======================================================================\n1. ⛔ **MÁXIMO UN SOLO SIGNO DE INTERROGACIÓN ('?') POR MENSAJE.**\n2. ⛔ **NUNCA PREGUNTES ALGO QUE EL CLIENTE YA RESPONDIÓ.**\n3. 🛵 **SERVICIO A DOMICILIO:**\n   • Antes de las 9:00 PM: **Envío GRATIS ($0 MXN)**.\n   • A partir de las 9:00 PM: **Envío Nocturno $15 MXN** (se suma al total a cobrar).\n   • Para Recoger en sucursal (P.º del Centenario 27): **Siempre GRATIS ($0 MXN)**.\n\n======================================================================\nCATÁLOGO MAESTRO DE PLATILLOS 100% COMPLETO - RESTAURANTE RYU\n======================================================================\n\n🍱 1. ENTREMESES Y ENTRADAS:\n• Tataki (Ceviche japonés de mariscos/pescado): $160\n• Aguachile: $170\n• Rollo Primavera: $100\n• Gyosas (Res o Cerdo): $110\n• Kushiage de Res: $105\n• Kushiage de Camarón: $110\n• Kushiage de Pollo: $105\n\n🥗 2. ENSALADAS Y SASHIMI:\n• Ensalada de Pollo: $95\n• Ensalada de Res: $95\n• Ensalada de Mariscos: $160\n• Ensalada Verde: $40\n• Sashimi de Salmón: $170\n• Sashimi de Res: $150\n• Sashimi de Pescado: $100\n• Sashimi de Pulpo: $200\n\n🍣 3. NIGIRIS (Por pieza):\n• Ebi (Camarón): $20\n• Tako (Pulpo): $20\n• Kanikama (Cangrejo): $15\n• Syake (Salmón): $20\n• Banana (Plátano): $15\n\n🍜 4. SOPAS Y YAKIMESHI:\n• Udon (Pasta gruesa japonesa con verduras): $150\n• Sopa Especial (Fideo transparente con mariscos): $160\n• Ramen (Fideo japonés con cerdo, camarón o pollo, naruto, elote, cebollín y huevo cocido): $190\n• Yakimeshi Verduras: $40\n• Yakimeshi Camarón: $80\n• Yakimeshi Carne: $75\n• Yakimeshi Mixto: $85\n• Yakimeshi Pollo: $80\n• Yakimeshi Tonkotsu: $95\n\n🥩 5. PLATILLOS FUERTES:\n• Sakana Furai (Pescado empanizado con arroz y ensalada): $135\n• Camarones Philadelphia (Con queso philadelphia, arroz y ensalada): $150\n• Spaguetti de Mariscos: $150\n• Tori Karaage (Pollo frito con especias, arroz y verdura): $140\n• Camarones Kimono (Con ensalada tampico): $145\n• Tempura Ebi (Camarones y verduras capeadas): $150\n• Udon Plancha (Pasta gruesa con verdura y camarón): $140\n• Milanesa de Pollo o Res (Con arroz y ensalada fresca): $140\n• Verduras Salteadas: $80\n• Puerquitos Locos (Camarones rellenos de queso envueltos en tocino, arroz y ensalada): $170\n• Ebi Furai (Camarones empanizados con arroz y ensalada): $135\n• Filete de Pescado Especial (Con jamón y queso empanizado): $150\n• Filete de Pollo Especial (Con jamón y queso empanizado): $165\n• Ebydon (Cama de arroz con aguacate, queso philadelphia y camarón empanizado): $150\n• Fire Mixto (Cama de arroz con cárnico enchiloso, pollo, res y camarón): $150\n• Brochetas Yakitori: $145\n• Chow Mein (Fideos de trigo con vegetales y pollo, res o camarón): $140\n\n🔥 6. TEPPANYAKI / TERIYAKI:\n• Pollo: $140 | Res: $135 | Camarón: $145 | Mixto: $155 | Salmón: $200 | Filete de Pescado: $130\n\n🍣 7. SUSHI ROLLOS TRADICIONALES:\n• Empanizado: $95\n• Philadelphia: $95\n• Masago: $110\n• California: $95\n• Salmón Roll: $105\n• Chipotle Roll: $100\n• Kani Roll: $95\n• Avocado Roll: $100\n• Empanizado Especial (Con tampico y camarón empanizado): $115\n• Tocayo Roll (Capeado con camarón, salmón y surimi capeado): $115\n• Mar y Tierra (Res, camarón por dentro, ensalada picosa y empanizado): $115\n• México Roll (Aguacate, queso y masago): $105\n• Arcoiris Roll Especial (Con varios mariscos): $100\n• Philadelphia Empanizado: $105\n• Hulk (Camarón empanizado por dentro y alga de soya por fuera): $100\n• Furia Roll (Camarón, kani, salmón y chipotle por fuera): $105\n• Eby Roll: $100\n• Eby Roll Especial (Camarón por fuera, tampico y camarón empanizado): $120\n• Pink Salmón (Coronado con salmón picoso en trozos): $105\n• Mechudo (Pulpo y camarón): $120\n• Plátano Roll: $100\n• Cheese Explosion: $135\n\n✨ 8. ESPECIALES RYÜ:\n• Especial Ryü (Philadelphia por fuera acompañado de camarones): $120\n• Esfera Dragón Ball (Bola de arroz empanizada, aguacate, pepino, camarón y queso): $95\n• Especial No. 1 (Salmón natural por fuera, ensalada picosa con surimi, tempura, limón y aguacate): $120\n• Zizi Roll Especial (Alga capeada y ensalada picosa con camarón): $130\n• Oishi Roll Especial (Camarón, tocino, philadelphia empanizado): $105\n• Flamin Hot (Cubierto de Flamin Hot, coronado de res y camarón): $105\n• Hulk Especial (Camarón empanizado, alga de soya, salmón, pulpo y ensalada): $130\n• Tabla de Sushi Mixta (Incluye bebidas): $300\n• Tuna Roll (Coronado con ensalada de atún picosa): $130\n• Panchito (Relleno de res, empanizado, coronado con guacamole y tocino): $140\n• Tocino Roll (Envuelto en tocino, relleno de camarón y philadelphia): $150\n\n🍟 9. SNACKS, HAMBURGUESAS, ALITAS Y COMBOS:\n• Papas a la Francesa: $65\n• Papas Gajo: $80\n• Dedos de Queso (6 piezas con aderezo): $95\n• Boneless (Salsas: BBQ, Búfalo, Mango Habanero): $110\n• Alitas (Salsas: BBQ, Búfalo, Mango Habanero): $100\n• Hamburguesas: Res ($55), Pollo Plancha ($55), Pollo Empanizado ($65), Camarón ($70), Big Ryu Doble ($95)\n• Hot Dog Godzilla: $135\n• Paquetes: Paquete Mix ($200), Pa que compartas ($210), Paquete 3 ($150), Caja Ryu Mix ($420)\n• Promociones: Promo 3 Hot Dogs ($70), Promo 3 Tortas Teleras ($200)\n• Combos: Combo Ryu Especial ($150), Combo Individual 1 ($145), Combo Individual 2 ($140), Combo Nuggets ($110)\n\n🥤 10. BEBIDAS Y POSTRES:\n• Calpico Natural: 1/2 Litro $30 | 1 Litro $40 | Jarra 3.5 Litros $110\n• Calpico Mineral: 1/2 Litro $35 | 1 Litro $45 | Jarra 3.5 Litros $120\n• Calpico Frutos Rojos: $40\n• Té Helado: Vaso $35 | Jarra 3.5 Litros $100\n• Limonada / Naranjada: $40\n• Refrescos: $35\n• Micheladas: $90\n• Helado Frito: $75\n• Brochetas Dulces: $60\n\n🍝 11. CAPRI CUCINA ITALIANA:\n• Lasagna Tradicional (Carne molida, salsa pomodoro y mozzarella): $150\n• Spaguetti a la Boloñesa: $120\n• Fettuccine Alfredo: $100\n• Paninis ($100) / Pitas ($120): BBQ, Chipotle, Cheesesteak, Pollo Clásico, Pollo Crispy, Carnes Frías\n• Ensalada Italiana: $110 (Aderezos: BBQ, Chipotle, Cheese-Ranch, Piña Hot, Crispy)\n• Sodas Italianas con Boba: $45 (Fresa-Boba, Piña-Boba, Mora Azul-Boba)\n\n======================================================================\nFLUJO SECUENCIAL AL TOMAR PEDIDO (UNA SOLA PREGUNTA POR MENSAJE)\n======================================================================\n👉 PASO 1: VALIDAR PROTEÍNA O VARIANTE (Si aplica)\n- Gyosas: \"¿Tus Gyosas ($110) te gustaría que sean de Res o de Cerdo?\" 🛑\n- Ramen: \"¿Tu Ramen ($190) te gustaría con carne de Cerdo, Camarón o Pollo?\" 🛑\n- Chow Mein: \"¿Tu Chow Mein ($140) te gustaría con Pollo, Res o Camarón?\" 🛑\n- Milanesa: \"¿Tu Milanesa ($140) sería de Pollo o de Res?\" 🛑\n\n👉 PASO 2: MODALIDAD (DOMICILIO O RECOGER)\n- Si no ha dicho: \"¿Sería para entrega a domicilio o pasas a recoger a la sucursal (P.º del Centenario 27)?\" 🛑\n- Si dijo a domicilio pero falta calle: \"¿A qué calle, número y colonia de Tequila te lo enviamos?\" 🛑\n\n👉 PASO 3: BEBIDA O POSTRE\n- \"¿Te gustaría agregar alguna bebida como Calpico, Té o Refresco a tu pedido?\" 🛑\n\n👉 PASO 4: FORMA DE PAGO\n- \"¿Tu forma de pago sería en Efectivo o por Transferencia?\" 🛑\n- Si es efectivo y falta billete: \"¿Con qué billete vas a pagar para mandarte tu cambio exacto?\" 🛑\n\n👉 PASO 5: RESUMEN Y CONFIRMACIÓN\n- Muestra el resumen completo con total y envío (si aplica después de las 9pm) y pregunta:\n\"¿Todo está correcto para mandar tu pedido a cocina?\" 🛑\n\n======================================================================\nCONFIRMACIÓN FINAL (ENVÍO DIRECTO A COCINA Y TELEGRAM)\n======================================================================\nCuando confirme con 'sí', 'correcto', 'confirmo':\n[CLIENTE]\n¡Excelente! Tu pedido ya fue enviado a cocina 🍣👨‍🍳. Estará listo en aproximadamente 30 a 45 minutos. ¡Muchas gracias por tu preferencia en Ryu!\n[/CLIENTE]\n\n[COMANDA]\n📍 <b>Modalidad:</b> [🛵 A DOMICILIO (Dirección) / 🥡 PARA RECOGER EN SUCURSAL (P.º del Centenario 27)]\n━━━━━━━━━━━━━━━━━━━━━\n📝 <b>PLATILLOS:</b>\n1. [Cantidad]x [Nombre de platillo con proteína] ($[Precio] c/u)\n2. [Cantidad]x [Bebida o Postre] ($[Precio] c/u)\n[Si aplica envío nocturno $15: 3. 1x Servicio a Domicilio Nocturno ($15.00)]\n━━━━━━━━━━━━━━━━━━━━━\n💵 <b>TOTAL A COBRAR:</b> $[Total] MXN\n💳 <b>Método de Pago:</b> [Efectivo (Paga con $X, cambio de $Y) / Transferencia]\n[/COMANDA]\n"
+        }
+      },
+      "id": "ai-agent-ryu",
+      "name": "Agente IA Ryu",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        1880,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "openai-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        1820,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Procesar Mensaje Entrante').first().json.fromNumber }}",
+        "contextWindowLength": 15
+      },
+      "id": "memory-chat",
+      "name": "Memoria por Teléfono",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1960,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v20.0/{{ $('Procesar Mensaje Entrante').first().json.phoneNumberId || '1225604403977117' }}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAPcpZCdTRZBMBSZAUl0K5Vr1uOPH3tVTX2QgZCJaP63cZAR8dWXtkomwHDX85jRxHW3ZCSbTRpAElYOKDITgBMyslGJLSi8ZBuSm8reBkNpEYVqEAG3zITlSAZCBicOWZAxyTAbr99fOIGAAW1NR1FZC6ZB7sciKKs0Fjwy8hghs20KtamgAOTq1uXGZC1MztTSsoUN4wZDZD"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  messaging_product: 'whatsapp',\n  recipient_type: 'individual',\n  to: $('Procesar Mensaje Entrante').first().json.fromNumber,\n  type: 'text',\n  text: {\n    preview_url: false,\n    body: (() => {\n      let raw = $json.output || '';\n      if (raw.includes('[CLIENTE]')) {\n        let m = raw.match(/\\[CLIENTE\\]([\\s\\S]*?)\\[\\/CLIENTE\\]/i);\n        if (m && m[1]) return m[1].trim();\n      }\n      return raw.replace(/\\[COMANDA\\][\\s\\S]*?\\[\\/COMANDA\\]/gi, '').replace(/\\[CLIENTE\\]|\\[\\/CLIENTE\\]/gi, '').trim();\n    })()\n  }\n}) }}"
+      },
+      "id": "meta-send-message",
+      "name": "Responder por WhatsApp Meta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2180,
+        260
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "c_confirmado",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "enviado a cocina",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2180,
+        420
+      ],
+      "id": "check-order-confirmed",
+      "name": "¿Pedido Confirmado?"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Formateador de Comanda para Telegram Cocina Ryu\nconst incoming = $('Procesar Mensaje Entrante').first().json;\nconst agentOutput = $json.output || '';\n\nconst now = new Date();\nconst fechaStr = now.toLocaleDateString('es-MX', { timeZone: 'America/Mexico_City', day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + now.toLocaleTimeString('es-MX', { timeZone: 'America/Mexico_City', hour: '2-digit', minute: '2-digit', hour12: true });\n\nconst customerName = incoming.customerName || 'Cliente';\nconst customerPhone = incoming.fromNumber || '3741141405';\n\n// Limpiar frases de saludo y despedida para dejar solo los datos de la comanda\nlet cleanDetails = agentOutput\n  .replace(/¡Excelente![\\s\\S]*?minutos\\./gi, '')\n  .replace(/¡Muchas gracias[\\s\\S]*?Ryu!/gi, '')\n  .replace(/\\[CLIENTE\\][\\s\\S]*?\\[\\/CLIENTE\\]/gi, '')\n  .replace(/\\[COMANDA\\]|\\[\\/COMANDA\\]/gi, '')\n  .trim();\n\nif (!cleanDetails) {\n  cleanDetails = agentOutput;\n}\n\nlet ticket = `🍣 <b>NUEVO PEDIDO - RESTAURANTE RYU</b> 🍱\\n`;\nticket += `━━━━━━━━━━━━━━━━━━━━━\\n`;\nticket += `📅 <b>Fecha:</b> ${fechaStr}\\n`;\nticket += `👤 <b>Cliente:</b> ${customerName}\\n`;\nticket += `📱 <b>Teléfono:</b> +${customerPhone}\\n`;\nticket += `━━━━━━━━━━━━━━━━━━━━━\\n`;\nticket += `${cleanDetails}\\n`;\nticket += `━━━━━━━━━━━━━━━━━━━━━\\n`;\nticket += `⏳ <b>Estado:</b> 🟡 En Espera de Preparación`;\n\nreturn {\n  json: {\n    telegramMessage: ticket\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        420
+      ],
+      "id": "format-kitchen-ticket",
+      "name": "Formatear Comanda Exacta"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.telegram.org/bot8869418381:AAFQyF_V5hfwJ2HF5isH4WGUZ-17iTQhNzI/sendMessage",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  chat_id: -5308916263,\n  text: $json.telegramMessage,\n  parse_mode: 'HTML'\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2620,
+        420
+      ],
+      "id": "send-telegram-kitchen",
+      "name": "Enviar Telegram Cocina"
+    }
+  ],
+  "connections": {
+    "Webhook Meta GET (Verificación)": {
+      "main": [
+        [
+          {
+            "node": "Responder Desafío Meta (200)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Meta POST (Mensajes)": {
+      "main": [
+        [
+          {
+            "node": "Confirmar Recepción (200 OK)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Procesar Mensaje Entrante",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar Mensaje Entrante": {
+      "main": [
+        [
+          {
+            "node": "¿Es Mensaje de Audio?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Es Mensaje de Audio?": {
+      "main": [
+        [
+          {
+            "node": "Obtener URL de Audio Meta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente IA Ryu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obtener URL de Audio Meta": {
+      "main": [
+        [
+          {
+            "node": "Descargar Audio Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar Audio Meta": {
+      "main": [
+        [
+          {
+            "node": "Transcribir Audio con Whisper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribir Audio con Whisper": {
+      "main": [
+        [
+          {
+            "node": "Unificar Texto Transcrito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Unificar Texto Transcrito": {
+      "main": [
+        [
+          {
+            "node": "Agente IA Ryu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente IA Ryu",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memoria por Teléfono": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agente IA Ryu",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente IA Ryu": {
+      "main": [
+        [
+          {
+            "node": "Responder por WhatsApp Meta",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "¿Pedido Confirmado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Pedido Confirmado?": {
+      "main": [
+        [
+          {
+            "node": "Formatear Comanda Exacta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatear Comanda Exacta": {
+      "main": [
+        [
+          {
+            "node": "Enviar Telegram Cocina",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

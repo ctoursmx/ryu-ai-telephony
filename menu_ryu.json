@@ -1,0 +1,2287 @@
+{
+  "_schema_version": "2.0.0",
+  "_description": "Base de datos y catálogo oficial optimizado para IA conversacional (Voz y Chat) de Restaurante Ryu en Tequila, Jalisco.",
+  "restaurant": {
+    "name": "Ryu",
+    "legal_name": "Restaurante Ryu / Capri Cucina Italiana",
+    "address": "P.º del Centenario 27, Colonia Cofradía, 46403 Tequila, Jalisco, México",
+    "location_reference": "En Paseo del Centenario, Colonia Cofradía",
+    "phone_numbers": [
+      "3747421071",
+      "3747420578",
+      "3741022142",
+      "3329033318",
+      "3741141405"
+    ],
+    "sip_incoming_did": "+52 33 8526 1250",
+    "average_prep_and_delivery_time": "40 a 55 minutos",
+    "pickup_store_policy": "Siempre GRATIS ($0 MXN) en sucursal (Paseo del Centenario 27, Cofradía)"
+  },
+  "service_policies": {
+    "delivery_rules": {
+      "tequila_urban_zone": {
+        "daytime_fee": 0,
+        "daytime_schedule": "Antes de las 19:30 hrs (7:30 PM)",
+        "nighttime_fee": 15,
+        "nighttime_schedule": "A partir de las 19:30 hrs (7:30 PM)",
+        "description": "Dentro de Tequila el envío es gratis durante el día y tiene un costo nocturno fijo de $15 MXN a partir de las 7:30 PM."
+      },
+      "special_remote_zones": [
+        {
+          "zone_id": "zon_01",
+          "name": "Aguacatillo",
+          "fee": 30,
+          "aliases": [
+            "el aguacatillo",
+            "aguacatillo"
+          ]
+        },
+        {
+          "zone_id": "zon_02",
+          "name": "Penal",
+          "fee": 30,
+          "aliases": [
+            "el penal",
+            "penal de tequila",
+            "centro penitenciario"
+          ]
+        },
+        {
+          "zone_id": "zon_03",
+          "name": "Caseta",
+          "fee": 50,
+          "aliases": [
+            "la caseta",
+            "caseta de cobro",
+            "caseta autopista"
+          ]
+        },
+        {
+          "zone_id": "zon_04",
+          "name": "Fundición",
+          "fee": 50,
+          "aliases": [
+            "la fundicion",
+            "fundicion",
+            "la fundición"
+          ]
+        },
+        {
+          "zone_id": "zon_05",
+          "name": "Toma",
+          "fee": 80,
+          "aliases": [
+            "la toma",
+            "balneario la toma",
+            "toma"
+          ]
+        },
+        {
+          "zone_id": "zon_06",
+          "name": "Mirador",
+          "fee": 80,
+          "aliases": [
+            "el mirador",
+            "mirador"
+          ]
+        },
+        {
+          "zone_id": "zon_07",
+          "name": "Parador Turístico",
+          "fee": 80,
+          "aliases": [
+            "parador turistico",
+            "parador",
+            "el parador"
+          ]
+        },
+        {
+          "zone_id": "zon_08",
+          "name": "Tierra de Agave",
+          "fee": 80,
+          "aliases": [
+            "tierra de agave",
+            "fraccionamiento tierra de agave"
+          ]
+        },
+        {
+          "zone_id": "zon_09",
+          "name": "San Pedro",
+          "fee": 100,
+          "aliases": [
+            "san pedro",
+            "poblado san pedro"
+          ]
+        },
+        {
+          "zone_id": "zon_10",
+          "name": "Santa Ana",
+          "fee": 100,
+          "aliases": [
+            "santa ana",
+            "santaana",
+            "santa anna"
+          ]
+        },
+        {
+          "zone_id": "zon_11",
+          "name": "Medineño",
+          "fee": 100,
+          "aliases": [
+            "el medineño",
+            "medineno",
+            "medineño"
+          ]
+        },
+        {
+          "zone_id": "zon_12",
+          "name": "Cantaritos El Güero",
+          "fee": 100,
+          "aliases": [
+            "cantaritos el guero",
+            "los cantaritos",
+            "cantaritos",
+            "el guero"
+          ]
+        },
+        {
+          "zone_id": "zon_13",
+          "name": "Amatitán",
+          "fee": 100,
+          "aliases": [
+            "amatitan",
+            "amatitán",
+            "entrada amatitan"
+          ]
+        },
+        {
+          "zone_id": "zon_14",
+          "name": "Puerta de En Medio",
+          "fee": 100,
+          "aliases": [
+            "puerta de en medio",
+            "la puerta de en medio",
+            "puerta de enmedio"
+          ]
+        },
+        {
+          "zone_id": "zon_15",
+          "name": "San Martín",
+          "fee": 100,
+          "aliases": [
+            "san martin",
+            "san martín"
+          ]
+        },
+        {
+          "zone_id": "zon_16",
+          "name": "Magdalena",
+          "fee": 100,
+          "aliases": [
+            "magdalena",
+            "municipio magdalena"
+          ]
+        },
+        {
+          "zone_id": "zon_17",
+          "name": "Santa Teresa",
+          "fee": 100,
+          "aliases": [
+            "santa teresa"
+          ]
+        }
+      ],
+      "high_consumption_discount_note": "Si la compra del cliente es de alto consumo, la recepcionista puede autorizar descuento o bonificación total de la tarifa de envío especial."
+    },
+    "payment_methods": {
+      "cash": {
+        "name": "Efectivo",
+        "instructions": "Preguntar obligatoriamente al cliente con cuánto va a pagar (denominación del billete) para que el repartidor lleve el cambio exacto."
+      },
+      "card": {
+        "name": "Tarjeta Bancaria",
+        "instructions": "Aceptamos débito y crédito. El repartidor lleva la terminal bancaria inalámbrica al domicilio."
+      },
+      "transfer": {
+        "name": "Transferencia Bancaria",
+        "instructions": "Se envía la cuenta CLABE por WhatsApp o mensaje al momento de confirmar la comanda."
+      }
+    },
+    "order_types": {
+      "immediate": "Entrega inmediata estándar (40 a 55 min).",
+      "future_scheduled": "Pedidos programados para más tarde o días posteriores (agendado en la comanda con hora y fecha solicitada)."
+    }
+  },
+  "schedules": {
+    "japanese": {
+      "name": "Comida Japonesa & General",
+      "days": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ],
+      "start_time": "13:00",
+      "end_time": "18:30",
+      "description": "Disponible de 1:00 PM a 6:30 PM todos los días."
+    },
+    "italian": {
+      "name": "Comida Italiana (Capri Cucina Italiana)",
+      "days": [
+        "friday",
+        "saturday",
+        "sunday"
+      ],
+      "start_time": "13:00",
+      "end_time": "18:30",
+      "description": "Disponible exclusivamente Viernes, Sábado y Domingo de 1:00 PM a 6:30 PM."
+    },
+    "snacks": {
+      "name": "Menú Snacks, Promociones, Hamburguesas y Hot Dogs",
+      "days": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ],
+      "start_time": "18:30",
+      "end_time": "22:30",
+      "description": "Disponible de 6:30 PM a 10:30 PM todos los días."
+    }
+  },
+  "menu": {
+    "japanese": {
+      "entremeses": [
+        {
+          "id": "jp_ent_01",
+          "name": "Tataki (Ceviche)",
+          "aliases": [
+            "tataki",
+            "ceviche japones",
+            "tataki ceviche"
+          ],
+          "price": 160,
+          "description": "Finos cortes de proteína ligeramente sellados por fuera y crudos por dentro, estilo ceviche fresco.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_ent_02",
+          "name": "Aguachile",
+          "aliases": [
+            "aguachile",
+            "aguachile de mariscos",
+            "aguachile ryu"
+          ],
+          "price": 170,
+          "description": "Mariscos frescos marinados en jugo de limón y chiles seleccionados, con un toque picante y refrescante.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_ent_03",
+          "name": "Rollo Primavera",
+          "aliases": [
+            "rollo primavera",
+            "rollos primavera",
+            "spring roll"
+          ],
+          "price": 100,
+          "description": "Clásico rollo crujiente dorado, relleno de una fresca y sazonada mezcla de vegetales.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_ent_04",
+          "name": "Gyosas",
+          "aliases": [
+            "gyosas",
+            "gyozas",
+            "dumplings",
+            "empanadillas japonesas"
+          ],
+          "price": 110,
+          "description": "Empanadillas japonesas a la plancha rellenas de carne jugosa.",
+          "mandatory_questions": [
+            "¿Prefieres tus gyosas rellenas de carne de Res o de Puerco?"
+          ],
+          "options": [
+            "Res",
+            "Puerco"
+          ],
+          "station": "hot_kitchen"
+        }
+      ],
+      "kushiage_brochetas": [
+        {
+          "id": "jp_kush_01",
+          "name": "Kushiage de Res",
+          "aliases": [
+            "kushiage res",
+            "brocheta de res empanizada"
+          ],
+          "price": 105,
+          "description": "Brochetas de res finamente empanizadas y crujientes.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_kush_02",
+          "name": "Kushiage de Camarón",
+          "aliases": [
+            "kushiage camaron",
+            "brocheta de camaron empanizada"
+          ],
+          "price": 110,
+          "description": "Brochetas de camarón finamente empanizadas y crujientes.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_kush_03",
+          "name": "Kushiage de Pollo",
+          "aliases": [
+            "kushiage pollo",
+            "brocheta de pollo empanizada"
+          ],
+          "price": 105,
+          "description": "Brochetas de pollo finamente empanizadas y crujientes.",
+          "station": "hot_kitchen"
+        }
+      ],
+      "ensaladas": [
+        {
+          "id": "jp_ens_01",
+          "name": "Ensalada de Pollo",
+          "aliases": [
+            "ensalada de pollo"
+          ],
+          "price": 95,
+          "description": "Ensalada fresca de la casa con pollo tierno.",
+          "station": "cold_kitchen"
+        },
+        {
+          "id": "jp_ens_02",
+          "name": "Ensalada de Res",
+          "aliases": [
+            "ensalada de res"
+          ],
+          "price": 95,
+          "description": "Ensalada fresca con tiras de carne de res sazonada.",
+          "station": "cold_kitchen"
+        },
+        {
+          "id": "jp_ens_03",
+          "name": "Ensalada de Mariscos",
+          "aliases": [
+            "ensalada de mariscos"
+          ],
+          "price": 160,
+          "description": "Ensalada fresca coronada con variedad de mariscos.",
+          "station": "cold_kitchen"
+        },
+        {
+          "id": "jp_ens_04",
+          "name": "Ensalada Verde",
+          "aliases": [
+            "ensalada verde",
+            "ensalada sencilla"
+          ],
+          "price": 40,
+          "description": "Mezcla clásica fresca de lechugas y vegetales de la casa.",
+          "station": "cold_kitchen"
+        }
+      ],
+      "sashimi": [
+        {
+          "id": "jp_sash_01",
+          "name": "Sashimi de Salmón",
+          "aliases": [
+            "sashimi salmon",
+            "sashimi de salmon"
+          ],
+          "price": 170,
+          "description": "Finos cortes de salmón fresco de alta calidad.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sash_02",
+          "name": "Sashimi de Res",
+          "aliases": [
+            "sashimi res",
+            "sashimi de res"
+          ],
+          "price": 150,
+          "description": "Cortes finos y tiernos de carne de res fresca seleccionada.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sash_03",
+          "name": "Sashimi de Pescado",
+          "aliases": [
+            "sashimi pescado",
+            "sashimi blanco"
+          ],
+          "price": 100,
+          "description": "Cortes finos de pescado blanco del día.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sash_04",
+          "name": "Sashimi de Pulpo",
+          "aliases": [
+            "sashimi pulpo",
+            "sashimi de pulpo"
+          ],
+          "price": 200,
+          "description": "Finos cortes de pulpo fresco cocido al punto suave.",
+          "station": "sushi_bar"
+        }
+      ],
+      "nigiris": [
+        {
+          "id": "jp_nig_01",
+          "name": "Nigiri Ebi (Camarón)",
+          "aliases": [
+            "nigiri camaron",
+            "nigiri ebi"
+          ],
+          "price": 20,
+          "description": "Bocado tradicional de arroz de sushi con camarón fresco.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_nig_02",
+          "name": "Nigiri Tako (Pulpo)",
+          "aliases": [
+            "nigiri pulpo",
+            "nigiri tako"
+          ],
+          "price": 20,
+          "description": "Bocado tradicional de arroz con lámina de pulpo cocido.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_nig_03",
+          "name": "Nigiri Kanikama (Cangrejo)",
+          "aliases": [
+            "nigiri kanikama",
+            "nigiri cangrejo",
+            "nigiri surimi"
+          ],
+          "price": 15,
+          "description": "Bocado tradicional de arroz con surimi kanikama.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_nig_04",
+          "name": "Nigiri Syake (Salmón)",
+          "aliases": [
+            "nigiri salmon",
+            "nigiri syake"
+          ],
+          "price": 20,
+          "description": "Bocado de arroz con corte de salmón fresco.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_nig_05",
+          "name": "Nigiri Banana (Plátano)",
+          "aliases": [
+            "nigiri platano",
+            "nigiri banana"
+          ],
+          "price": 15,
+          "description": "Bocado original de arroz con fina lámina de plátano.",
+          "station": "sushi_bar"
+        }
+      ],
+      "sopas": [
+        {
+          "id": "jp_sop_01",
+          "name": "Udon",
+          "aliases": [
+            "sopa udon",
+            "udon sopa"
+          ],
+          "price": 150,
+          "description": "Pasta gruesa tradicional japonesa servida en caldo caliente con verduras.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_sop_02",
+          "name": "Sopa Especial",
+          "aliases": [
+            "sopa especial ryu",
+            "sopa de mariscos fideo"
+          ],
+          "price": 160,
+          "description": "Fideo transparente japonés servido con variedad de mariscos en caldo aromático.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_sop_03",
+          "name": "Ramen",
+          "aliases": [
+            "ramen",
+            "ramen tradicional",
+            "sopa ramen"
+          ],
+          "price": 190,
+          "description": "Fideos japoneses con naruto, elote, cebollín y huevo cocido. Proteína a elegir: Cerdo, Camarón o Pollo.",
+          "mandatory_questions": [
+            "¿De qué proteína deseas tu Ramen: Cerdo, Camarón o Pollo?"
+          ],
+          "options": [
+            "Cerdo",
+            "Camarón",
+            "Pollo"
+          ],
+          "station": "hot_kitchen"
+        }
+      ],
+      "yakimeshi": [
+        {
+          "id": "jp_yaki_01",
+          "name": "Yakimeshi de Verduras",
+          "aliases": [
+            "yakimeshi verduras",
+            "arroz frito verduras"
+          ],
+          "price": 40,
+          "description": "Arroz frito a la plancha estilo japonés con vegetales sazonados.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_yaki_02",
+          "name": "Yakimeshi de Carne (Res)",
+          "aliases": [
+            "yakimeshi carne",
+            "yakimeshi res",
+            "arroz frito carne"
+          ],
+          "price": 75,
+          "description": "Arroz frito a la plancha con trozos de carne de res y vegetales.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_yaki_03",
+          "name": "Yakimeshi de Pollo",
+          "aliases": [
+            "yakimeshi pollo",
+            "arroz frito pollo"
+          ],
+          "price": 80,
+          "description": "Arroz frito a la plancha con pechuga de pollo y vegetales.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_yaki_04",
+          "name": "Yakimeshi de Camarón",
+          "aliases": [
+            "yakimeshi camaron",
+            "arroz frito camaron"
+          ],
+          "price": 80,
+          "description": "Arroz frito a la plancha con camarones y vegetales.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_yaki_05",
+          "name": "Yakimeshi Mixto",
+          "aliases": [
+            "yakimeshi mixto",
+            "arroz frito mixto"
+          ],
+          "price": 85,
+          "description": "Arroz frito con mezcla de pollo, res y camarón.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_yaki_06",
+          "name": "Yakimeshi Tonkotsu",
+          "aliases": [
+            "yakimeshi tonkotsu",
+            "arroz tonkotsu"
+          ],
+          "price": 95,
+          "description": "Arroz frito estilo japonés con sazón y trozos de carne estilo tonkotsu.",
+          "station": "hot_kitchen"
+        }
+      ],
+      "teppanyaki_teriyaki": [
+        {
+          "id": "jp_tepp_01",
+          "name": "Teppanyaki / Teriyaki de Filete (Pescado)",
+          "aliases": [
+            "teppanyaki pescado",
+            "teriyaki pescado"
+          ],
+          "price": 130,
+          "description": "Filete de pescado cocinado a la plancha con vegetales frescos, sazón teppanyaki o salsa teriyaki.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_tepp_02",
+          "name": "Teppanyaki / Teriyaki de Res",
+          "aliases": [
+            "teppanyaki res",
+            "teriyaki res"
+          ],
+          "price": 135,
+          "description": "Carne de res a la plancha con vegetales frescos.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_tepp_03",
+          "name": "Teppanyaki / Teriyaki de Pollo",
+          "aliases": [
+            "teppanyaki pollo",
+            "teriyaki pollo"
+          ],
+          "price": 140,
+          "description": "Pechuga de pollo a la plancha con vegetales frescos.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_tepp_04",
+          "name": "Teppanyaki / Teriyaki de Camarón",
+          "aliases": [
+            "teppanyaki camaron",
+            "teriyaki camaron"
+          ],
+          "price": 145,
+          "description": "Camarones frescos a la plancha con vegetales.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_tepp_05",
+          "name": "Teppanyaki / Teriyaki Mixto",
+          "aliases": [
+            "teppanyaki mixto",
+            "teriyaki mixto"
+          ],
+          "price": 155,
+          "description": "Combinación de res, pollo y camarón a la plancha con vegetales.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_tepp_06",
+          "name": "Teppanyaki / Teriyaki de Salmón",
+          "aliases": [
+            "teppanyaki salmon",
+            "teriyaki salmon"
+          ],
+          "price": 200,
+          "description": "Corte de salmón a la plancha con vegetales selectos.",
+          "station": "hot_kitchen"
+        }
+      ],
+      "platillos_fuertes": [
+        {
+          "id": "jp_pf_01",
+          "name": "Verduras Salteadas",
+          "price": 80,
+          "description": "Verduras sazonadas a la plancha.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_02",
+          "name": "Sakana Furai",
+          "aliases": [
+            "sakana furai",
+            "pescado empanizado"
+          ],
+          "price": 135,
+          "description": "Pescado empanizado crujiente acompañado de arroz y ensalada.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_03",
+          "name": "Ebi Furai",
+          "aliases": [
+            "ebi furai",
+            "camarones empanizados"
+          ],
+          "price": 135,
+          "description": "Camarones empanizados acompañados de arroz y ensalada fresca.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_04",
+          "name": "Tori Karaage",
+          "aliases": [
+            "tori karaage",
+            "karaage",
+            "pollo frito japones"
+          ],
+          "price": 140,
+          "description": "Pollo frito estilo japonés sazonado con especias, acompañado de arroz y verduras.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_05",
+          "name": "Milanesa de Pollo o Res",
+          "aliases": [
+            "milanesa",
+            "milanesa de pollo",
+            "milanesa de res"
+          ],
+          "price": 140,
+          "description": "Filete empanizado acompañado de arroz y ensalada fresca.",
+          "mandatory_questions": [
+            "¿Prefieres tu milanesa de Pollo o de Res?"
+          ],
+          "options": [
+            "Pollo",
+            "Res"
+          ],
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_06",
+          "name": "Udon Plancha",
+          "aliases": [
+            "udon plancha",
+            "udon frito"
+          ],
+          "price": 140,
+          "description": "Pasta gruesa japonesa salteada a la plancha con verdura y camarón.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_07",
+          "name": "Chow Mein",
+          "aliases": [
+            "chow mein",
+            "chao mein",
+            "fideos chow mein"
+          ],
+          "price": 140,
+          "description": "Fideos de trigo salteados con vegetales y proteína a tu elección (Pollo, Res o Camarón).",
+          "mandatory_questions": [
+            "¿Con qué proteína deseas tu Chow Mein: Pollo, Res o Camarón?"
+          ],
+          "options": [
+            "Pollo",
+            "Res",
+            "Camarón"
+          ],
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_08",
+          "name": "Brochetas Yakitori",
+          "aliases": [
+            "yakitori",
+            "brochetas de pollo asadas"
+          ],
+          "price": 145,
+          "description": "Brochetas de pollo asadas y glaseadas con salsa dulce tradicional.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_09",
+          "name": "Camarones Kimono",
+          "aliases": [
+            "camarones kimono"
+          ],
+          "price": 145,
+          "description": "Camarones sazonados acompañados con ensalada tampico.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_10",
+          "name": "Camarones Philadelphia",
+          "aliases": [
+            "camarones philadelphia"
+          ],
+          "price": 150,
+          "description": "Camarones con queso philadelphia, acompañados de arroz y ensalada.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_11",
+          "name": "Tempura Ebi",
+          "aliases": [
+            "tempura ebi",
+            "tempura de camaron"
+          ],
+          "price": 150,
+          "description": "Camarones y verduras capeadas estilo tempura japonés ligero.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_12",
+          "name": "Spaguetti de Mariscos",
+          "aliases": [
+            "spaguetti de mariscos",
+            "espagueti mariscos"
+          ],
+          "price": 150,
+          "description": "Pasta salteada con surtido de mariscos frescos.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_13",
+          "name": "Ebydon",
+          "aliases": [
+            "ebydon",
+            "ebidon"
+          ],
+          "price": 150,
+          "description": "Cama de arroz con trocitos de aguacate y queso philadelphia con camarón empanizado.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_14",
+          "name": "Fire Mixto",
+          "aliases": [
+            "fire mixto",
+            "arroz fire"
+          ],
+          "price": 150,
+          "description": "Cama de arroz con cárnico enchiloso: pollo, res y camarón.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_15",
+          "name": "Filete de Pescado Especial",
+          "aliases": [
+            "pescado especial empanizado"
+          ],
+          "price": 150,
+          "description": "Filete de pescado relleno de jamón y queso, finamente empanizado.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_16",
+          "name": "Filete de Pollo Especial",
+          "aliases": [
+            "pollo especial empanizado"
+          ],
+          "price": 165,
+          "description": "Pechuga de pollo rellena de jamón y queso, finamente empanizada.",
+          "station": "hot_kitchen"
+        },
+        {
+          "id": "jp_pf_17",
+          "name": "Puerquitos Locos",
+          "aliases": [
+            "puerquitos locos",
+            "camarones con tocino puerquitos"
+          ],
+          "price": 170,
+          "description": "Camarones rellenos de queso envueltos en tocino doradito, acompañados de arroz y ensalada fresca.",
+          "station": "hot_kitchen"
+        }
+      ],
+      "sushi_rollos": [
+        {
+          "id": "jp_sush_01",
+          "name": "Sushi Empanizado",
+          "aliases": [
+            "sushi empanizado",
+            "rollo empanizado sencillo",
+            "empanizado tradicional"
+          ],
+          "price": 95,
+          "description": "Rollo empanizado tradicional dorado y crujiente.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_02",
+          "name": "Sushi Philadelphia",
+          "aliases": [
+            "rollo philadelphia",
+            "philadelphia roll"
+          ],
+          "price": 95,
+          "description": "Rollo fresco cubierto de queso philadelphia.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_03",
+          "name": "Sushi California",
+          "aliases": [
+            "california roll",
+            "rollo california"
+          ],
+          "price": 95,
+          "description": "Clásico con cangrejo, pepino y aguacate por fuera con ajonjolí.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_04",
+          "name": "Kani Roll",
+          "aliases": [
+            "kani roll",
+            "rollo kani"
+          ],
+          "price": 95,
+          "description": "Rollo relleno de surimi kanikama y queso.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_05",
+          "name": "Esfera Dragón Ball",
+          "aliases": [
+            "esfera dragon ball",
+            "esfera de arroz",
+            "bola de arroz dragon ball"
+          ],
+          "price": 95,
+          "description": "Bola de arroz empanizada, por dentro aguacate, pepino, camarón y queso.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_06",
+          "name": "Chipotle Roll",
+          "aliases": [
+            "chipotle roll",
+            "rollo chipotle"
+          ],
+          "price": 100,
+          "description": "Rollo con aderezo chipotle de la casa.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_07",
+          "name": "Avocado Roll",
+          "aliases": [
+            "avocado roll",
+            "rollo aguacate"
+          ],
+          "price": 100,
+          "description": "Rollo cubierto con finas láminas de aguacate fresco.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_08",
+          "name": "Arcoiris Roll Especial",
+          "aliases": [
+            "arcoiris roll",
+            "rainbow roll"
+          ],
+          "price": 100,
+          "description": "Rollo coronado con láminas de varios mariscos frescos.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_09",
+          "name": "Hulk",
+          "aliases": [
+            "hulk roll",
+            "rollo hulk"
+          ],
+          "price": 100,
+          "description": "Camarón empanizado por dentro y por fuera alga de soya.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_10",
+          "name": "Eby Roll",
+          "aliases": [
+            "eby roll",
+            "ebi roll"
+          ],
+          "price": 100,
+          "description": "Rollo clásico relleno de camarón.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_11",
+          "name": "Plátano Roll",
+          "aliases": [
+            "platano roll",
+            "rollo de platano"
+          ],
+          "price": 100,
+          "description": "Rollo envuelto en plátano frito dulce.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_12",
+          "name": "Salmón Roll",
+          "aliases": [
+            "salmon roll",
+            "rollo de salmon"
+          ],
+          "price": 105,
+          "description": "Rollo fresco relleno de salmón.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_13",
+          "name": "México Roll",
+          "aliases": [
+            "mexico roll",
+            "rollo mexico"
+          ],
+          "price": 105,
+          "description": "Aguacate, queso y masago por fuera.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_14",
+          "name": "Philadelphia Empanizado",
+          "aliases": [
+            "philadelphia emp",
+            "rollo philadelphia empanizado"
+          ],
+          "price": 105,
+          "description": "Rollo con queso philadelphia, empanizado y crujiente.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_15",
+          "name": "Furia Roll",
+          "aliases": [
+            "furia roll",
+            "rollo furia"
+          ],
+          "price": 105,
+          "description": "Camarón por dentro, kani, salmón y por fuera toque de chipotle.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_16",
+          "name": "Pink Salmón",
+          "aliases": [
+            "pink salmon",
+            "rollo pink salmon"
+          ],
+          "price": 105,
+          "description": "Coronado con salmón picoso fresco en trozos.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_17",
+          "name": "Oishi Roll Especial",
+          "aliases": [
+            "oishi roll",
+            "rollo oishi"
+          ],
+          "price": 105,
+          "description": "Por dentro camarón y tocino con queso philadelphia, va empanizado.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_18",
+          "name": "Flamin Hot",
+          "aliases": [
+            "flamin hot roll",
+            "rollo flamin hot"
+          ],
+          "price": 105,
+          "description": "Cubierto de empanizado con Flamin Hot, coronado de res y camarón.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_19",
+          "name": "Sushi Masago",
+          "aliases": [
+            "masago roll",
+            "rollo masago"
+          ],
+          "price": 110,
+          "description": "Rollo fresco cubierto con hueva de pez masago.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_20",
+          "name": "Empanizado Especial",
+          "aliases": [
+            "empanizado especial",
+            "rollo emp especial"
+          ],
+          "price": 115,
+          "description": "Rollo empanizado coronado con ensalada tampico y camarón empanizado.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_21",
+          "name": "Tocayo Roll",
+          "aliases": [
+            "tocayo roll",
+            "rollo tocayo"
+          ],
+          "price": 115,
+          "description": "Rollo capeado con camarón, salmón y surimi capeado.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_22",
+          "name": "Mar y Tierra",
+          "aliases": [
+            "mar y tierra roll",
+            "rollo mar y tierra"
+          ],
+          "price": 115,
+          "description": "Con res y camarón por dentro, ensalada picosa y empanizado crujiente.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_23",
+          "name": "Mechudo",
+          "aliases": [
+            "mechudo roll",
+            "rollo mechudo"
+          ],
+          "price": 120,
+          "description": "Rollo especial con pulpo y camarón.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_24",
+          "name": "Eby Roll Especial",
+          "aliases": [
+            "eby roll especial",
+            "ebi roll especial"
+          ],
+          "price": 120,
+          "description": "Camarón por fuera, ensalada tampico y camarón empanizado.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_25",
+          "name": "Especial Ryü",
+          "aliases": [
+            "especial ryu",
+            "rollo ryu"
+          ],
+          "price": 120,
+          "description": "Queso philadelphia por fuera acompañado de camarones.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_26",
+          "name": "Especial No. 1",
+          "aliases": [
+            "especial no 1",
+            "especial numero uno"
+          ],
+          "price": 120,
+          "description": "Salmón natural por fuera, ensalada picosa con surimi, tempura, limón y aguacate.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_27",
+          "name": "Zizi Roll Especial",
+          "aliases": [
+            "zizi roll",
+            "zizi roll especial"
+          ],
+          "price": 130,
+          "description": "Envuelto en alga tradicional capeada, con ensalada picosa de camarón en cada bocado.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_28",
+          "name": "Hulk Especial",
+          "aliases": [
+            "hulk especial"
+          ],
+          "price": 130,
+          "description": "Camarón empanizado por dentro, alga de soya por fuera, arriba salmón, pulpo y ensalada tampico.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_29",
+          "name": "Tuna Roll",
+          "aliases": [
+            "tuna roll",
+            "rollo de atun"
+          ],
+          "price": 130,
+          "description": "Coronado con ensalada fresca de atún picosa.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_30",
+          "name": "Cheese Explosion",
+          "aliases": [
+            "cheese explosion",
+            "explosion de queso"
+          ],
+          "price": 135,
+          "description": "Rollo empanizado cubierto de una mezcla generosa de queso derretido.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_31",
+          "name": "Panchito",
+          "aliases": [
+            "panchito roll",
+            "rollo panchito"
+          ],
+          "price": 140,
+          "description": "Relleno de res, empanizado, coronado con guacamole fresco y trocitos de tocino.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_32",
+          "name": "Tocino Roll",
+          "aliases": [
+            "tocino roll",
+            "rollo envuelto en tocino"
+          ],
+          "price": 150,
+          "description": "Envuelto en tiras de tocino dorado, relleno de camarón y queso crema philadelphia.",
+          "station": "sushi_bar"
+        },
+        {
+          "id": "jp_sush_33",
+          "name": "Tabla de Sushi Mixta",
+          "aliases": [
+            "tabla de sushi",
+            "tabla mixta",
+            "charola de sushi"
+          ],
+          "price": 300,
+          "description": "Surtido variado de rollos y bocadillos de sushi de la casa, incluye bebidas.",
+          "station": "sushi_bar"
+        }
+      ],
+      "bebidas": [
+        {
+          "id": "jp_beb_01",
+          "name": "Refresco (500ml)",
+          "aliases": [
+            "refresco",
+            "soda",
+            "coca",
+            "refresco 500ml"
+          ],
+          "price": 35,
+          "mandatory_questions": [
+            "¿De qué sabor deseas tu refresco: Coca-Cola, Sprite, Fanta o Agua Mineral?"
+          ],
+          "options": [
+            "Coca-Cola",
+            "Sprite",
+            "Fanta",
+            "Agua Mineral"
+          ],
+          "note": "Único tamaño disponible: 500ml. No preguntar tamaño al cliente.",
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_02",
+          "name": "Té Jazmín Frío (Vaso Individual)",
+          "aliases": [
+            "te frio",
+            "te jazmin",
+            "vaso de te"
+          ],
+          "price": 35,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_03",
+          "name": "Té Jazmín Frío (Jarra 3.5 Litros)",
+          "aliases": [
+            "jarra de te",
+            "te jarra 3.5l"
+          ],
+          "price": 100,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_04",
+          "name": "Limonada / Naranjada",
+          "aliases": [
+            "limonada",
+            "naranjada"
+          ],
+          "price": 40,
+          "mandatory_questions": [
+            "¿La prefieres con Agua Natural o Mineral?"
+          ],
+          "options": [
+            "Natural",
+            "Mineral"
+          ],
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_05",
+          "name": "Calpico 1/2 Litro",
+          "aliases": [
+            "calpico medio litro",
+            "calpico chico"
+          ],
+          "price": 30,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_06",
+          "name": "Calpico 1 Litro",
+          "aliases": [
+            "calpico litro",
+            "calpico grande"
+          ],
+          "price": 40,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_07",
+          "name": "Calpico (Jarra 3.5 Litros)",
+          "aliases": [
+            "jarra de calpico",
+            "calpico jarra"
+          ],
+          "price": 110,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_08",
+          "name": "Calpico Mineral 1/2 Litro",
+          "aliases": [
+            "calpico mineral medio litro"
+          ],
+          "price": 35,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_09",
+          "name": "Calpico Mineral 1 Litro",
+          "aliases": [
+            "calpico mineral litro"
+          ],
+          "price": 45,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_10",
+          "name": "Calpico Mineral (Jarra 3.5 Litros)",
+          "aliases": [
+            "jarra de calpico mineral"
+          ],
+          "price": 120,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_11",
+          "name": "Calpico Frutos Rojos (1/2 Litro)",
+          "aliases": [
+            "calpico frutos rojos",
+            "calpico de frutos rojos"
+          ],
+          "price": 40,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_12",
+          "name": "Michelada",
+          "aliases": [
+            "michelada",
+            "michelada con corona"
+          ],
+          "price": 90,
+          "description": "Preparado de michelada con salsa inglesa, jugo de limón, escarchado y Cerveza Corona.",
+          "station": "drinks_bar"
+        },
+        {
+          "id": "jp_beb_13",
+          "name": "Cerveza Corona (330ml)",
+          "aliases": [
+            "corona",
+            "cerveza corona",
+            "cerveza"
+          ],
+          "price": 40,
+          "description": "Botella de vidrio 330ml.",
+          "station": "drinks_bar"
+        }
+      ],
+      "postres": [
+        {
+          "id": "jp_pos_01",
+          "name": "Brochetas Dulces de Plátano",
+          "aliases": [
+            "brochetas de platano",
+            "platano frito dulce"
+          ],
+          "price": 60,
+          "description": "Plátano finamente empanizado con topping dulce.",
+          "station": "dessert_bar"
+        },
+        {
+          "id": "jp_pos_02",
+          "name": "Helado Frito",
+          "aliases": [
+            "helado frito"
+          ],
+          "price": 75,
+          "description": "Bola de helado envuelta en costra crujiente frita al momento con jarabe.",
+          "station": "dessert_bar"
+        }
+      ]
+    },
+    "italian": {
+      "platillos": [
+        {
+          "id": "it_pla_01",
+          "name": "Lasagna Tradicional",
+          "aliases": [
+            "lasagna",
+            "lasaña",
+            "lasaña de carne"
+          ],
+          "price": 150,
+          "description": "Capas de pasta italiana, abundante carne molida de res, salsa de tomate italiana y queso mozzarella gratinado.",
+          "includes_bread": false,
+          "includes_salad": false,
+          "station": "italian_kitchen"
+        },
+        {
+          "id": "it_pla_02",
+          "name": "Boloñesa",
+          "aliases": [
+            "boloñesa",
+            "spaguetti boloñesa",
+            "espagueti con carne"
+          ],
+          "price": 120,
+          "description": "Spaguetti con salsa boloñesa de carne molida y queso parmesano.",
+          "includes_bread": false,
+          "includes_salad": false,
+          "station": "italian_kitchen"
+        },
+        {
+          "id": "it_pla_03",
+          "name": "Fettuccine Alfredo",
+          "aliases": [
+            "fettuccine alfredo",
+            "fettuccine",
+            "fetuchini",
+            "pasta alfredo"
+          ],
+          "price": 100,
+          "description": "Fettuccine tradicional en salsa cremosa de mantequilla y queso parmesano. Receta fija sin carnes.",
+          "includes_bread": false,
+          "includes_salad": false,
+          "station": "italian_kitchen"
+        }
+      ],
+      "paninis_y_pitas": {
+        "_pricing_rules": {
+          "panini": 100,
+          "pita": 120
+        },
+        "_format_descriptions": {
+          "panini": "Pan alargado rústico crujiente con queso derretido.",
+          "pita": "Pan pita redondo suave relleno con queso derretido."
+        },
+        "especialidades": [
+          {
+            "id": "it_esp_01",
+            "name": "BBQ",
+            "aliases": [
+              "panini bbq",
+              "pita bbq"
+            ]
+          },
+          {
+            "id": "it_esp_02",
+            "name": "Chipotle",
+            "aliases": [
+              "panini chipotle",
+              "pita chipotle"
+            ]
+          },
+          {
+            "id": "it_esp_03",
+            "name": "Cheesesteak",
+            "aliases": [
+              "panini cheesesteak",
+              "pita cheesesteak"
+            ]
+          },
+          {
+            "id": "it_esp_04",
+            "name": "Pollo Clásico",
+            "aliases": [
+              "panini pollo clásico",
+              "pita pollo clasico"
+            ]
+          },
+          {
+            "id": "it_esp_05",
+            "name": "Pollo Crispy",
+            "aliases": [
+              "panini pollo crispy",
+              "pita pollo crispy"
+            ]
+          },
+          {
+            "id": "it_esp_06",
+            "name": "Carnes Frías",
+            "aliases": [
+              "panini carnes frias",
+              "pita carnes frias"
+            ]
+          }
+        ],
+        "station": "italian_kitchen"
+      },
+      "ensaladas_italianas": {
+        "base_price": 110,
+        "variedades": [
+          "BBQ",
+          "Chipotle",
+          "Cheese-Ranch",
+          "Piña Hot",
+          "Crispy"
+        ],
+        "salsas_disponibles": [
+          "BBQ",
+          "Chipotle",
+          "Cheese-Ranch",
+          "Piña Hot",
+          "Crispy"
+        ],
+        "toppings_extras": [
+          {
+            "name": "Champiñones",
+            "price": 15
+          },
+          {
+            "name": "Elotes",
+            "price": 15
+          },
+          {
+            "name": "Cebollita Caramelizada",
+            "price": 15
+          }
+        ],
+        "station": "italian_kitchen"
+      },
+      "sodas_italianas": [
+        {
+          "id": "it_sod_01",
+          "name": "Soda Italiana Fresa-Boba",
+          "aliases": [
+            "soda italiana fresa",
+            "soda de fresa con boba",
+            "fresa boba"
+          ],
+          "price": 45,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "it_sod_02",
+          "name": "Soda Italiana Piña-Boba",
+          "aliases": [
+            "soda italiana piña",
+            "soda de piña con boba",
+            "piña boba"
+          ],
+          "price": 45,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "it_sod_03",
+          "name": "Soda Italiana Mora Azul-Boba",
+          "aliases": [
+            "soda italiana mora azul",
+            "soda de mora azul con boba",
+            "mora azul boba"
+          ],
+          "price": 45,
+          "station": "drinks_bar"
+        }
+      ]
+    },
+    "snacks": {
+      "paquetes_y_promos": [
+        {
+          "id": "sn_paq_04",
+          "name": "Promo Hot Dog (3 piezas)",
+          "aliases": [
+            "promo hot dog",
+            "tres hot dogs",
+            "promo de jochos",
+            "3 hot dogs por 70"
+          ],
+          "price": 70,
+          "description": "3 Hot Dogs sencillos con salchicha clásica, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "includes_drink": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_com_04",
+          "name": "Combo Nuggets",
+          "aliases": [
+            "combo nuggets",
+            "paquete nuggets"
+          ],
+          "price": 110,
+          "description": "1 Hamburguesa de res clásica, 6 Nuggets de pollo crujientes (sin salsa), Papas a la francesa y 1 Agua fresca de Jamaica.",
+          "includes_fries": true,
+          "includes_drink": true,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_com_03",
+          "name": "Combo Individual 2",
+          "aliases": [
+            "combo individual 2",
+            "combo 2",
+            "combo individual dos"
+          ],
+          "price": 140,
+          "description": "2 Hot Dogs clásicos, 4 Alitas (1 salsa a elegir), Papas a la francesa y 1 Agua fresca de Jamaica.",
+          "includes_fries": true,
+          "includes_drink": true,
+          "mandatory_questions": [
+            "¿De qué salsa deseas tus 4 alitas (BBQ, Búfalo, Mango Habanero o Lemon Pepper)?"
+          ],
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_com_02",
+          "name": "Combo Individual 1",
+          "aliases": [
+            "combo individual 1",
+            "combo 1",
+            "combo individual uno"
+          ],
+          "price": 145,
+          "description": "1 Hamburguesa de res clásica, 4 Alitas (1 salsa a elegir), Papas a la francesa y 1 Agua fresca de Jamaica.",
+          "includes_fries": true,
+          "includes_drink": true,
+          "mandatory_questions": [
+            "¿De qué salsa deseas tus 4 alitas (BBQ, Búfalo, Mango Habanero o Lemon Pepper)?"
+          ],
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_paq_03",
+          "name": "Paquete 3",
+          "aliases": [
+            "paquete 3",
+            "paquete tres"
+          ],
+          "price": 150,
+          "description": "1 Torta telera de milanesa de pollo, 4 Boneless o Alitas a elegir, Papas a la francesa y 1 Agua fresca de Jamaica.",
+          "includes_fries": true,
+          "includes_drink": true,
+          "mandatory_questions": [
+            "¿Prefieres 4 Boneless o 4 Alitas?",
+            "¿Con qué salsa?"
+          ],
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_com_01",
+          "name": "Combo Ryu Especial",
+          "aliases": [
+            "combo ryu especial",
+            "combo ryu",
+            "combo especial"
+          ],
+          "price": 150,
+          "description": "Medio sushi empanizado especial, Medio empanizado tradicional, 5 Alitas (sabor a elegir) y 1 Agua fresca de Jamaica.",
+          "includes_fries": false,
+          "includes_drink": true,
+          "mandatory_questions": [
+            "¿Con qué salsa deseas tus 5 alitas?"
+          ],
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_paq_01",
+          "name": "Paquete Mix",
+          "aliases": [
+            "paquete mix",
+            "paquete mixto"
+          ],
+          "price": 200,
+          "description": "Medio sushi empanizado especial, 4 Boneless, 4 Dedos de queso crujientes, Papas a la francesa y 1 Agua fresca de Jamaica.",
+          "includes_fries": true,
+          "includes_drink": true,
+          "mandatory_questions": [
+            "¿Con qué salsa deseas tus 4 boneless?"
+          ],
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_paq_05",
+          "name": "Promo Tortas (3 Tortas Teleras)",
+          "aliases": [
+            "promo tortas",
+            "tres tortas",
+            "3 tortas por 200"
+          ],
+          "price": 200,
+          "description": "3 Tortas Teleras con milanesa de pollo, aguacate, jitomate, lechuga, cebolla y mozzarella fundido. No incluye papas ni bebidas.",
+          "includes_fries": false,
+          "includes_drink": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_paq_02",
+          "name": "Pa' Que Compartas",
+          "aliases": [
+            "pa que compartas",
+            "pa que compartas paquete"
+          ],
+          "price": 210,
+          "description": "2 Hamburguesas de res clásicas, Media orden de alitas, Media orden de boneless y 2 Aguas frescas de Jamaica.",
+          "includes_fries": false,
+          "includes_drink": true,
+          "mandatory_questions": [
+            "¿Qué salsas deseas para tus alitas y boneless?"
+          ],
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_paq_06",
+          "name": "Caja Ryu Mix",
+          "aliases": [
+            "caja ryu mix",
+            "caja ryu",
+            "caja mix"
+          ],
+          "price": 420,
+          "description": "1 Sushi empanizado especial, 1 Orden de alitas (salsa a elegir), 1 Orden de boneless (salsa a elegir), 1 Orden de dedos de queso, 1 Orden de nuggets, Papas a la francesa, Salchichas fritas (con cátsup y ranch) y 2 Aguas frescas de Jamaica.",
+          "includes_fries": true,
+          "includes_drink": true,
+          "mandatory_questions": [
+            "¿Qué salsas deseas para la orden de alitas y para la orden de boneless?"
+          ],
+          "station": "snack_kitchen"
+        }
+      ],
+      "hamburguesas": [
+        {
+          "id": "sn_ham_01",
+          "name": "Hamburguesa de Res",
+          "aliases": [
+            "hamburguesa de res",
+            "burger sencilla",
+            "hamburguesa sencilla",
+            "hamburguesa de carne"
+          ],
+          "price": 55,
+          "description": "Carne de res jugosa, queso amarillo, lechuga, jitomate, cebolla, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_02",
+          "name": "Hamburguesa de Pollo a la Plancha",
+          "aliases": [
+            "hamburguesa de pollo plancha",
+            "hamburguesa de pechuga"
+          ],
+          "price": 55,
+          "description": "Pechuga de pollo a la plancha, queso amarillo, lechuga, jitomate, cebolla, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_03",
+          "name": "Hamburguesa de Pollo Empanizado",
+          "aliases": [
+            "hamburguesa de pollo empanizado",
+            "burger de pollo crujiente"
+          ],
+          "price": 65,
+          "description": "Pollo empanizado crujiente, queso amarillo, lechuga, jitomate, cebolla, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_04",
+          "name": "Hamburguesa de Camarón",
+          "aliases": [
+            "hamburguesa de camaron",
+            "burger de camaron"
+          ],
+          "price": 70,
+          "description": "Camarones frescos a la plancha, queso amarillo, lechuga, jitomate, cebolla, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_08",
+          "name": "Hamburguesa Hawaiana",
+          "aliases": [
+            "hamburguesa hawaiana",
+            "burger hawaiana"
+          ],
+          "price": 80,
+          "description": "Carne de res, piña asada, jamón, queso amarillo, vegetales frescos, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_10",
+          "name": "Hamburguesa Big Ryu",
+          "aliases": [
+            "big ryu",
+            "hamburguesa big ryu",
+            "la big ryu"
+          ],
+          "price": 95,
+          "description": "Doble carne de res, tocino, cebolla asada, queso amarillo, lechuga, jitomate, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_07",
+          "name": "Hamburguesa Especial",
+          "aliases": [
+            "hamburguesa especial",
+            "la especial de ryu",
+            "burger especial"
+          ],
+          "price": 100,
+          "description": "Trilogía de carnes: Res, camarón y pollo a la plancha con queso amarillo, vegetales frescos, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_09",
+          "name": "Hamburguesa Cielo Mar y Tierra",
+          "aliases": [
+            "cielo mar y tierra",
+            "hamburguesa cielo mar y tierra"
+          ],
+          "price": 120,
+          "description": "Carne de res, pechuga de pollo a la plancha, camarón, queso amarillo, vegetales frescos, cátsup, mostaza y crema. INCLUYE PAPAS A LA FRANCESA (sin bebida).",
+          "includes_fries": true,
+          "includes_drink": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_05",
+          "name": "Hamburguesa Ranchera Especial",
+          "aliases": [
+            "hamburguesa ranchera",
+            "hamburguesa ranchera especial"
+          ],
+          "price": 125,
+          "description": "Carne de res, salchicha, tocino doradito, queso parmesano y cebolla guisada con guacamole. INCLUYE PAPAS A LA FRANCESA (sin bebida).",
+          "includes_fries": true,
+          "includes_drink": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_ham_06",
+          "name": "Hamburguesa Carolina Especial",
+          "aliases": [
+            "hamburguesa carolina",
+            "hamburguesa carolina especial"
+          ],
+          "price": 125,
+          "description": "Camarón a la plancha, salchicha, tocino, queso parmesano y cebolla guisada con guacamole. INCLUYE PAPAS A LA FRANCESA (sin bebida).",
+          "includes_fries": true,
+          "includes_drink": false,
+          "station": "snack_kitchen"
+        }
+      ],
+      "hot_dogs": [
+        {
+          "id": "sn_hd_01",
+          "name": "Hot Dog Sencillo",
+          "aliases": [
+            "hot dog",
+            "hot dog clasico",
+            "jocho",
+            "jocho sencillo"
+          ],
+          "price": 25,
+          "description": "Pan suave de hot dog con salchicha clásica, cátsup, mostaza y crema. Solo, sin papas.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_hd_02",
+          "name": "Hot Dog Supremo",
+          "aliases": [
+            "hot dog supremo",
+            "jocho supremo",
+            "supremo"
+          ],
+          "price": 90,
+          "description": "Pan grande de hot dog con 2 salchichas envueltas en tocino, ensalada de col fresca, guacamole, queso Oaxaca derretido y chorizo.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_hd_03",
+          "name": "Hot Dog Godzilla",
+          "aliases": [
+            "hot dog godzilla",
+            "jocho godzilla",
+            "godzilla"
+          ],
+          "price": 135,
+          "description": "Pan grande con 2 salchichas envueltas en tocino, mayonesa, piña, tocino extra, chorizo, panela asada, jitomate y guacamole. INCLUYE PAPAS A LA FRANCESA.",
+          "includes_fries": true,
+          "station": "snack_kitchen"
+        }
+      ],
+      "tortas": [
+        {
+          "id": "sn_tor_01",
+          "name": "Torta de Telera",
+          "aliases": [
+            "torta de telera",
+            "torta telera",
+            "torta de milanesa",
+            "torta de pollo"
+          ],
+          "price": 90,
+          "description": "Telera crujiente rellena de milanesa de pollo empanizado, aguacate fresco, jitomate, lechuga, cebolla, queso mozzarella fundido, cátsup, mostaza y crema.",
+          "includes_fries": false,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_tor_02",
+          "name": "Torta Ranchera Especial",
+          "aliases": [
+            "torta ranchera",
+            "torta ranchera especial"
+          ],
+          "price": 125,
+          "description": "Carne de res, salchicha, tocino, queso parmesano y cebolla guisada con guacamole fresco, acompañada con papas a la francesa.",
+          "includes_fries": true,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_tor_03",
+          "name": "Torta Carolina Especial",
+          "aliases": [
+            "torta carolina",
+            "torta carolina especial"
+          ],
+          "price": 125,
+          "description": "Camarón, salchicha, tocino, queso parmesano y cebolla guisada con guacamole fresco, acompañada con papas a la francesa.",
+          "includes_fries": true,
+          "station": "snack_kitchen"
+        }
+      ],
+      "snacks_fritos_y_papas": [
+        {
+          "id": "sn_snk_01",
+          "name": "Dedos de Queso",
+          "aliases": [
+            "dedos de queso",
+            "palitos de queso"
+          ],
+          "price": 95,
+          "description": "Crujientes dedos de queso mozzarella empanizados, acompañados de salsa cátsup.",
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_snk_04",
+          "name": "Aros de Cebolla",
+          "aliases": [
+            "aros de cebolla"
+          ],
+          "price": 90,
+          "description": "Aros de cebolla rebozados y dorados con salsa cátsup.",
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_pap_02",
+          "name": "Papas a la Francesa",
+          "aliases": [
+            "papas francesas",
+            "papas fritas"
+          ],
+          "price": 65,
+          "description": "Porción de papas a la francesa crujientes con cátsup.",
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_pap_01",
+          "name": "Papas Gajo",
+          "aliases": [
+            "papas gajo"
+          ],
+          "price": 80,
+          "description": "Papas corte gajo sazonadas con especias y cátsup.",
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_snk_02",
+          "name": "Alitas (Orden individual 10 piezas)",
+          "aliases": [
+            "orden de alitas",
+            "alitas",
+            "alitas 10 piezas"
+          ],
+          "price": 100,
+          "description": "10 piezas de alitas bañadas en 1 salsa a elegir, acompañadas de aderezo ranch, apio y zanahoria.",
+          "mandatory_questions": [
+            "¿Qué salsa deseas para tus alitas: BBQ, Búfalo, Mango Habanero o Lemon Pepper?"
+          ],
+          "options": [
+            "BBQ",
+            "Búfalo",
+            "Mango Habanero",
+            "Lemon Pepper"
+          ],
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_snk_03",
+          "name": "Boneless (Orden individual 10 piezas)",
+          "aliases": [
+            "orden de boneless",
+            "boneless",
+            "boneless 10 piezas"
+          ],
+          "price": 110,
+          "description": "10 piezas de pechuga de pollo empanizada sin hueso, bañadas en 1 salsa a elegir con aderezo ranch, apio y zanahoria.",
+          "mandatory_questions": [
+            "¿Qué salsa deseas para tus boneless: BBQ, Búfalo, Mango Habanero o Lemon Pepper?"
+          ],
+          "options": [
+            "BBQ",
+            "Búfalo",
+            "Mango Habanero",
+            "Lemon Pepper"
+          ],
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_pak_ali_10",
+          "name": "Pack 10 Alitas",
+          "aliases": [
+            "pack 10 alitas",
+            "paquete 10 alitas"
+          ],
+          "price": 130,
+          "description": "10 alitas con hasta 2 salsas a elegir.",
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_pak_ali_15",
+          "name": "Pack 15 Alitas",
+          "aliases": [
+            "pack 15 alitas",
+            "paquete 15 alitas"
+          ],
+          "price": 170,
+          "description": "15 alitas con hasta 2 salsas a elegir, incluye bebida 500ml (Agua de Jamaica o Té Jazmín).",
+          "includes_drink": true,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_pak_ali_20",
+          "name": "Pack 20 Alitas",
+          "aliases": [
+            "pack 20 alitas",
+            "paquete 20 alitas"
+          ],
+          "price": 260,
+          "description": "20 alitas con hasta 2 salsas a elegir, incluye bebida 500ml (Agua de Jamaica o Té Jazmín).",
+          "includes_drink": true,
+          "station": "snack_kitchen"
+        },
+        {
+          "id": "sn_pak_ali_30",
+          "name": "Pack 30 Alitas",
+          "aliases": [
+            "pack 30 alitas",
+            "paquete 30 alitas"
+          ],
+          "price": 390,
+          "description": "30 alitas con hasta 3 salsas a elegir, incluye bebida 500ml (Agua de Jamaica o Té Jazmín).",
+          "includes_drink": true,
+          "station": "snack_kitchen"
+        }
+      ],
+      "toppings_extras": [
+        {
+          "id": "sn_top_02",
+          "name": "Queso Amarillo",
+          "price": 5
+        },
+        {
+          "id": "sn_top_04",
+          "name": "Cebolla Asada",
+          "price": 10
+        },
+        {
+          "id": "sn_top_06",
+          "name": "Jamón",
+          "price": 10
+        },
+        {
+          "id": "sn_top_01",
+          "name": "Tocino",
+          "price": 15
+        },
+        {
+          "id": "sn_top_03",
+          "name": "Queso Oaxaca",
+          "price": 15
+        },
+        {
+          "id": "sn_top_05",
+          "name": "Piña",
+          "price": 20
+        },
+        {
+          "id": "sn_top_07",
+          "name": "Salsa Ranch",
+          "price": 20
+        },
+        {
+          "id": "sn_top_08",
+          "name": "Aderezo Extra",
+          "price": 20
+        }
+      ],
+      "bebidas": [
+        {
+          "id": "sn_beb_10",
+          "name": "Botella de Agua 500ml",
+          "aliases": [
+            "agua embotellada",
+            "agua natural chica",
+            "agua 500ml"
+          ],
+          "price": 12,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_11",
+          "name": "Botella de Agua 1 Litro",
+          "aliases": [
+            "agua litro",
+            "agua natural litro"
+          ],
+          "price": 15,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_01",
+          "name": "Refresco (500ml)",
+          "aliases": [
+            "refresco",
+            "soda",
+            "coca"
+          ],
+          "price": 35,
+          "mandatory_questions": [
+            "¿De qué sabor deseas tu refresco: Coca-Cola, Sprite, Fanta o Agua Mineral?"
+          ],
+          "options": [
+            "Coca-Cola",
+            "Sprite",
+            "Fanta",
+            "Agua Mineral"
+          ],
+          "note": "Único tamaño disponible: 500ml.",
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_02",
+          "name": "Té Jazmín Frío",
+          "aliases": [
+            "te",
+            "te frio"
+          ],
+          "price": 35,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_03",
+          "name": "Limonada / Naranjada",
+          "aliases": [
+            "limonada",
+            "naranjada"
+          ],
+          "price": 40,
+          "mandatory_questions": [
+            "¿La prefieres con Agua Natural o Mineral?"
+          ],
+          "options": [
+            "Natural",
+            "Mineral"
+          ],
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_04",
+          "name": "Calpico 1/2 Litro",
+          "price": 30,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_05",
+          "name": "Calpico 1 Litro",
+          "price": 40,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_06",
+          "name": "Calpico Mineral 1/2 Litro",
+          "price": 35,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_07",
+          "name": "Calpico Mineral 1 Litro",
+          "price": 45,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_08",
+          "name": "Calpico Frutos Rojos (1/2 Litro)",
+          "price": 40,
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_09",
+          "name": "Michelada",
+          "price": 90,
+          "description": "Preparado de michelada con Cerveza Corona.",
+          "station": "drinks_bar"
+        },
+        {
+          "id": "sn_beb_12",
+          "name": "Cerveza Corona (330ml)",
+          "aliases": [
+            "cerveza corona",
+            "corona"
+          ],
+          "price": 40,
+          "station": "drinks_bar"
+        }
+      ],
+      "postres": [
+        {
+          "id": "sn_pos_01",
+          "name": "Helado Frito",
+          "aliases": [
+            "helado frito"
+          ],
+          "price": 60,
+          "station": "dessert_bar"
+        },
+        {
+          "id": "sn_pos_02",
+          "name": "Brochetas de Plátano Frito",
+          "aliases": [
+            "brochetas de platano",
+            "platano frito dulce"
+          ],
+          "price": 55,
+          "station": "dessert_bar"
+        }
+      ]
+    }
+  }
+}
