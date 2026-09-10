@@ -17,7 +17,6 @@ if sys.stdout.encoding != "utf-8":
 
 from kag_engine import kag_engine
 from db.graph_db import db_manager, GRAPH_NAME
-from proto_service import create_order_proto, serialize_order
 
 SIMULATED_CALLS = [
     {
