@@ -44,9 +44,7 @@ services:
     network_mode: host
 
     volumes:
-      - ./menu_ryu.json:/app/menu_ryu.json:ro
-      - ./prompt_voice_telephone_ryu.md:/app/prompt_voice_telephone_ryu.md:ro
-      - ./knowledge_base_ryu.md:/app/knowledge_base_ryu.md:ro
+      - .:/app
       - ./logs:/app/logs
 
     environment:

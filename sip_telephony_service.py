@@ -51,6 +51,7 @@ if sys.platform == "win32":
 
 import pyVoIP
 from pyVoIP.VoIP import VoIPPhone, PhoneStatus, CallState
+import pyVoIP.SIP as SIP
 from voice_engine_ryu import RyuVoiceAgent
 from security_guard import (
     CallWatchdog,
