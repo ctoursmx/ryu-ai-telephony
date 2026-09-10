@@ -775,10 +775,14 @@
           "name": "Brochetas Yakitori",
           "aliases": [
             "yakitori",
-            "brochetas de pollo asadas"
+            "brochetas yakitori",
+            "varitas de camarón",
+            "varitas de camaron",
+            "brochetas de camaron a la plancha",
+            "yakitori de camaron"
           ],
           "price": 145,
-          "description": "Brochetas de pollo asadas y glaseadas con salsa dulce tradicional.",
+          "description": "Varitas de camarón con pimiento morrón y cebollita preparadas a la plancha (sin empanizado) y bañadas en salsa teriyaki.",
           "station": "hot_kitchen"
         },
         {

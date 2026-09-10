@@ -75,7 +75,7 @@ CATÁLOGO MAESTRO DE PLATILLOS 100% COMPLETO - RESTAURANTE RYU
 • Filete de Pollo Especial (Con jamón y queso empanizado): $165
 • Ebydon (Cama de arroz con aguacate, queso philadelphia y camarón empanizado): $150
 • Fire Mixto (Cama de arroz con cárnico enchiloso, pollo, res y camarón): $150
-• Brochetas Yakitori: $145
+• Brochetas Yakitori (Varitas de camarón a la plancha con morrón, cebollita y salsa teriyaki, NO empanizadas): $145
 • Chow Mein (Fideos de trigo con vegetales y pollo, res o camarón): $140
 
 🔥 6. TEPPANYAKI / TERIYAKI:

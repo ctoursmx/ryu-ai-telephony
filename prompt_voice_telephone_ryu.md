@@ -303,7 +303,7 @@ POLÍTICAS DE ENTREGA Y COSTOS DE ENVÍO A DOMICILIO
 • Filete de Pollo Especial - $165: Filete de pollo con jamón y queso empanizado.
 • Ebydon - $150: Cama de arroz con trocitos de aguacate y queso philadelphia con camarón empanizado.
 • Fire Mixto - $150: Cama de arroz con cárnico enchiloso, pollo, res y camarón.
-• Brochetas Yakitori - $145: Clásicas brochetas japonesas asadas y glaseadas con una rica salsa dulce tradicional.
+• Brochetas Yakitori - $145: Varitas de camarón con pimiento morrón y cebollita preparadas a la plancha (NO llevan empanizado, a diferencia de las Kushiage que sí son empanizadas) y bañadas en salsa teriyaki.
 • Chow Mein - $140: Fideos de trigo salteados con vegetales y proteína a tu elección (Pollo, res o camarón).
 
 --- SUSHI TRADICIONAL Y ESPECIALES RYÜ ---

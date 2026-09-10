@@ -108,7 +108,7 @@ Dirección: P.º del Centenario 27, Cofradía, Tequila, Jalisco.
 • Milanesa de Pollo o Res (con arroz y ensalada) - $140
 • Udon Plancha (Pasta gruesa japonesa con verdura y camarón) - $140
 • Chow Mein (Fideos de trigo con vegetales y res, pollo o camarón) - $140
-• Brochetas Yakitori (Asadas y glaseadas con salsa dulce) - $145
+• Brochetas Yakitori - $145: Varitas de camarón con pimiento morrón y cebollita preparadas a la plancha (NO llevan empanizado, a diferencia de las Kushiage que sí son empanizadas) y bañadas en salsa teriyaki.
 • Camarones Kimono (con ensalada tampico) - $145
 • Camarones Philadelphia (con queso crema, arroz y ensalada) - $150
 • Tempura Ebi (Camarones y verduras capeadas) - $150

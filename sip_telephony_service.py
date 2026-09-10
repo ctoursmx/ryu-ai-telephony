@@ -606,7 +606,8 @@ def transcribe_pcm_memory(agent: RyuVoiceAgent, pcm_bytes: bytes) -> str:
             "Zonas de envío: Aguacatillo, Caseta, Penal, Toma, Fundición, Mirador, Parador Turístico, San Pedro, Santa Ana, Tierra de Agave, Medineño, Cantaritos El Güero, Amatitán, Puerta de En Medio, San Martín, Magdalena, Santa Teresa. "
             "Menú y preguntas: lasaña tradicional en capas, lasagna de carne y queso mozzarella, pastas italianas, boloñesa, fettuccine alfredo, "
             "paninis crujientes, pitas suaves, sodas italianas de fresa, piña, mora azul con boba, qué sabores de sodas italianas tienes, cuánto cuestan las pitas y los paninis, qué la acompaña, con qué viene, "
-            "hamburguesa Big Ryu, Ranchera Especial, Carolina Especial, Cielo Mar y Tierra, alitas, boneless, calpico, cerveza Corona, sushi, ramen. "
+            "hamburguesa Big Ryu, Ranchera Especial, Carolina Especial, Cielo Mar y Tierra, alitas, boneless, calpico, cerveza Corona, sushi, ramen, "
+            "brochetas yakitori de camarón a la plancha con morrón y cebollita en salsa teriyaki, brochetas kushiage empanizadas de res, pollo y camarón. "
             "Pedidos programados y a futuro: pedido programado, pedido a futuro, para más tarde, para hoy en la noche, para mañana a las dos, para el sábado, reservar, agendar orden. A domicilio, sucursal, con tarjeta, en efectivo."
         )
 
