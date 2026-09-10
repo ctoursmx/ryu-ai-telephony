@@ -80,6 +80,8 @@ from security_guard import (
 pyVoIP.REGISTER_FAILURE_THRESHOLD = 99999
 pyVoIP.TRANSMIT_DELAY_REDUCTION = 0.0
 pyVoIP.DEBUG = True
+if "OPTIONS" not in pyVoIP.SIPCompatibleMethods:
+    pyVoIP.SIPCompatibleMethods.append("OPTIONS")
 
 # B) Responder 200 OK a pings OPTIONS de Zadarma (RFC 3261 Heartbeat)
 original_parse_message = SIP.SIPClient.parse_message
