@@ -20,25 +20,32 @@ except ImportError:
     pass
 
 import edge_tts
-from openai import OpenAI
+try:
+    from openai import OpenAI
+except ImportError:
+    OpenAI = None
 
 from kag_engine import kag_engine
 from proto_service import ProtoService
 from db.graph_db import db_manager
 from security_guard import input_sanitizer
+from order_fsm import OrderStateMachine, OrderState
 
 
 # --- CONFIGURACIÓN CENTRAL ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8869418381:AAFQyF_V5hfwJ2HF5isH4WGUZ-17iTQhNzI")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "-5308916263")
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
 VOICE_NAME = os.getenv("VOICE_NAME", "es-MX-DaliaNeural")
 
 LLM_MODEL = os.getenv("AI_LLM_MODEL", "")
 
-if OPENAI_API_KEY:
+if OpenAI is None:
+    openai_client = None
+    LLM_MODEL = LLM_MODEL or "gemini-3.1-flash-lite"
+elif OPENAI_API_KEY:
     openai_client = OpenAI(api_key=OPENAI_API_KEY, timeout=3.5, max_retries=1)
     LLM_MODEL = LLM_MODEL or "gpt-4o-mini"
 elif GEMINI_API_KEY:
@@ -78,6 +85,7 @@ class RyuVoiceAgent:
         self.call_turns_log = []
         self.order_confirmed = False
         self.session_id = f"ryu_call_{int(time.time())}_{caller_phone[-4:] if len(caller_phone)>=4 else '0000'}"
+        self.order_fsm = OrderStateMachine(customer_phone=caller_phone, customer_name=caller_name)
 
         # Consultar perfil en Grafo / DB para clientes recurrentes (dirección, notas, preferencias)
         self.customer_profile = db_manager.get_customer_profile(caller_phone)
@@ -234,13 +242,6 @@ class RyuVoiceAgent:
         clean_user_text = re.sub(r"\b(?:en\s+la\s+)?costrad[ií]a\b", "Colonia Cofradía", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bco?forad[ií]a\b", "Colonia Cofradía", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bcontrajeta\b", "con tarjeta", clean_user_text, flags=re.IGNORECASE)
-        clean_user_text = re.sub(r"\bpor\s+suave\s+cabr[aá]nes\b", "Josué Cabrales", clean_user_text, flags=re.IGNORECASE)
-        clean_user_text = re.sub(r"\bsuave\s+cabr[aá]nes\b", "Josué Cabrales", clean_user_text, flags=re.IGNORECASE)
-        clean_user_text = re.sub(r"\bsuel\s*cabrales\b", "Josué Cabrales", clean_user_text, flags=re.IGNORECASE)
-        clean_user_text = re.sub(r"\brosue\s*cabrales\b", "Josué Cabrales", clean_user_text, flags=re.IGNORECASE)
-        clean_user_text = re.sub(r"\bposue\s+cabrales\b", "Josué Cabrales", clean_user_text, flags=re.IGNORECASE)
-        clean_user_text = re.sub(r"\bjosue\s+cabrales\b", "Josué Cabrales", clean_user_text, flags=re.IGNORECASE)
-        clean_user_text = re.sub(r"\bcosme\s+de\s+la\s+verdad\b", "Josué Cabrales", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bla\s*proguesa\b", "la hamburguesa", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bproguesa\b", "hamburguesa", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bd[ií]lan\s*porque\s*esa\b", "di la hamburguesa", clean_user_text, flags=re.IGNORECASE)
@@ -281,8 +282,6 @@ class RyuVoiceAgent:
         m_name = re.search(r"(?:me llamo|mi nombre es|a nombre de|con|soy|por)\s+([a-záéíóúñA-ZÁÉÍÓÚÑ]+(?:\s+[a-záéíóúñA-ZÁÉÍÓÚÑ]+)?)", clean_user_text, re.IGNORECASE)
         if m_name and len(m_name.group(1).strip()) > 2 and m_name.group(1).lower() not in ["sushi", "hamburguesa", "coca", "domicilio", "efectivo", "tarjeta", "cambio"]:
             self.caller_name = m_name.group(1).strip().title()
-        if "Josué Cabrales" in clean_user_text or "Josue Cabrales" in clean_user_text:
-            self.caller_name = "Josué Cabrales"
 
         messages.append({"role": "user", "content": clean_user_text})
         
@@ -513,7 +512,7 @@ class RyuVoiceAgent:
                         "2. CALCULA EL TOTAL EXACTO: Suma los precios oficiales de los platillos ordenados MÁS el costo de envío (si aplica) con estricta precisión aritmética (ejemplo: $145 + $40 + $15 = $200 MXN; $100 + $30 = $130 MXN). NUNCA sumes de más.\n"
                         "3. Si paga en efectivo, calcula el cambio exacto: (Billete pagado) - (Total a cobrar).\n"
                         "4. Nombres y Direcciones de Tequila:\n"
-                        "   - Si se entendió 'Suave Cabranes', 'Suel Cabrales', 'Rosue', 'Josué' o similar, pon 'Josué Cabrales'.\n"
+                        "   - Extrae el nombre real indicado por el cliente durante la llamada. Si no se indicó, pon 'Cliente'.\n"
                         "   - Si la dirección fue 'callejira sol', 'girazón', o 'girasol' pon 'Calle Girasol'.\n"
                         "   - Si mencionaron 'costradía' o 'cofradía', pon 'Colonia Cofradía'.\n"
                         "5. COSTO DE ENVÍO A DOMICILIO:\n"
@@ -537,7 +536,7 @@ class RyuVoiceAgent:
                         "   - Si el pedido es normal e inmediato:\n"
                         "     * ⏱️ <b>Tiempo de Entrega:</b> 40 a 50 min\n\n"
                         "FORMATO EXACTO REQUERIDO:\n"
-                        "👤 <b>Cliente:</b> Josué Cabrales\n"
+                        "👤 <b>Cliente:</b> [Nombre del cliente o Cliente]\n"
                         "🗓️ <b>Tipo de Pedido:</b> [Omitir si es normal, o poner 'PEDIDO A FUTURO' si es programado]\n"
                         "⏰ <b>Fecha y Hora Programada:</b> [Solo si es pedido a futuro]\n"
                         "📍 <b>Modalidad y Dirección:</b> Domicilio: Calle Girasol #3, Interior 5, Colonia Cofradía\n"
@@ -672,6 +671,20 @@ class RyuVoiceAgent:
                 "scheduled_time": sched_time if is_future_order else "",
                 "raw_ticket_text": ticket
             }
+
+            # Sincronizar y validar con la Máquina de Estados (Order FSM)
+            try:
+                for itm in items_list:
+                    self.order_fsm.add_item(itm["name"], quantity=itm.get("quantity", 1), unit_price=itm.get("unit_price", 0.0), notes=itm.get("notes", ""))
+                if "domicilio" in addr_val.lower():
+                    self.order_fsm.set_address(addr_val, shipping_fee=ship_val)
+                else:
+                    self.order_fsm.set_delivery_type("sucursal")
+                self.order_fsm.set_payment(pay_val)
+                self.order_fsm.set_scheduled(is_future_order, sched_time if is_future_order else None)
+                self.order_fsm.confirm_order()
+            except Exception as fsm_err:
+                print(f"Aviso sincronizando Order FSM: {fsm_err}")
 
             proto_bytes = ProtoService.serialize_order_to_bytes(order_payload)
             db_saved = db_manager.save_order(order_payload, proto_bytes)

@@ -485,10 +485,54 @@ def dispatch_order(order: Dict[str, Any]) -> Dict[str, Any]:
 
     return results
 
+
+def get_pending_pos_orders() -> List[Dict[str, Any]]:
+    """Recupera los pedidos pendientes de impresión e inyección en Soft Restaurant."""
+    bridge = SoftRestaurantSQLBridge()
+    orders = []
+    try:
+        with bridge.sqlite_queue:
+            cur = bridge.sqlite_queue.cursor()
+            cur.execute("""
+                SELECT folio_ryu, payload_json, status, created_at 
+                FROM pending_orders 
+                WHERE status IN ('PENDING', 'QUEUED_OFFLINE')
+                ORDER BY created_at ASC
+            """)
+            for row in cur.fetchall():
+                try:
+                    payload = json.loads(row[1])
+                    payload["_queue_status"] = row[2]
+                    payload["_queued_at"] = row[3]
+                    orders.append(payload)
+                except Exception:
+                    pass
+    except Exception as e:
+        logger.error(f"Error consultando pedidos pendientes: {e}")
+    return orders
+
+
+def mark_pos_order_acknowledged(folio: str, status: str = "INJECTED") -> bool:
+    """Marca un pedido como inyectado/impreso en el POS local del restaurante."""
+    bridge = SoftRestaurantSQLBridge()
+    try:
+        with bridge.sqlite_queue:
+            bridge.sqlite_queue.execute("""
+                UPDATE pending_orders 
+                SET status = ? 
+                WHERE folio_ryu = ?
+            """, (status, folio))
+        logger.info(f"✅ [POS Bridge]: Comanda {folio} marcada como {status}.")
+        return True
+    except Exception as e:
+        logger.error(f"Error actualizando estado de comanda {folio}: {e}")
+        return False
+
+
 if __name__ == '__main__':
     sample = {
         "order_id": "RYU-IA-777",
-        "customer_name": "Josué Cabrales",
+        "customer_name": "Cliente Prueba",
         "customer_phone": "3385261250",
         "delivery_type": "domicilio",
         "address": "Calle Girasol #3, Colonia Cofradía",

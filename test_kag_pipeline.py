@@ -31,8 +31,8 @@ class TestRyuArchitecture(unittest.TestCase):
         raw_order = {
             "order_id": "RYU-TEST-999",
             "session_id": "sess_unit_test",
-            "customer_phone": "+523385261250",
-            "customer_name": "Josué Cabrales",
+            "customer_phone": "+523399990001",
+            "customer_name": "Cliente de Prueba",
             "delivery_type": "domicilio",
             "address": "Calle Girasol #3, Interior 5, Colonia Cofradía",
             "zone_name": "Tequila Urbano",
@@ -68,7 +68,7 @@ class TestRyuArchitecture(unittest.TestCase):
         # Deserialización y verificación de campos
         deserialized = ProtoService.deserialize_order_from_bytes(proto_bytes)
         self.assertEqual(deserialized["order_id"], "RYU-TEST-999")
-        self.assertEqual(deserialized["customer_name"], "Josué Cabrales")
+        self.assertEqual(deserialized["customer_name"], "Cliente de Prueba")
         self.assertEqual(float(deserialized["total_amount"]), 415.0)
         self.assertEqual(len(deserialized["items"]), 2)
         self.assertEqual(deserialized["payment"]["method"], "EFECTIVO")
@@ -143,8 +143,8 @@ class TestRyuArchitecture(unittest.TestCase):
         """Verifica que las órdenes y perfiles de cliente se persistan correctamente."""
         order_dict = {
             "order_id": "RYU-DB-001",
-            "customer_phone": "+523385261250",
-            "customer_name": "Josué Cabrales",
+            "customer_phone": "+523399990001",
+            "customer_name": "Cliente de Prueba",
             "total_amount": 250.0,
             "shipping_fee": 15.0,
             "status": "EN_COCINA"
@@ -154,9 +154,9 @@ class TestRyuArchitecture(unittest.TestCase):
         self.assertTrue(saved)
 
         # Recuperar perfil de cliente
-        profile = db_manager.get_customer_profile("+523385261250")
+        profile = db_manager.get_customer_profile("+523399990001")
         self.assertIsNotNone(profile)
-        self.assertEqual(profile["name"], "Josué Cabrales")
+        self.assertEqual(profile["name"], "Cliente de Prueba")
         self.assertGreaterEqual(profile["total_orders"], 1)
         print("✅ Test 06 - Database Persistence & Profile Recall: PASSED")
 

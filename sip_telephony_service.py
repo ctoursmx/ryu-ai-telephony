@@ -12,7 +12,6 @@ import os
 import sys
 import time
 import socket
-import audioop
 import asyncio
 import wave
 import io
@@ -32,6 +31,14 @@ import soxr
 import miniaudio
 import edge_tts
 from faster_whisper import WhisperModel
+
+from audio_codec import (
+    alaw2pcm,
+    ulaw2pcm,
+    pcm2alaw,
+    calculate_pcm_rms,
+    resample_8k_to_16k,
+)
 
 # Configurar encoding de consola
 if hasattr(sys.stdout, 'reconfigure'):
@@ -216,11 +223,11 @@ def patched_recv(self) -> None:
                         pass
                 elif payload_type == 8:  # PCMA (G.711 A-law)
                     # Decodificar A-law directamente a 16-bit PCM lineal (320 bytes por trama)
-                    pcm16 = audioop.alaw2lin(payload, 2)
+                    pcm16 = alaw2pcm(payload)
                     if hasattr(self, "inbound_queue"):
                         self.inbound_queue.put(pcm16)
                 elif payload_type == 0:  # PCMU (G.711 Mu-law)
-                    pcm16 = audioop.ulaw2lin(payload, 2)
+                    pcm16 = ulaw2pcm(payload)
                     if hasattr(self, "inbound_queue"):
                         self.inbound_queue.put(pcm16)
                         
@@ -368,7 +375,7 @@ async def synthesize_speech_alaw(text: str, agent: Optional[RyuVoiceAgent] = Non
         pcm8_float = pcm8_float * 0.85
         
     pcm8_int16 = np.clip(pcm8_float * 32767.0, -32768, 32767).astype(np.int16)
-    alaw_bytes = audioop.lin2alaw(pcm8_int16.tobytes(), 2)
+    alaw_bytes = pcm2alaw(pcm8_int16.tobytes())
     
     # Guardar en caché RAM si es menor a 25 segundos
     if len(alaw_bytes) < 200000:
@@ -436,7 +443,7 @@ def play_audio_to_call(call, alaw_audio: bytes, is_greeting: bool = False):
         if (time.time() - t_play_start) > min_barge_in_time and hasattr(client, "inbound_queue") and client.inbound_queue.qsize() > 0:
             try:
                 pkt = client.inbound_queue.get_nowait()
-                rms = audioop.rms(pkt, 2)
+                rms = calculate_pcm_rms(pkt)
                 if rms > 2600:  # Energía de voz humana clara (filtra soplidos, ruidos tenues y eco telefónico)
                     barge_in_count += 1
                     if barge_in_count >= 8:  # 160ms continuos de voz humana
@@ -470,7 +477,7 @@ def play_audio_to_call(call, alaw_audio: bytes, is_greeting: bool = False):
         for _ in range(client.inbound_queue.qsize()):
             try:
                 pkt = client.inbound_queue.get_nowait()
-                if audioop.rms(pkt, 2) > 800:  # Conservar cualquier trama con voz humana
+                if calculate_pcm_rms(pkt) > 800:  # Conservar cualquier trama con voz humana
                     preserved_frames.append(pkt)
             except queue.Empty:
                 break
@@ -514,7 +521,7 @@ def record_user_speech(call, max_silence_seconds: float = 0.65, max_duration: fl
         if not pcm16 or len(pcm16) == 0:
             continue
             
-        rms = audioop.rms(pcm16, 2)
+        rms = calculate_pcm_rms(pcm16)
         
         if not has_started_speaking:
             pre_buffer.append(pcm16)
@@ -584,13 +591,6 @@ def clean_colloquial_speech(text: str) -> str:
         (r'\b(?:en\s+la\s+)?costrad[ií]a\b', 'Colonia Cofradía'),
         (r'\bco?forad[ií]a\b', 'Colonia Cofradía'),
         (r'\bcontrajeta\b', 'con tarjeta'),
-        (r'\bpor\s+suave\s+cabr[aá]nes\b', 'Josué Cabrales'),
-        (r'\bsuave\s+cabr[aá]nes\b', 'Josué Cabrales'),
-        (r'\bsuel\s*cabrales\b', 'Josué Cabrales'),
-        (r'\brosue\s*cabrales\b', 'Josué Cabrales'),
-        (r'\bposue\s+cabrales\b', 'Josué Cabrales'),
-        (r'\bjosue\s+cabrales\b', 'Josué Cabrales'),
-        (r'\bcosme\s+de\s+la\s+verdad\b', 'Josué Cabrales'),
         (r'\bla\s*proguesa\b', 'la hamburguesa'),
         (r'\bproguesa\b', 'hamburguesa'),
         (r'\bd[ií]lan\s*porque\s*esa\b', 'di la hamburguesa'),
@@ -657,13 +657,10 @@ def transcribe_pcm_memory(agent: RyuVoiceAgent, pcm_bytes: bytes) -> str:
         
     try:
         t0 = time.time()
-        resampled_16k, _ = audioop.ratecv(pcm_bytes, 2, 1, 8000, 16000, None)
-        audio_int16 = np.frombuffer(resampled_16k, dtype=np.int16)
-        audio_f32 = audio_int16.astype(np.float32) / 32768.0
+        audio_f32 = resample_8k_to_16k(pcm_bytes)
         
         prompt = (
             "Restaurante Ryu en Tequila, Jalisco. Calles y colonias: Calle Girasol, Colonia Cofradía, Paseo del Centenario, Zaragoza, Juárez. "
-            "Nombres: Josué Cabrales. "
             "Zonas de envío: Aguacatillo, Caseta, Penal, Toma, Fundición, Mirador, Parador Turístico, San Pedro, Santa Ana, Tierra de Agave, Medineño, Cantaritos El Güero, Amatitán, Puerta de En Medio, San Martín, Magdalena, Santa Teresa. "
             "Menú y preguntas: lasaña tradicional en capas, lasagna de carne y queso mozzarella, pastas italianas, boloñesa, fettuccine alfredo, "
             "paninis crujientes, pitas suaves, sodas italianas de fresa, piña, mora azul con boba, qué sabores de sodas italianas tienes, cuánto cuestan las pitas y los paninis, qué la acompaña, con qué viene, "

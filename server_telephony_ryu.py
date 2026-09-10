@@ -293,6 +293,38 @@ def get_audio(filename: str):
         return FileResponse(filename, media_type="audio/mpeg")
     return JSONResponse(status_code=404, content={"error": "Audio no encontrado"})
 
+
+@app.get("/api/pos/orders/pending")
+def api_get_pending_pos_orders(request: Request):
+    """
+    Endpoint para el agente local de Soft Restaurant en el restaurante de Tequila.
+    Retorna la lista de comandas tomadas por la IA que requieren ser inyectadas e impresas.
+    """
+    secret = os.getenv("POS_BRIDGE_SECRET", "ryu_pos_secret_key_2026")
+    auth_header = request.headers.get("X-POS-Token")
+    if auth_header != secret and request.query_params.get("token") != secret:
+        return JSONResponse(status_code=401, content={"error": "No autorizado para POS Bridge"})
+
+    from soft_restaurant_bridge import get_pending_pos_orders
+    orders = get_pending_pos_orders()
+    return {"status": "ok", "count": len(orders), "orders": orders}
+
+
+@app.post("/api/pos/orders/{order_id}/ack")
+async def api_ack_pos_order(order_id: str, request: Request):
+    """
+    Confirma que el pedido ya fue impreso e inyectado en el Soft Restaurant local.
+    """
+    secret = os.getenv("POS_BRIDGE_SECRET", "ryu_pos_secret_key_2026")
+    auth_header = request.headers.get("X-POS-Token")
+    if auth_header != secret and request.query_params.get("token") != secret:
+        return JSONResponse(status_code=401, content={"error": "No autorizado para POS Bridge"})
+
+    from soft_restaurant_bridge import mark_pos_order_acknowledged
+    success = mark_pos_order_acknowledged(order_id, status="INJECTED_LOCAL")
+    return {"status": "ok" if success else "error", "order_id": order_id}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)

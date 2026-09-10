@@ -34,13 +34,13 @@ SIMULATED_CALLS = [
     },
     {
         "phone": "+523741001234",
-        "name": "Josué Cabrales",
+        "name": "Mateo Silva",
         "turns": [
             ("Hola, me gustaría ordenar una hamburguesa grande", "De res grande tenemos la Big Ryu en noventa y cinco o la Ranchera Especial en ciento veinticinco."),
             ("La Ranchera Especial y unas papas a la francesa", "Anotada la Ranchera Especial con papas. ¿Alguna bebida?"),
             ("Un Calpico de un litro", "Calpico de un litro. ¿Es para recoger en sucursal o a domicilio?"),
             ("Paso a recoger al restaurante en veinte minutos", "Anotado para recoger en sucursal. ¿Tu nombre?"),
-            ("Josué Cabrales", "¿Confirmo tu pedido?"),
+            ("Mateo Silva", "¿Confirmo tu pedido?"),
             ("Sí, adelante", "¡Excelente! Queda listo para que pases a recoger.")
         ],
         "learned_aliases": [("la ranchera", "Hamburguesa Ranchera Especial"), ("calpico grande", "Calpico (1 Litro)")]

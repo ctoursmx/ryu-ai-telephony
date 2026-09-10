@@ -8,7 +8,7 @@ from voice_engine_ryu import RyuVoiceAgent
 
 async def main():
     print("--- INICIANDO PRUEBA COMPLETA DEL MOTOR DE VOZ ---")
-    agent = RyuVoiceAgent(caller_phone="+52 374 117 2661", caller_name="Josue Cabrales")
+    agent = RyuVoiceAgent(caller_phone="+52 374 117 2661", caller_name="Cliente Prueba")
     
     print(f"\nSaludando: {agent.greeting}")
     await agent.speak(agent.greeting, "audio_1_saludo.mp3")
