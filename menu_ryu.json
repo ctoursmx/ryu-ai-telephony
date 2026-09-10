@@ -891,7 +891,7 @@
             "empanizado tradicional"
           ],
           "price": 95,
-          "description": "Rollo empanizado tradicional dorado y crujiente.",
+          "description": "Cubierta crujiente dorada, relleno de mariscos, pepino, queso philadelphia y surimi.",
           "station": "sushi_bar"
         },
         {
@@ -899,10 +899,11 @@
           "name": "Sushi Philadelphia",
           "aliases": [
             "rollo philadelphia",
-            "philadelphia roll"
+            "philadelphia roll",
+            "sushi philadelphia"
           ],
           "price": 95,
-          "description": "Rollo fresco cubierto de queso philadelphia.",
+          "description": "Cubierto de queso Philadelphia por fuera, relleno de pepino, surimi y aguacate fresco.",
           "station": "sushi_bar"
         },
         {
@@ -963,13 +964,17 @@
         },
         {
           "id": "jp_sush_08",
-          "name": "Arcoiris Roll Especial",
+          "name": "Arcoíris Roll Especial (Arcogrid)",
           "aliases": [
             "arcoiris roll",
+            "arcoíris roll",
+            "arcogrid roll",
+            "arcogrid",
+            "arco grid",
             "rainbow roll"
           ],
           "price": 100,
-          "description": "Rollo coronado con láminas de varios mariscos frescos.",
+          "description": "Sushi con pulpo, camarón y surimi por fuera; relleno de pepino por dentro y queso philadelphia.",
           "station": "sushi_bar"
         },
         {
@@ -999,10 +1004,11 @@
           "name": "Plátano Roll",
           "aliases": [
             "platano roll",
+            "plátano roll",
             "rollo de platano"
           ],
           "price": 100,
-          "description": "Rollo envuelto en plátano frito dulce.",
+          "description": "Relleno de pepino, queso Philadelphia y surimi; envuelto en plátano frito por fuera.",
           "station": "sushi_bar"
         },
         {
@@ -1131,10 +1137,11 @@
           "name": "Mechudo",
           "aliases": [
             "mechudo roll",
-            "rollo mechudo"
+            "rollo mechudo",
+            "mechudo"
           ],
           "price": 120,
-          "description": "Rollo especial con pulpo y camarón.",
+          "description": "Sushi relleno de pepino; por fuera puede llevar pulpo o camarón, decorado con ensalada Tampico y trozos de aguacate en la parte superior, bañado en salsa especial Sriracha.",
           "station": "sushi_bar"
         },
         {
@@ -1204,13 +1211,16 @@
         },
         {
           "id": "jp_sush_30",
-          "name": "Cheese Explosion",
+          "name": "Cheese Explosion (Cheese Roll)",
           "aliases": [
             "cheese explosion",
-            "explosion de queso"
+            "cheese roll",
+            "rollo cheese",
+            "explosion de queso",
+            "queso con chorizo"
           ],
           "price": 135,
-          "description": "Rollo empanizado cubierto de una mezcla generosa de queso derretido.",
+          "description": "Por dentro camarón empanizado, pepino y philadelphia; por fuera empanizado crujiente y cubierto con queso fundido derretido con chorizo.",
           "station": "sushi_bar"
         },
         {
@@ -1241,10 +1251,12 @@
           "aliases": [
             "tabla de sushi",
             "tabla mixta",
-            "charola de sushi"
+            "charola de sushi",
+            "tabla de 30 bocadillos",
+            "tabla 30 piezas"
           ],
           "price": 300,
-          "description": "Surtido variado de rollos y bocadillos de sushi de la casa, incluye bebidas.",
+          "description": "30 bocadillos de sushi (incluye 3 rollos completos: 1 Empanizado Especial, 1 Philadelphia y 1 Mechudo); incluye bebidas de la casa.",
           "station": "sushi_bar"
         }
       ],
@@ -1475,9 +1487,13 @@
           "panini": 100,
           "pita": 120
         },
+        "_sides_policy": {
+          "includes_french_fries": true,
+          "description": "Tanto los paninis como las pitas SÍ incluyen papas a la francesa. La diferencia de costo ($100 Panini vs $120 Pita) es exclusivamente por el tipo de pan."
+        },
         "_format_descriptions": {
-          "panini": "Pan alargado rústico crujiente con queso derretido.",
-          "pita": "Pan pita redondo suave relleno con queso derretido."
+          "panini": "Pan alargado rústico crujiente con queso derretido, acompañado de papas a la francesa.",
+          "pita": "Pan pita redondo suave relleno con queso derretido, acompañado de papas a la francesa."
         },
         "especialidades": [
           {
