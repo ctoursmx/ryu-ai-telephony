@@ -108,7 +108,7 @@ Dirección: P.º del Centenario 27, Cofradía, Tequila, Jalisco.
 • Milanesa de Pollo o Res (con arroz y ensalada) - $140
 • Udon Plancha (Pasta gruesa japonesa con verdura y camarón) - $140
 • Chow Mein (Fideos de trigo con vegetales y res, pollo o camarón) - $140
-• Brochetas Yakitori (Asadas y glaseadas con salsa dulce) - $145
+• Brochetas Yakitori - $145: Varitas de camarón con pimiento morrón y cebollita preparadas a la plancha (NO llevan empanizado, a diferencia de las Kushiage que sí son empanizadas) y bañadas en salsa teriyaki.
 • Camarones Kimono (con ensalada tampico) - $145
 • Camarones Philadelphia (con queso crema, arroz y ensalada) - $150
 • Tempura Ebi (Camarones y verduras capeadas) - $150
@@ -120,17 +120,17 @@ Dirección: P.º del Centenario 27, Cofradía, Tequila, Jalisco.
 • Puerquitos Locos (Camarones rellenos de queso envueltos en tocino, arroz y ensalada) - $170
 
 --- SUSHI TRADICIONAL Y ESPECIALES ---
-• Empanizado - $95
-• Philadelphia - $95
+• Empanizado - $95: Cubierta crujiente dorada, relleno de mariscos frescos, pepino, queso philadelphia y surimi.
+• Philadelphia - $95: Queso Philadelphia por fuera, relleno de pepino, surimi y aguacate fresco.
 • California - $95 (cangrejo, pepino, aguacate)
 • Kani Roll - $95
 • Esfera Dragón Ball - $95 (bola de arroz empanizada con aguacate, pepino, camarón y queso)
 • Chipotle Roll - $100
 • Avocado Roll - $100
-• Arcoiris Roll Especial - $100 (con varios mariscos)
+• Arcoíris Roll Especial (Arcogrid Roll) - $100: Sushi con pulpo, camarón y surimi por fuera, relleno por dentro de pepino y queso philadelphia.
 • Hulk - $100 (camarón empanizado por dentro, alga de soya por fuera)
 • Eby Roll - $100
-• Plátano Roll - $100 (láminas de plátano frito)
+• Plátano Roll - $100: Relleno de pepino, queso Philadelphia y surimi; envuelto en plátano frito por fuera.
 • Salmón Roll - $105
 • México Roll - $105 (aguacate, queso y masago)
 • Philadelphia Empanizado - $105
@@ -142,17 +142,17 @@ Dirección: P.º del Centenario 27, Cofradía, Tequila, Jalisco.
 • Empanizado Especial - $115 (tampico y camarón empanizado)
 • Tocayo Roll - $115 (capeado con camarón, salmón y surimi)
 • Mar y Tierra - $115 (res, camarón, ensalada picosa, empanizado)
-• Mechudo - $120 (pulpo y camarón)
+• Mechudo - $120: Sushi relleno de pepino; por fuera pulpo o camarón, decorado con ensalada Tampico y trozos de aguacate en la parte superior, bañado en salsa especial Sriracha.
 • Eby Roll Especial - $120 (camarón por fuera, tampico y camarón empanizado)
 • Especial Ryü - $120 (queso philadelphia por fuera y camarones)
 • Especial No. 1 - $120 (salmón natural por fuera, ensalada picosa, tempura, limón y aguacate)
 • Zizi Roll Especial - $130 (capeado en alga, con ensalada picosa de camarón)
 • Hulk Especial - $130 (camarón empanizado, alga de soya, salmón, pulpo y ensalada tampico)
 • Tuna Roll - $130 (coronado con ensalada de atún picosa)
-• Cheese Explosion - $135 (coronado con mezcla de queso derretido)
+• Cheese Explosion (Cheese Roll) - $135: Por dentro camarón empanizado, pepino y philadelphia; por fuera empanizado crujiente y cubierto con queso fundido derretido con chorizo.
 • Panchito - $140 (relleno de res, empanizado, coronado con guacamole y tocino)
 • Tocino Roll - $150 (envuelto en tocino, relleno de camarón y philadelphia)
-• Tabla de Sushi Mixta - $300 (incluye bebidas)
+• Tabla de Sushi Mixta - $300: 30 bocadillos de sushi (incluye 3 rollos completos: 1 Empanizado Especial, 1 Philadelphia y 1 Mechudo); incluye bebidas.
 
 --- BEBIDAS Y POSTRES (JAPONÉS) ---
 • Refresco ($35, único tamaño 500ml): Coca-Cola, Sprite, Fanta o Agua Mineral (obligatorio sabor, nunca preguntar tamaño)
@@ -248,8 +248,9 @@ Dirección: P.º del Centenario 27, Cofradía, Tequila, Jalisco.
 • Boloñesa - $120 (spaguetti con carne molida de res a la boloñesa; solo, sin pan ni ensalada)
 • Lasagna Tradicional - $150 (carne molida de res, salsa de tomate y queso mozzarella; sola, sin pan ni ensalada)
 
---- PANINIS & PITAS (Pan alargado crujiente $100 o Pan pita redondo suave $120; queso derretido; solos sin papas) ---
+--- PANINIS & PITAS (SÍ incluyen papas a la francesa; Panini $100 alargado crujiente vs Pita $120 redondo suave) ---
 • Precios: Panini $100 | Pita $120
+• Acompañamiento: SÍ incluyen papas a la francesa en ambas presentaciones. La diferencia de costo ($100 vs $120) es exclusivamente por el tipo de pan (Panini: pan alargado rústico crujiente con queso derretido; Pita: pan pita redondo suave relleno con queso derretido).
 • Especialidades a elegir:
   - BBQ
   - Chipotle

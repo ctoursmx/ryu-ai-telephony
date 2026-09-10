@@ -279,9 +279,19 @@ for cfg_path in [
 
 def get_local_ip():
     try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        if ip and not ip.startswith("127."):
+            print(f"Detectada IP activa por ruta predeterminada: {ip}")
+            return ip
+    except Exception:
+        pass
+    try:
         import psutil
         addrs = psutil.net_if_addrs()
-        for iface in ["eth0", "wlan0", "en0", "Wi-Fi 2", "Wi-Fi", "Ethernet"]:
+        for iface in ["Ethernet", "Wi-Fi", "Wi-Fi 2", "eth0", "wlan0", "en0"]:
             if iface in addrs:
                 for snic in addrs[iface]:
                     if snic.family == socket.AF_INET and not snic.address.startswith("169.254.") and not snic.address.startswith("127."):
@@ -289,14 +299,7 @@ def get_local_ip():
                         return snic.address
     except Exception:
         pass
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-        s.close()
-        return ip
-    except Exception:
-        return "127.0.0.1"
+    return "127.0.0.1"
 
 LOCAL_IP = get_local_ip()
 GLOBAL_PHONE = None
@@ -632,6 +635,11 @@ def clean_colloquial_speech(text: str) -> str:
         (r'\bla\s*caseta\b', 'Caseta'),
         (r'\bsan\s*pedro\b', 'San Pedro'),
         (r'\bmagdalena\b', 'Magdalena'),
+        (r'\barcogrid(?:\s*roll)?\b|\barco\s*grid(?:\s*roll)?\b', 'Arcoíris Roll'),
+        (r'\bcheese\s*roll\b|\brollo\s*cheese\b', 'Cheese Explosion'),
+        (r'\bqueso\s*con\s*chorizo\b', 'queso fundido con chorizo'),
+        (r'\btabla\s*de\s*30\s*(?:bocadillos|piezas)?\b|\btabla\s*30\s*(?:bocadillos|piezas)?\b|\b30\s*(?:bocadillos|piezas)\s*(?:de\s*sushi)?\b', 'Tabla de Sushi Mixta'),
+        (r'\bsalsa\s*siracha\b|\bsiracha\b', 'salsa sriracha'),
     ]
     for pattern, replacement in corrections:
         t = re.sub(pattern, replacement, t, flags=re.IGNORECASE)
@@ -670,8 +678,10 @@ def transcribe_pcm_memory(agent: RyuVoiceAgent, pcm_bytes: bytes) -> str:
             "Restaurante Ryu en Tequila, Jalisco. Calles y colonias: Calle Girasol, Colonia Cofradía, Paseo del Centenario, Zaragoza, Juárez. "
             "Zonas de envío: Aguacatillo, Caseta, Penal, Toma, Fundición, Mirador, Parador Turístico, San Pedro, Santa Ana, Tierra de Agave, Medineño, Cantaritos El Güero, Amatitán, Puerta de En Medio, San Martín, Magdalena, Santa Teresa. "
             "Menú y preguntas: lasaña tradicional en capas, lasagna de carne y queso mozzarella, pastas italianas, boloñesa, fettuccine alfredo, "
-            "paninis crujientes, pitas suaves, sodas italianas de fresa, piña, mora azul con boba, qué sabores de sodas italianas tienes, cuánto cuestan las pitas y los paninis, qué la acompaña, con qué viene, "
-            "hamburguesa Big Ryu, Ranchera Especial, Carolina Especial, Cielo Mar y Tierra, alitas, boneless, calpico, cerveza Corona, sushi, ramen. "
+            "paninis crujientes y pitas suaves con papas a la francesa, sodas italianas de fresa, piña, mora azul con boba, qué sabores de sodas italianas tienes, cuánto cuestan las pitas y los paninis, qué la acompaña, con qué viene, "
+            "hamburguesa Big Ryu, Ranchera Especial, Carolina Especial, Cielo Mar y Tierra, alitas, boneless, calpico, cerveza Corona, ramen, "
+            "sushi empanizado, sushi philadelphia, Arcoíris Roll, arcogrid, plátano roll, mechudo con tampico y salsa sriracha, Cheese Explosion, cheese roll con queso y chorizo, tabla de sushi mixta de 30 bocadillos, "
+            "brochetas yakitori de camarón a la plancha con morrón y cebollita en salsa teriyaki, brochetas kushiage empanizadas de res, pollo y camarón. "
             "Pedidos programados y a futuro: pedido programado, pedido a futuro, para más tarde, para hoy en la noche, para mañana a las dos, para el sábado, reservar, agendar orden. A domicilio, sucursal, con tarjeta, en efectivo."
         )
 

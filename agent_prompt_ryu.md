@@ -75,15 +75,15 @@ CATÁLOGO MAESTRO DE PLATILLOS 100% COMPLETO - RESTAURANTE RYU
 • Filete de Pollo Especial (Con jamón y queso empanizado): $165
 • Ebydon (Cama de arroz con aguacate, queso philadelphia y camarón empanizado): $150
 • Fire Mixto (Cama de arroz con cárnico enchiloso, pollo, res y camarón): $150
-• Brochetas Yakitori: $145
+• Brochetas Yakitori (Varitas de camarón a la plancha con morrón, cebollita y salsa teriyaki, NO empanizadas): $145
 • Chow Mein (Fideos de trigo con vegetales y pollo, res o camarón): $140
 
 🔥 6. TEPPANYAKI / TERIYAKI:
 • Pollo: $140 | Res: $135 | Camarón: $145 | Mixto: $155 | Salmón: $200 | Filete de Pescado: $130
 
 🍣 7. SUSHI ROLLOS TRADICIONALES:
-• Empanizado: $95
-• Philadelphia: $95
+• Empanizado (Cubierta crujiente, relleno de mariscos, pepino, philadelphia y surimi): $95
+• Philadelphia (Queso Philadelphia por fuera, pepino, surimi y aguacate fresco): $95
 • Masago: $110
 • California: $95
 • Salmón Roll: $105
@@ -94,16 +94,16 @@ CATÁLOGO MAESTRO DE PLATILLOS 100% COMPLETO - RESTAURANTE RYU
 • Tocayo Roll (Capeado con camarón, salmón y surimi capeado): $115
 • Mar y Tierra (Res, camarón por dentro, ensalada picosa y empanizado): $115
 • México Roll (Aguacate, queso y masago): $105
-• Arcoiris Roll Especial (Con varios mariscos): $100
+• Arcoíris Roll Especial / Arcogrid Roll (Pulpo, camarón y surimi por fuera, pepino y philadelphia por dentro): $100
 • Philadelphia Empanizado: $105
 • Hulk (Camarón empanizado por dentro y alga de soya por fuera): $100
 • Furia Roll (Camarón, kani, salmón y chipotle por fuera): $105
 • Eby Roll: $100
 • Eby Roll Especial (Camarón por fuera, tampico y camarón empanizado): $120
 • Pink Salmón (Coronado con salmón picoso en trozos): $105
-• Mechudo (Pulpo y camarón): $120
-• Plátano Roll: $100
-• Cheese Explosion: $135
+• Mechudo (Relleno de pepino, pulpo o camarón por fuera, ensalada Tampico, aguacate y salsa Sriracha): $120
+• Plátano Roll (Relleno de pepino, queso Philadelphia y surimi, envuelto en plátano frito): $100
+• Cheese Explosion / Cheese Roll (Camarón empanizado, pepino y philadelphia por dentro, queso fundido con chorizo por fuera): $135
 
 ✨ 8. ESPECIALES RYÜ:
 • Especial Ryü (Philadelphia por fuera acompañado de camarones): $120
@@ -113,7 +113,7 @@ CATÁLOGO MAESTRO DE PLATILLOS 100% COMPLETO - RESTAURANTE RYU
 • Oishi Roll Especial (Camarón, tocino, philadelphia empanizado): $105
 • Flamin Hot (Cubierto de Flamin Hot, coronado de res y camarón): $105
 • Hulk Especial (Camarón empanizado, alga de soya, salmón, pulpo y ensalada): $130
-• Tabla de Sushi Mixta (Incluye bebidas): $300
+• Tabla de Sushi Mixta (30 bocadillos: 1 Empanizado Especial, 1 Philadelphia y 1 Mechudo; incluye bebidas): $300
 • Tuna Roll (Coronado con ensalada de atún picosa): $130
 • Panchito (Relleno de res, empanizado, coronado con guacamole y tocino): $140
 • Tocino Roll (Envuelto en tocino, relleno de camarón y philadelphia): $150
@@ -145,7 +145,7 @@ CATÁLOGO MAESTRO DE PLATILLOS 100% COMPLETO - RESTAURANTE RYU
 • Lasagna Tradicional (Carne molida, salsa pomodoro y mozzarella): $150
 • Spaguetti a la Boloñesa: $120
 • Fettuccine Alfredo: $100
-• Paninis ($100) / Pitas ($120): BBQ, Chipotle, Cheesesteak, Pollo Clásico, Pollo Crispy, Carnes Frías
+• Paninis ($100) / Pitas ($120) - SÍ incluyen papas a la francesa (la diferencia de precio es exclusivamente por el tipo de pan: alargado crujiente vs pita suave): BBQ, Chipotle, Cheesesteak, Pollo Clásico, Pollo Crispy, Carnes Frías
 • Ensalada Italiana: $110 (Aderezos: BBQ, Chipotle, Cheese-Ranch, Piña Hot, Crispy)
 • Sodas Italianas con Boba: $45 (Fresa-Boba, Piña-Boba, Mora Azul-Boba)
 
