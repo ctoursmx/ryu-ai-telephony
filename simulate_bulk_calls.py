@@ -141,7 +141,7 @@ def run_simulations():
     print(f"• Llamadas simuladas: {len(SIMULATED_CALLS)}")
     print(f"• Turnos de conversación procesados: {total_interactions}")
     print(f"• Nuevos nodos y relaciones aprendidas en Apache AGE: {total_learned}")
-    print(f"• Alias totales en caché de memoria KAG: {len(kag_engine.alias_cache)}")
+    print(f"• Alias totales en caché de memoria KAG: {len(kag_engine.aliases_cache)}")
     print("==================================================================")
 
 if __name__ == "__main__":
