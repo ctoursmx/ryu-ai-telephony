@@ -31,17 +31,37 @@ from security_guard import input_sanitizer
 # --- CONFIGURACIÓN CENTRAL ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8869418381:AAFQyF_V5hfwJ2HF5isH4WGUZ-17iTQhNzI")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "-5308916263")
 VOICE_NAME = os.getenv("VOICE_NAME", "es-MX-DaliaNeural")
+
+LLM_MODEL = os.getenv("AI_LLM_MODEL", "")
+
+if OPENAI_API_KEY:
+    openai_client = OpenAI(api_key=OPENAI_API_KEY)
+    LLM_MODEL = LLM_MODEL or "gpt-4o-mini"
+elif GEMINI_API_KEY:
+    openai_client = OpenAI(
+        api_key=GEMINI_API_KEY,
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+    )
+    LLM_MODEL = LLM_MODEL or "gemini-2.5-flash"
+elif GROQ_API_KEY:
+    openai_client = OpenAI(
+        api_key=GROQ_API_KEY,
+        base_url="https://api.groq.com/openai/v1"
+    )
+    LLM_MODEL = LLM_MODEL or "llama-3.3-70b-versatile"
+else:
+    openai_client = None
+    LLM_MODEL = "gpt-4o-mini"
 
 PROMPT_PATH = Path(__file__).parent / "prompt_voice_telephone_ryu.md"
 if PROMPT_PATH.exists():
     SYSTEM_PROMPT = PROMPT_PATH.read_text(encoding="utf-8")
 else:
     SYSTEM_PROMPT = "Eres la recepcionista telefónica de Ryu en Tequila. Habla con calidez humana mexicana, sin emojis ni viñetas."
-
-openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 
 class RyuVoiceAgent:
     def __init__(self, caller_phone="Desconocido", caller_name="Cliente"):
@@ -317,7 +337,7 @@ class RyuVoiceAgent:
         for attempt in range(4):
             try:
                 response = openai_client.chat.completions.create(
-                    model="gpt-4o-mini",
+                    model=LLM_MODEL,
                     messages=messages,
                     temperature=0.2,
                     max_tokens=max_toks
@@ -527,7 +547,7 @@ class RyuVoiceAgent:
             for attempt in range(4):
                 try:
                     res = openai_client.chat.completions.create(
-                        model="gpt-4o-mini",
+                        model=LLM_MODEL,
                         messages=extract_prompt,
                         temperature=0.1,
                         max_tokens=350
