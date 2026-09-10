@@ -234,15 +234,12 @@ RTP.RTPClient.recv = patched_recv
 
 print("Arquitectura pyVoIP parcheada: RTP Monotónico 50pps + Receptor 16-bit + Colas Thread-Safe + Heartbeat.")
 
-# ----------------------------------------------------------------------
-# 2. CONFIGURACION DE RED Y CREDENCIALES ZADARMA
-# ----------------------------------------------------------------------
-SIP_SERVER = os.getenv("ZADARMA_SIP_SERVER") or "pbx.zadarma.com"
-SIP_USER = os.getenv("ZADARMA_SIP_USER") or os.getenv("ZADARMA_SIP_LOGIN") or "590697-101"
-SIP_PASSWORD = os.getenv("ZADARMA_SIP_PASSWORD") or "H6x5b9Fafj"
+SIP_SERVER = os.getenv("ZADARMA_SIP_SERVER") or "sip.zadarma.com"
+SIP_USER = os.getenv("ZADARMA_SIP_USER") or os.getenv("ZADARMA_SIP_LOGIN") or "20432"
+SIP_PASSWORD = os.getenv("ZADARMA_SIP_PASSWORD") or "Nugget12"
 PHONE_NUMBER = os.getenv("ZADARMA_PHONE_NUMBER") or os.getenv("ZADARMA_CALLER_ID") or "+523385261250"
 
-# Si existe settings.json de ryu-backend, leer credenciales maestras
+# Si existe settings.json de ryu-backend y no están fijadas por variable de entorno, leer credenciales
 for cfg_path in [
     os.path.join(os.path.dirname(__file__), "data", "settings.json"),
     os.path.join(os.path.dirname(__file__), "..", "ryu-backend", "data", "settings.json"),
@@ -253,10 +250,14 @@ for cfg_path in [
             import json as _json
             with open(cfg_path, "r", encoding="utf-8") as _f:
                 _cfg = _json.load(_f)
-                SIP_SERVER = _cfg.get("ZADARMA_SIP_SERVER", SIP_SERVER)
-                SIP_USER = _cfg.get("ZADARMA_SIP_LOGIN", SIP_USER)
-                SIP_PASSWORD = _cfg.get("ZADARMA_SIP_PASSWORD", SIP_PASSWORD)
-                PHONE_NUMBER = _cfg.get("ZADARMA_CALLER_ID", PHONE_NUMBER)
+                if not os.getenv("ZADARMA_SIP_SERVER"):
+                    SIP_SERVER = _cfg.get("ZADARMA_SIP_SERVER", SIP_SERVER)
+                if not os.getenv("ZADARMA_SIP_USER") and not os.getenv("ZADARMA_SIP_LOGIN"):
+                    SIP_USER = _cfg.get("ZADARMA_SIP_LOGIN", SIP_USER)
+                if not os.getenv("ZADARMA_SIP_PASSWORD"):
+                    SIP_PASSWORD = _cfg.get("ZADARMA_SIP_PASSWORD", SIP_PASSWORD)
+                if not os.getenv("ZADARMA_PHONE_NUMBER") and not os.getenv("ZADARMA_CALLER_ID"):
+                    PHONE_NUMBER = _cfg.get("ZADARMA_CALLER_ID", PHONE_NUMBER)
                 break
         except Exception:
             pass
