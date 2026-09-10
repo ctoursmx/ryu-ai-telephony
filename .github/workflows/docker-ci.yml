@@ -53,3 +53,31 @@ jobs:
           tags: ryu-telephony:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Despliegue Automático a Oracle Cloud VPS
+    runs-on: ubuntu-latest
+    needs: [python-validation, docker-build]
+    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Arath-changes') && github.event_name == 'push'
+    steps:
+      - name: Desplegar en Servidor Oracle Cloud vía SSH
+        uses: appleboy/ssh-action@v1.0.3
+        if: env.HAS_SSH_KEY == 'true'
+        env:
+          HAS_SSH_KEY: ${{ secrets.ORACLE_SSH_KEY != '' }}
+        with:
+          host: ${{ secrets.ORACLE_HOST || '140.84.186.64' }}
+          username: ${{ secrets.ORACLE_USER || 'ubuntu' }}
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          script: |
+            echo "--- Sincronizando repositorio en VPS ---"
+            cd /home/ubuntu/ryu-ai-telephony
+            git fetch origin
+            git checkout ${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
+            echo "--- Recreando contenedor ryu-telephony ---"
+            docker compose up -d --force-recreate ryu-telephony
+            sleep 8
+            echo "--- Estado del servicio ---"
+            docker logs --tail 20 ryu-telephony-service
+
