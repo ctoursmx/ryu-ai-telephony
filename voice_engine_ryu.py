@@ -39,27 +39,34 @@ VOICE_NAME = os.getenv("VOICE_NAME", "es-MX-DaliaNeural")
 LLM_MODEL = os.getenv("AI_LLM_MODEL", "")
 
 if OPENAI_API_KEY:
-    openai_client = OpenAI(api_key=OPENAI_API_KEY)
+    openai_client = OpenAI(api_key=OPENAI_API_KEY, timeout=3.5, max_retries=1)
     LLM_MODEL = LLM_MODEL or "gpt-4o-mini"
 elif GEMINI_API_KEY:
     openai_client = OpenAI(
         api_key=GEMINI_API_KEY,
-        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+        timeout=3.5,
+        max_retries=1
     )
-    LLM_MODEL = LLM_MODEL or "gemini-2.5-flash"
+    LLM_MODEL = LLM_MODEL or "gemini-3.1-flash-lite"
 elif GROQ_API_KEY:
     openai_client = OpenAI(
         api_key=GROQ_API_KEY,
-        base_url="https://api.groq.com/openai/v1"
+        base_url="https://api.groq.com/openai/v1",
+        timeout=3.5,
+        max_retries=1
     )
     LLM_MODEL = LLM_MODEL or "llama-3.3-70b-versatile"
 else:
     openai_client = None
-    LLM_MODEL = "gpt-4o-mini"
+    LLM_MODEL = "gemini-3.1-flash-lite"
 
-PROMPT_PATH = Path(__file__).parent / "prompt_voice_telephone_ryu.md"
-if PROMPT_PATH.exists():
-    SYSTEM_PROMPT = PROMPT_PATH.read_text(encoding="utf-8")
+PROMPT_SNAPPY_PATH = Path(__file__).parent / "prompt_voice_telephone_snappy.md"
+PROMPT_FULL_PATH = Path(__file__).parent / "prompt_voice_telephone_ryu.md"
+if PROMPT_SNAPPY_PATH.exists():
+    SYSTEM_PROMPT = PROMPT_SNAPPY_PATH.read_text(encoding="utf-8")
+elif PROMPT_FULL_PATH.exists():
+    SYSTEM_PROMPT = PROMPT_FULL_PATH.read_text(encoding="utf-8")
 else:
     SYSTEM_PROMPT = "Eres la recepcionista telefónica de Ryu en Tequila. Habla con calidez humana mexicana, sin emojis ni viñetas."
 
@@ -68,16 +75,15 @@ class RyuVoiceAgent:
         self.caller_phone = caller_phone
         self.caller_name = caller_name
         self.conversation_history = []
+        self.call_turns_log = []
         self.order_confirmed = False
         self.session_id = f"ryu_call_{int(time.time())}_{caller_phone[-4:] if len(caller_phone)>=4 else '0000'}"
 
-        # Consultar perfil en Grafo / DB para clientes recurrentes
+        # Consultar perfil en Grafo / DB para clientes recurrentes (dirección, notas, preferencias)
         self.customer_profile = db_manager.get_customer_profile(caller_phone)
-        if self.customer_profile and self.customer_profile.get("name") and self.customer_profile["name"] != "Cliente":
-            self.caller_name = self.customer_profile["name"]
-            self.greeting = f"¡Hola, buenas tardes {self.caller_name}! Qué gusto que llames de nuevo a Ryu en Tequila. ¿Qué te gustaría ordenar hoy?"
-        else:
-            self.greeting = "¡Hola, buenas tardes! Gracias por llamar a Ryu en Tequila. ¿Qué te gustaría ordenar hoy?"
+        # REGLA ESTRICTA DE TELEFONÍA: Nunca saludar a los clientes por su nombre por teléfono.
+        # Siempre mantener un saludo cálido, profesional y neutro.
+        self.greeting = "¡Hola, buenas tardes! Gracias por llamar a Ryu en Tequila. ¿Qué te gustaría ordenar hoy?"
 
 
     def get_time_and_menu_status(self):
@@ -194,7 +200,7 @@ class RyuVoiceAgent:
             {"role": "system", "content": system_context}
         ]
         
-        for msg in self.conversation_history[-35:]:
+        for msg in self.conversation_history[-10:]:
             messages.append(msg)
 
         clean_user_text = re.sub(r"\bsucho\b", "sushi", clean_user_text, flags=re.IGNORECASE)
@@ -329,22 +335,28 @@ class RyuVoiceAgent:
         max_toks = 350 if is_confirmation else 240
 
         response = None
-        for attempt in range(4):
+        candidate_models = [LLM_MODEL]
+        for alt in ["gemini-3.1-flash-lite", "gemma-4-26b-a4b-it", "gemini-flash-latest"]:
+            if alt not in candidate_models:
+                candidate_models.append(alt)
+
+        for model_to_try in candidate_models:
             try:
                 response = openai_client.chat.completions.create(
-                    model=LLM_MODEL,
+                    model=model_to_try,
                     messages=messages,
                     temperature=0.2,
                     max_tokens=max_toks
                 )
-                break
+                if response and response.choices and response.choices[0].message.content:
+                    break
             except Exception as e:
-                if "rate_limit" in str(e).lower() and attempt < 3:
-                    time.sleep(2.5 * (attempt + 1))
-                else:
-                    raise e
+                print(f"⚠️ [Aviso LLM {model_to_try}]: {e}. Intentando siguiente modelo...")
+                continue
         
-        bot_response = response.choices[0].message.content or "" if response else ""
+        bot_response = response.choices[0].message.content.strip() if (response and response.choices and response.choices[0].message.content) else ""
+        if not bot_response:
+            bot_response = "Disculpa, ¿me podrías repetir qué se te antoja ordenar? Con gusto te tomo tu pedido."
         
         # 3. Guardián Anti-Alucinación KAG (Auditoría de hechos contra el Grafo)
         bot_response, v_result = kag_engine.audit_and_correct_response(bot_response, kag_facts)

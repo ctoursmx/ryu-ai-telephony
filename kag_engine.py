@@ -265,5 +265,115 @@ class KAGEngine:
 
         return None
 
+    def process_call_transcript(
+        self,
+        session_id: str,
+        caller_phone: str,
+        caller_name: str,
+        duration_sec: float,
+        turns: List[Dict[str, Any]],
+        order_confirmed: bool = False,
+        order_id: Optional[str] = None,
+        order_text: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Procesa y analiza la transcripción completa de una llamada concluida:
+        1. Extrae y persiste direcciones y zonas del cliente en PostgreSQL.
+        2. Detecta notas/preferencias alimentarias del cliente ('sin cebolla', etc.).
+        3. Registra eventos de autoaprendizaje fonético en el grafo AGE.
+        4. Guarda la telemetría en call_logs de PostgreSQL.
+        5. Guarda el volcado de texto completo en logs/call_transcripts.jsonl.
+        """
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        logs_dir = os.path.join(base_dir, "logs")
+        transcripts_dir = os.path.join(logs_dir, "transcripts")
+        os.makedirs(transcripts_dir, exist_ok=True)
+
+        full_user_dialogue = " ".join([t.get("user_raw", "") or t.get("user", "") for t in turns])
+        learned_events = []
+        customer_updates = {}
+
+        # 1. Extracción de Dirección y Zona en Tequila
+        addr_match = re.search(
+            r"(?:calle\s+)?([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?\s*#?\s*\d{1,5}(?:\s*(?:interior|int|depto)\s*\w+)?)"
+            r"(?:\s*(?:en\s+|colonia\s+|col\.?\s*)([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+))?",
+            full_user_dialogue,
+            re.IGNORECASE
+        )
+        if addr_match:
+            detected_addr = addr_match.group(1).strip().title()
+            detected_zone = addr_match.group(2).strip().title() if addr_match.group(2) else ""
+            if len(detected_addr) > 5 and not any(w in detected_addr.lower() for w in ["sushi", "hamburguesa", "boneless", "alitas", "coca"]):
+                customer_updates["address"] = detected_addr
+                if detected_zone:
+                    customer_updates["zone"] = detected_zone
+
+        # 2. Extracción de Preferencias / Notas Culinarias
+        pref_matches = re.findall(r"\b(sin\s+[a-záéíóúñ]+|con\s+extra\s+[a-záéíóúñ]+|al[eé]rgic[oa]\s+a[l]?\s+[a-záéíóúñ]+)\b", full_user_dialogue, re.IGNORECASE)
+        if pref_matches:
+            valid_prefs = [p.strip().lower() for p in pref_matches if len(p.strip()) > 4]
+            if valid_prefs:
+                customer_updates["notes"] = ", ".join(set(valid_prefs))
+
+        # 3. Aplicar actualizaciones al perfil del cliente si se detectaron
+        if customer_updates and caller_phone not in ["Desconocido", "0000000000"]:
+            self.db.update_customer_profile(caller_phone, customer_updates)
+            logger.info(f"👤 [KAG Perfil Cliente Actualizado]: {caller_phone} -> {customer_updates}")
+
+        # 4. Extracción de alias aprendidos en cada turno
+        for turn in turns:
+            u_text = turn.get("user_raw", "") or turn.get("user", "")
+            b_resp = turn.get("bot_response", "") or turn.get("bot", "")
+            if u_text:
+                ev = self.learn_from_interaction(session_id, caller_phone, u_text, b_resp)
+                if ev:
+                    learned_events.append(ev)
+
+        # 5. Persistir en la tabla call_logs de PostgreSQL
+        call_summary = {
+            "session_id": session_id,
+            "caller_phone": caller_phone,
+            "caller_name": caller_name,
+            "duration_sec": duration_sec,
+            "order_id": order_id,
+            "turn_count": len(turns)
+        }
+        self.db.save_call_log(call_summary)
+
+        # 6. Guardar archivo JSONL de transcripción completa
+        transcript_record = {
+            "session_id": session_id,
+            "timestamp": datetime.now().isoformat(),
+            "caller_phone": caller_phone,
+            "caller_name": caller_name,
+            "duration_sec": duration_sec,
+            "turn_count": len(turns),
+            "order_confirmed": order_confirmed,
+            "order_id": order_id,
+            "customer_updates": customer_updates,
+            "learning_events_count": len(learned_events),
+            "turns": turns
+        }
+
+        # Volcado al histórico consolidado JSONL
+        jsonl_path = os.path.join(logs_dir, "call_transcripts.jsonl")
+        try:
+            with open(jsonl_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(transcript_record, ensure_ascii=False) + "\n")
+        except Exception as e:
+            logger.error(f"Error escribiendo en call_transcripts.jsonl: {e}")
+
+        # Archivo individual de la llamada
+        single_file = os.path.join(transcripts_dir, f"{session_id}.json")
+        try:
+            with open(single_file, "w", encoding="utf-8") as f:
+                json.dump(transcript_record, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.error(f"Error guardando transcripción individual {single_file}: {e}")
+
+        logger.info(f"📁 [KAG Transcripción Persistida]: Sesión {session_id} guardada con {len(turns)} turnos y {len(learned_events)} aprendizajes.")
+        return transcript_record
+
 # Instancia global del motor KAG
 kag_engine = KAGEngine()
+

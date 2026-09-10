@@ -207,6 +207,105 @@ class PostgresAGEManager:
             logger.error(f"Error guardando orden en SQLite local: {e}")
             return False
 
+    def save_call_log(self, call_data: Dict[str, Any], proto_bytes: Optional[bytes] = None) -> bool:
+        """Persiste la telemetría, duración y resumen de una llamada telefónica."""
+        session_id = call_data.get("session_id", f"call_{int(datetime.now().timestamp())}")
+        phone = call_data.get("caller_phone", "Desconocido")
+        name = call_data.get("caller_name", "Cliente")
+        duration = float(call_data.get("duration_sec", 0.0))
+        order_id = call_data.get("order_id", None)
+        turn_count = int(call_data.get("turn_count", 0))
+        now_str = datetime.now().isoformat()
+
+        if self.is_age_connected:
+            try:
+                import psycopg2
+                with self._pg_conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO call_logs (session_id, caller_phone, caller_name, duration_sec, order_id, turn_count, proto_payload, created_at)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (session_id) DO UPDATE SET
+                            duration_sec = EXCLUDED.duration_sec,
+                            order_id = COALESCE(EXCLUDED.order_id, call_logs.order_id),
+                            turn_count = EXCLUDED.turn_count,
+                            proto_payload = COALESCE(EXCLUDED.proto_payload, call_logs.proto_payload);
+                    """, (session_id, phone, name, duration, order_id, turn_count, psycopg2.Binary(proto_bytes) if proto_bytes else None, now_str))
+                logger.info(f"📞 [Call Log Guardado en PG]: Sesión {session_id} | {turn_count} turnos | {duration:.1f}s")
+                return True
+            except Exception as e:
+                logger.error(f"Error guardando call_log en PostgreSQL: {e}")
+
+        # Fallback local SQLite
+        try:
+            with self._sqlite_conn:
+                self._sqlite_conn.execute("""
+                    CREATE TABLE IF NOT EXISTS call_logs (
+                        session_id TEXT PRIMARY KEY,
+                        caller_phone TEXT,
+                        caller_name TEXT,
+                        duration_sec REAL,
+                        order_id TEXT,
+                        turn_count INTEGER,
+                        created_at TEXT
+                    )
+                """)
+                self._sqlite_conn.execute("""
+                    INSERT OR REPLACE INTO call_logs (session_id, caller_phone, caller_name, duration_sec, order_id, turn_count, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (session_id, phone, name, duration, order_id, turn_count, now_str))
+            return True
+        except Exception as e:
+            logger.error(f"Error guardando call_log en SQLite local: {e}")
+            return False
+
+    def update_customer_profile(self, phone: str, updates: Dict[str, Any]) -> bool:
+        """Actualiza campos específicos (dirección, notas, zona) del perfil de un cliente."""
+        if not phone or phone in ["Desconocido", "0000000000"]:
+            return False
+        now_str = datetime.now().isoformat()
+        name = updates.get("name")
+        address = updates.get("address")
+        zone = updates.get("zone")
+        notes = updates.get("notes")
+
+        if self.is_age_connected:
+            try:
+                with self._pg_conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO customers (phone, name, default_address, default_zone, notes, updated_at)
+                        VALUES (%s, COALESCE(%s, 'Cliente'), %s, %s, %s, %s)
+                        ON CONFLICT (phone) DO UPDATE SET
+                            name = COALESCE(NULLIF(EXCLUDED.name, 'Cliente'), customers.name),
+                            default_address = COALESCE(NULLIF(EXCLUDED.default_address, ''), customers.default_address),
+                            default_zone = COALESCE(NULLIF(EXCLUDED.default_zone, ''), customers.default_zone),
+                            notes = CASE 
+                                WHEN customers.notes IS NULL OR customers.notes = '' THEN EXCLUDED.notes
+                                WHEN EXCLUDED.notes IS NOT NULL AND EXCLUDED.notes <> '' AND position(EXCLUDED.notes in customers.notes) = 0 
+                                    THEN customers.notes || ' | ' || EXCLUDED.notes
+                                ELSE customers.notes 
+                            END,
+                            updated_at = EXCLUDED.updated_at;
+                    """, (phone, name, address or "", zone or "", notes or "", now_str))
+                return True
+            except Exception as e:
+                logger.error(f"Error actualizando perfil en PostgreSQL: {e}")
+
+        try:
+            with self._sqlite_conn:
+                self._sqlite_conn.execute("""
+                    INSERT INTO customers (phone, name, default_address, default_zone, notes, updated_at)
+                    VALUES (?, COALESCE(?, 'Cliente'), ?, ?, ?, ?)
+                    ON CONFLICT(phone) DO UPDATE SET
+                        default_address = COALESCE(NULLIF(excluded.default_address, ''), customers.default_address),
+                        default_zone = COALESCE(NULLIF(excluded.default_zone, ''), customers.default_zone),
+                        notes = COALESCE(NULLIF(excluded.notes, ''), customers.notes),
+                        updated_at = excluded.updated_at
+                """, (phone, name, address or "", zone or "", notes or "", now_str))
+            return True
+        except Exception as e:
+            logger.error(f"Error actualizando perfil en SQLite: {e}")
+            return False
+
     def save_learning_event(self, event_dict: Dict[str, Any], proto_bytes: bytes) -> bool:
         """Persiste un nuevo aprendizaje o corrección fonética en la base de datos."""
         event_id = event_dict.get("event_id", f"LRN-{int(datetime.now().timestamp())}")

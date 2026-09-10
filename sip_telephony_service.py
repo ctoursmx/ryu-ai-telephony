@@ -55,6 +55,8 @@ from pyVoIP.VoIP import VoIPPhone, PhoneStatus, CallState
 import pyVoIP.SIP as SIP
 import pyVoIP.RTP as RTP
 from voice_engine_ryu import RyuVoiceAgent
+from kag_engine import kag_engine
+from db.graph_db import db_manager
 from security_guard import (
     CallWatchdog,
     call_rate_limiter,
@@ -380,7 +382,7 @@ def preload_greeting():
     global PRELOADED_GREETING
     print("Pre-sintetizando saludo y banco de audio en RAM con soxr HQ...")
     try:
-        temp_agent = RyuVoiceAgent(caller_phone=PHONE_NUMBER, caller_name="Cliente Telefonico")
+        temp_agent = RyuVoiceAgent(caller_phone="0000000000", caller_name="Cliente")
         PRELOADED_GREETING = asyncio.run(synthesize_speech_alaw(temp_agent.greeting, temp_agent))
         print(f"Saludo precargado exitosamente ({len(PRELOADED_GREETING)} bytes, {len(PRELOADED_GREETING)/8000:.1f}s).")
         
@@ -787,6 +789,7 @@ def handle_incoming_call(call):
             print(f"[Audio RTP]: Codec: {c.preference} | Destino: {c.outIP}:{c.outPort}")
             
         agent = RyuVoiceAgent(caller_phone=caller_phone, caller_name="Cliente")
+        call_turns: List[Dict[str, Any]] = []
         
         print(f">>> [RyuBot]: \"{agent.greeting}\"")
         if PRELOADED_GREETING:
@@ -873,6 +876,17 @@ def handle_incoming_call(call):
             tts_time = round((time.time() - t2) * 1000)
             print(f"⚡ [Latencias]: STT={stt_time}ms | LLM={llm_time}ms | TTS={tts_time}ms | Total={stt_time+llm_time+tts_time}ms")
             
+            call_turns.append({
+                "turn": len(call_turns) + 1,
+                "timestamp": datetime.now().isoformat(),
+                "user_raw": user_text,
+                "bot_response": reply_text,
+                "stt_ms": stt_time,
+                "llm_ms": llm_time,
+                "tts_ms": tts_time,
+                "total_ms": stt_time + llm_time + tts_time
+            })
+            
             play_audio_to_call(call, reply_audio)
             
             if call.state != CallState.ANSWERED:
@@ -908,6 +922,16 @@ def handle_incoming_call(call):
                         reply_text = agent.think_and_respond(post_text)
                         print(f">>> [RyuBot]: \"{reply_text}\"")
                         reply_audio = asyncio.run(synthesize_speech_alaw(reply_text, agent))
+                        call_turns.append({
+                            "turn": len(call_turns) + 1,
+                            "timestamp": datetime.now().isoformat(),
+                            "user_raw": post_text,
+                            "bot_response": reply_text,
+                            "stt_ms": 0,
+                            "llm_ms": 0,
+                            "tts_ms": 0,
+                            "total_ms": 0
+                        })
                         play_audio_to_call(call, reply_audio)
                 
         time.sleep(1)
@@ -915,9 +939,22 @@ def handle_incoming_call(call):
             call.hangup()
             print(">>> Llamada finalizada normalmente.")
 
-        # 3. Registrar duración para control de abusos y purgar audios huérfanos
+        # 3. Registrar duración para control de abusos y alimentar transcripción a KAG
         if 'watchdog' in locals() and 'caller_phone' in locals():
             call_rate_limiter.record_call_end(caller_phone, watchdog.elapsed_seconds)
+            try:
+                kag_engine.process_call_transcript(
+                    session_id=call_id,
+                    caller_phone=caller_phone,
+                    caller_name=getattr(agent, "caller_name", "Cliente"),
+                    duration_sec=watchdog.elapsed_seconds,
+                    turns=call_turns,
+                    order_confirmed=agent.order_confirmed,
+                    order_id=getattr(agent, "confirmed_order_id", None)
+                )
+            except Exception as kag_err:
+                print(f"⚠️ Error procesando transcripción KAG: {kag_err}")
+
         cleanup_temp_audio_files()
 
             
