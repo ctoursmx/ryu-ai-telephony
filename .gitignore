@@ -44,6 +44,8 @@ ENV/
 logs/
 *.sqlite3
 *.db
+*.db-shm
+*.db-wal
 
 
 # Archivos temporales de agentes y desarrollo
