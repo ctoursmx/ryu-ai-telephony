@@ -99,8 +99,8 @@ def run_simulations():
         print(f"📞 Simulando llamada {i}/{len(SIMULATED_CALLS)}: {name} ({phone})")
         session_id = f"sim_call_{int(time.time())}_{i}"
         
-        # 1. Registrar / Actualizar cliente en Grafo AGE y SQL
-        db_manager.upsert_customer(phone, name, total_orders=i)
+        # 1. Consultar / registrar perfil de cliente en Grafo AGE y SQL
+        profile = db_manager.get_customer_profile(phone)
         
         # 2. Procesar turnos de conversación
         for turn_idx, (user_msg, bot_msg) in enumerate(call_data["turns"], 1):
