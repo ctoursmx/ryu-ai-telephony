@@ -169,11 +169,6 @@ class RyuVoiceAgent:
         costo_envio_base = "$15 MXN (Tarifa de envío nocturno activa después de las 7:30 PM)" if is_after_730pm else "$0 MXN (Envío gratis dentro de Tequila antes de las 7:30 PM)"
         
         current_prompt = SYSTEM_PROMPT
-        if PROMPT_PATH.exists():
-            try:
-                current_prompt = PROMPT_PATH.read_text(encoding="utf-8")
-            except Exception:
-                pass
                 
         # 1. Normalización KAG de fonética y alias aprendidos en el grafo
         clean_user_text, replacements = kag_engine.normalize_user_text(sanitized_input)

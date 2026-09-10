@@ -147,9 +147,9 @@ def patched_trans(self) -> None:
             
         # 2. Construir cabecera estándar RFC 3550 RTP (12 bytes)
         # Byte 0: V=2, P=0, X=0, CC=0 (0x80)
-        # Byte 1: PT=8 (PCMA)
+        # Byte 1: PT=8 (PCMA) o PT=0 (PCMU)
         packet = b"\x80"
-        packet += chr(int(self.preference)).encode("utf8")
+        packet += bytes([int(self.preference) & 0x7F])
         try:
             packet += self.outSequence.to_bytes(2, byteorder="big")
         except OverflowError:
@@ -174,12 +174,10 @@ def patched_trans(self) -> None:
         self.outSequence = (self.outSequence + 1) & 0xFFFF
         self.outTimestamp = (self.outTimestamp + len(payload)) & 0xFFFFFFFF
         
-        # 4. Dormir con precisión monotónica y spinwait de microsegundo
+        # 4. Dormir con cadencia precisa sin spinwait para liberar CPU al 100%
         remaining = t_next - time.perf_counter()
-        if remaining > 0.002:
-            time.sleep(remaining - 0.001)
-        while time.perf_counter() < t_next:
-            pass
+        if remaining > 0:
+            time.sleep(remaining)
             
         # Si hubo un retraso drástico del sistema operativo, re-anclar tiempo base
         if (time.perf_counter() - t_next) > 0.040:
@@ -306,29 +304,38 @@ atexit.register(cleanup)
 # 3. MOTOR DE STT LOCAL ULTRA VELOZ (faster-whisper EN RAM)
 # ----------------------------------------------------------------------
 WHISPER_MODEL = None
+WHISPER_MODEL_NAME = os.getenv("WHISPER_MODEL", "tiny")
+WHISPER_THREADS = int(os.getenv("WHISPER_THREADS", "1"))
+WHISPER_COMPUTE = os.getenv("WHISPER_COMPUTE_TYPE", "int8")
 
 def get_whisper_model():
     global WHISPER_MODEL
     if WHISPER_MODEL is None:
-        print("Cargando faster-whisper en RAM (CPU int8, 4 hilos)...")
+        print(f"Cargando faster-whisper ({WHISPER_MODEL_NAME}) en RAM (CPU {WHISPER_COMPUTE}, {WHISPER_THREADS} hilos)...")
         t0 = time.time()
-        WHISPER_MODEL = WhisperModel("base", device="cpu", compute_type="int8", cpu_threads=4)
+        WHISPER_MODEL = WhisperModel(WHISPER_MODEL_NAME, device="cpu", compute_type=WHISPER_COMPUTE, cpu_threads=WHISPER_THREADS)
         dummy = np.zeros(16000, dtype=np.float32)
         list(WHISPER_MODEL.transcribe(dummy, language="es", beam_size=1)[0])
         print(f"faster-whisper listo y precalentado en {time.time()-t0:.2f}s.")
     return WHISPER_MODEL
 
 # ----------------------------------------------------------------------
-# 4. SINTESIS DE VOZ DE ALTA FIDELIDAD (soxr HQ + G.711 A-LAW)
+# 4. SINTESIS DE VOZ DE ALTA FIDELIDAD Y BANCO DE AUDIO EN RAM
 # ----------------------------------------------------------------------
-async def synthesize_speech_alaw(text: str, agent: RyuVoiceAgent) -> bytes:
+AUDIO_CACHE_RAM = {}
+
+async def synthesize_speech_alaw(text: str, agent: Optional[RyuVoiceAgent] = None) -> bytes:
     """
-    Sintetiza la voz con Edge-TTS, remuestrea con soxr HQ (filtro brickwall anti-aliasing a 3800Hz),
-    aplica escalado estándar de nivel de telefonía (-18 dBFS) para prevenir saturación y estática,
-    y codifica directamente a tramas G.711 A-law de 8kHz.
+    Sintetiza la voz con Edge-TTS (velocidad natural para telefonia),
+    remuestrea con soxr HQ (filtro anti-aliasing puro a 8000Hz),
+    normaliza a -1.4 dBFS (0.85) para máxima fidelidad en G.711 A-law sin distorsión ni clipping,
+    y aprovecha el caché en RAM para latencia 0ms en frases comunes.
     """
-    clean_text = agent.clean_text_for_speech(text)
-    comm = edge_tts.Communicate(clean_text, "es-MX-DaliaNeural", rate="+18%", pitch="+0Hz")
+    clean_text = agent.clean_text_for_speech(text) if agent else text.strip()
+    if clean_text in AUDIO_CACHE_RAM:
+        return AUDIO_CACHE_RAM[clean_text]
+
+    comm = edge_tts.Communicate(clean_text, "es-MX-DaliaNeural", rate="+3%", pitch="+0Hz")
     mp3_bytes = b""
 
     async for chunk in comm.stream():
@@ -350,34 +357,54 @@ async def synthesize_speech_alaw(text: str, agent: RyuVoiceAgent) -> bytes:
     # Remuestreo de alta fidelidad soxr HQ de 24kHz a 8kHz puro
     pcm8_float = soxr.resample(pcm24_float, 24000, 8000, quality="HQ")
     
-    # Margen de seguridad para telefonía móvil (elimina saturación en altavoces de teléfono)
-    peak = np.max(np.abs(pcm8_float))
-    target = 0.70
-    if peak > target:
-        pcm8_float = pcm8_float * (target / peak)
+    # Normalización dinámica óptima para telefonía G.711 (-1.4 dBFS)
+    peak = float(np.max(np.abs(pcm8_float)))
+    if peak > 1e-4:
+        pcm8_float = pcm8_float * (0.85 / peak)
     else:
-        pcm8_float = pcm8_float * target
+        pcm8_float = pcm8_float * 0.85
         
-    pcm8_int16 = (pcm8_float * 32767.0).astype(np.int16)
+    pcm8_int16 = np.clip(pcm8_float * 32767.0, -32768, 32767).astype(np.int16)
     alaw_bytes = audioop.lin2alaw(pcm8_int16.tobytes(), 2)
+    
+    # Guardar en caché RAM si es menor a 25 segundos
+    if len(alaw_bytes) < 200000:
+        AUDIO_CACHE_RAM[clean_text] = alaw_bytes
+        
     return alaw_bytes
 
 PRELOADED_GREETING = None
 
 def preload_greeting():
     global PRELOADED_GREETING
-    print("Pre-sintetizando saludo en RAM con soxr HQ...")
+    print("Pre-sintetizando saludo y banco de audio en RAM con soxr HQ...")
     try:
         temp_agent = RyuVoiceAgent(caller_phone=PHONE_NUMBER, caller_name="Cliente Telefonico")
         PRELOADED_GREETING = asyncio.run(synthesize_speech_alaw(temp_agent.greeting, temp_agent))
         print(f"Saludo precargado exitosamente ({len(PRELOADED_GREETING)} bytes, {len(PRELOADED_GREETING)/8000:.1f}s).")
+        
+        # Pre-cargar frases comunes para latencia 0ms TTS
+        common_phrases = [
+            "¿Sería para entrega a domicilio o pasar a recoger a sucursal?",
+            "¿A qué dirección y colonia te lo enviamos?",
+            "¿Tu pago sería en efectivo o con tarjeta?",
+            "¿Con qué billete pagarías para enviarte tu cambio?",
+            "¿Te gustaría agregar alguna bebida o sushi a tu orden?",
+            "¿Deseas ordenar algo más?",
+            "¿Sigues en la línea? Tómate tu tiempo, con calma.",
+            "Aquí sigo en la línea a tus órdenes.",
+            "¡Muchas gracias por llamar a Ryu, que disfrutes tu comida! ¡Hasta luego!"
+        ]
+        for p in common_phrases:
+            asyncio.run(synthesize_speech_alaw(p, temp_agent))
+        print(f"Banco de audio en RAM: {len(AUDIO_CACHE_RAM)} frases precargadas (Latencia 0ms).")
     except Exception as e:
-        print(f"Aviso precargando saludo: {e}")
+        print(f"Aviso precargando banco de audio: {e}")
 
 # ----------------------------------------------------------------------
 # 5. TRANSMISION Y RECEPCION CONTINUA DE AUDIO TELEFONICO
 # ----------------------------------------------------------------------
-def play_audio_to_call(call, alaw_audio: bytes):
+def play_audio_to_call(call, alaw_audio: bytes, is_greeting: bool = False):
     if not alaw_audio or call.state != CallState.ANSWERED:
         return
         
@@ -398,15 +425,18 @@ def play_audio_to_call(call, alaw_audio: bytes):
     # Esperar a que la cola de transmisión entregue el audio con detección de interrupción (Barge-in)
     barge_in_count = 0
     t_play_start = time.time()
+    # Para el saludo inicial damos 3.5 segundos de gracia para que el cliente escuche la bienvenida completa
+    min_barge_in_time = 3.5 if is_greeting else 0.5
+    
     while hasattr(client, "outbound_queue") and not client.outbound_queue.empty() and call.state == CallState.ANSWERED:
-        # Detectar si el cliente habla mientras el bot habla (después de los primeros 250ms):
-        if (time.time() - t_play_start) > 0.25 and hasattr(client, "inbound_queue") and client.inbound_queue.qsize() > 0:
+        # Detectar si el cliente habla mientras el bot habla:
+        if (time.time() - t_play_start) > min_barge_in_time and hasattr(client, "inbound_queue") and client.inbound_queue.qsize() > 0:
             try:
                 pkt = client.inbound_queue.get_nowait()
                 rms = audioop.rms(pkt, 2)
-                if rms > 1200:  # Voz humana real confirmada
+                if rms > 2600:  # Energía de voz humana clara (filtra soplidos, ruidos tenues y eco telefónico)
                     barge_in_count += 1
-                    if barge_in_count >= 3:  # 60ms continuos de voz humana
+                    if barge_in_count >= 8:  # 160ms continuos de voz humana
                         print(f"⚡ [Barge-in]: El cliente empezó a hablar (Energía: {rms}). Deteniendo habla del bot.")
                         # Detener de inmediato el habla del bot vaciando la cola de salida
                         while not client.outbound_queue.empty():
@@ -418,7 +448,7 @@ def play_audio_to_call(call, alaw_audio: bytes):
                         client.inbound_queue.put(pkt)
                         break
                 else:
-                    barge_in_count = 0
+                    barge_in_count = max(0, barge_in_count - 1)
             except queue.Empty:
                 pass
         # Verificar si el cliente colgó durante la reproducción del bot (flujo RTP cortado)
@@ -437,14 +467,14 @@ def play_audio_to_call(call, alaw_audio: bytes):
         for _ in range(client.inbound_queue.qsize()):
             try:
                 pkt = client.inbound_queue.get_nowait()
-                if audioop.rms(pkt, 2) > 500:  # Conservar cualquier trama con voz humana
+                if audioop.rms(pkt, 2) > 800:  # Conservar cualquier trama con voz humana
                     preserved_frames.append(pkt)
             except queue.Empty:
                 break
         for f in preserved_frames:
             client.inbound_queue.put(f)
 
-def record_user_speech(call, max_silence_seconds: float = 0.95, max_duration: float = 35.0) -> bytes:
+def record_user_speech(call, max_silence_seconds: float = 0.65, max_duration: float = 35.0) -> bytes:
     """
     Escucha la voz del cliente recibiendo tramas 100% continuas de 16-bit PCM desde la cola inbound.
     Cero inserciones de falso silencio y cero tartamudeo.
@@ -454,12 +484,12 @@ def record_user_speech(call, max_silence_seconds: float = 0.95, max_duration: fl
         return b""
         
     frames_pcm16 = []
-    pre_buffer = collections.deque(maxlen=6)  # 120ms de buffer previo para no perder la primera consonante
+    pre_buffer = collections.deque(maxlen=8)  # 160ms de buffer previo para no perder la primera consonante
     start_time = time.time()
     last_voice_time = time.time()
     has_started_speaking = False
     consecutive_voice_frames = 0
-    VOICE_THRESHOLD = 180  # Umbral optimizado para capturar respuestas suaves ("sí", "confirmo")
+    VOICE_THRESHOLD = 220  # Umbral optimizado para filtrar ruido de fondo y capturar respuestas del comensal
 
     while call.state == CallState.ANSWERED:
         elapsed = time.time() - start_time
@@ -487,7 +517,7 @@ def record_user_speech(call, max_silence_seconds: float = 0.95, max_duration: fl
             pre_buffer.append(pcm16)
             if rms > VOICE_THRESHOLD:
                 consecutive_voice_frames += 1
-                if consecutive_voice_frames >= 3:  # 60ms continuos de voz real confirmada
+                if consecutive_voice_frames >= 2:  # 40ms continuos de voz real confirmada
                     has_started_speaking = True
                     print(f"🗣️ [Cliente hablando... (Energia: {rms})]")
                     frames_pcm16.extend(pre_buffer)
@@ -763,7 +793,7 @@ def handle_incoming_call(call):
         else:
             saludo_audio = asyncio.run(synthesize_speech_alaw(agent.greeting, agent))
             
-        play_audio_to_call(call, saludo_audio)
+        play_audio_to_call(call, saludo_audio, is_greeting=True)
         
         silencios_consecutivos = 0
         
