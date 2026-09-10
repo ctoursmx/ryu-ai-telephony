@@ -16,7 +16,7 @@ if sys.stdout.encoding != "utf-8":
         pass
 
 from kag_engine import kag_engine
-from db.graph_db import graph_db
+from db.graph_db import db_manager, GRAPH_NAME
 from proto_service import create_order_proto, serialize_order
 
 SIMULATED_CALLS = [
@@ -88,7 +88,7 @@ SIMULATED_CALLS = [
 def run_simulations():
     print("==================================================================")
     print("INICIANDO SIMULACIONES DE LLAMADAS PARA DENSIFICAR EL GRAFO KAG")
-    print(f"Base de datos de grafos: {graph_db.graph_name} (PostgreSQL + Apache AGE)")
+    print(f"Base de datos de grafos: {GRAPH_NAME} (PostgreSQL + Apache AGE)")
     print("==================================================================\n")
     
     total_learned = 0
@@ -101,7 +101,7 @@ def run_simulations():
         session_id = f"sim_call_{int(time.time())}_{i}"
         
         # 1. Registrar / Actualizar cliente en Grafo AGE y SQL
-        graph_db.upsert_customer(phone, name, total_orders=i)
+        db_manager.upsert_customer(phone, name, total_orders=i)
         
         # 2. Procesar turnos de conversación
         for turn_idx, (user_msg, bot_msg) in enumerate(call_data["turns"], 1):
@@ -123,15 +123,13 @@ def run_simulations():
             try:
                 alias_clean = alias_phrase.strip().lower()
                 query = f"""
-                SELECT * FROM cypher('{graph_db.graph_name}', $$
                     MATCH (d:Dish)
                     WHERE toLower(d.name) = toLower('{canonical_name}')
                     MERGE (a:Alias {{name: '{alias_clean}'}})
                     MERGE (a)-[r:MEANS]->(d)
                     RETURN d.name, a.name
-                $$) as (dish_name agtype, alias_name agtype);
                 """
-                graph_db.execute_cypher(query)
+                db_manager.execute_cypher(query, return_cols="dish_name agtype, alias_name agtype")
                 total_learned += 1
                 print(f"   ✨ [Grafo AGE]: Vinculado alias '{alias_phrase}' -> '{canonical_name}'")
             except Exception as e:
