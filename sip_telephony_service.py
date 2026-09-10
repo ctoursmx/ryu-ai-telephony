@@ -237,10 +237,29 @@ print("Arquitectura pyVoIP parcheada: RTP Monotónico 50pps + Receptor 16-bit + 
 # ----------------------------------------------------------------------
 # 2. CONFIGURACION DE RED Y CREDENCIALES ZADARMA
 # ----------------------------------------------------------------------
-SIP_SERVER = os.getenv("ZADARMA_SIP_SERVER", "sip.zadarma.com")
-SIP_USER = os.getenv("ZADARMA_SIP_USER", "20432")
-SIP_PASSWORD = os.getenv("ZADARMA_SIP_PASSWORD", "xlNN8A1Szl")
-PHONE_NUMBER = os.getenv("ZADARMA_PHONE_NUMBER", "+523385261250")
+SIP_SERVER = os.getenv("ZADARMA_SIP_SERVER") or "pbx.zadarma.com"
+SIP_USER = os.getenv("ZADARMA_SIP_USER") or os.getenv("ZADARMA_SIP_LOGIN") or "590697-101"
+SIP_PASSWORD = os.getenv("ZADARMA_SIP_PASSWORD") or "H6x5b9Fafj"
+PHONE_NUMBER = os.getenv("ZADARMA_PHONE_NUMBER") or os.getenv("ZADARMA_CALLER_ID") or "+523385261250"
+
+# Si existe settings.json de ryu-backend, leer credenciales maestras
+for cfg_path in [
+    os.path.join(os.path.dirname(__file__), "data", "settings.json"),
+    os.path.join(os.path.dirname(__file__), "..", "ryu-backend", "data", "settings.json"),
+    "/home/ubuntu/ryu-backend/data/settings.json"
+]:
+    if os.path.exists(cfg_path):
+        try:
+            import json as _json
+            with open(cfg_path, "r", encoding="utf-8") as _f:
+                _cfg = _json.load(_f)
+                SIP_SERVER = _cfg.get("ZADARMA_SIP_SERVER", SIP_SERVER)
+                SIP_USER = _cfg.get("ZADARMA_SIP_LOGIN", SIP_USER)
+                SIP_PASSWORD = _cfg.get("ZADARMA_SIP_PASSWORD", SIP_PASSWORD)
+                PHONE_NUMBER = _cfg.get("ZADARMA_CALLER_ID", PHONE_NUMBER)
+                break
+        except Exception:
+            pass
 
 def get_local_ip():
     try:
