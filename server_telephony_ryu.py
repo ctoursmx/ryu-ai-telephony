@@ -10,6 +10,12 @@ import time
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from voice_engine_ryu import RyuVoiceAgent
+from security_guard import (
+    message_rate_limiter,
+    input_sanitizer,
+    cleanup_temp_audio_files
+)
+
 
 app = FastAPI(title="Ryu Voice Telephony Server - Ultra Fast", version="2.0.0")
 
@@ -234,18 +240,40 @@ def home():
 @app.post("/api/fast-chat")
 async def fast_chat(request: Request):
     t0 = time.time()
-    data = await request.json()
-    user_text = data.get("text", "")
-    session_id = data.get("session_id", "default_call")
     
+    # 1. Blindaje Anti-Spam (Rate Limiter por IP y Sesión)
+    client_ip = request.client.host if request.client else "unknown"
+    data = await request.json()
+    raw_user_text = data.get("text", "")
+    session_id = data.get("session_id", "default_call")
+    client_key = f"{client_ip}_{session_id}"
+
+    is_allowed, retry_after = message_rate_limiter.check_rate_limit(client_key)
+    if not is_allowed:
+        return JSONResponse(
+            status_code=429,
+            content={
+                "error": f"Demasiadas peticiones. Por seguridad, espera {retry_after} segundos.",
+                "retry_after": retry_after
+            }
+        )
+
+    # 2. Sanitización contra Prompt Flooding / Text Bombing
+    user_text = input_sanitizer.sanitize_text(raw_user_text, max_chars=350)
+    if not user_text:
+        return JSONResponse(status_code=400, content={"error": "Mensaje vacío o no válido"})
+
     agent = get_agent_for_session(session_id)
     
-    # 1. GPT-4o-mini responde con el menú oficial y reglas de presupuesto
+    # 3. GPT-4o-mini responde con el menú oficial y reglas de presupuesto
     response_text = agent.think_and_respond(user_text)
     
-    # 2. Síntesis instantánea con Edge-TTS
+    # 4. Síntesis instantánea con Edge-TTS
     audio_filename = f"fast_reply_{session_id}_{int(time.time() * 1000)}.mp3"
     await agent.speak(response_text, audio_filename)
+    
+    # 5. Mantenimiento automático de disco (elimina audios huérfanos > 5 min)
+    cleanup_temp_audio_files(max_age_seconds=300)
     
     total_time = round((time.time() - t0) * 1000)
     print(f">>> [Llamada {session_id[:12]}] [Latencia: {total_time} ms] Cliente: '{user_text}' -> RyuBot: '{response_text[:30]}...'")
@@ -257,6 +285,7 @@ async def fast_chat(request: Request):
         "latency_ms": total_time,
         "session_id": session_id
     }
+
 
 @app.get("/audio/{filename}")
 def get_audio(filename: str):

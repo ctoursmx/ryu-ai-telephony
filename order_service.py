@@ -102,6 +102,33 @@ def format_telegram_ticket(order):
     
     return "\n".join(ticket)
 
+def create_protobuf_order(order_dict):
+    """Convierte y serializa un pedido a binario Protobuf usando ProtoService."""
+    try:
+        from proto_service import ProtoService
+        return ProtoService.serialize_order_to_bytes(order_dict)
+    except Exception as e:
+        print(f"Error serializando comanda a Protobuf: {e}")
+        return None
+
+def audit_order_with_kag(order_dict):
+    """Audita un pedido contra el grafo de conocimiento KAG para asegurar exactitud de precios."""
+    try:
+        from kag_engine import kag_engine
+        for item in order_dict.get('items', []):
+            item_name = item.get('name', '').lower().strip()
+            if item_name in kag_engine.dishes_index:
+                canonical_dish = kag_engine.dishes_index[item_name]
+                official_price = canonical_dish['price']
+                if item.get('price') != official_price:
+                    print(f"Auditor KAG: Corrigiendo precio de {item['name']} (${item.get('price')} -> ${official_price})")
+                    item['price'] = official_price
+        return order_dict
+    except Exception as e:
+        print(f"Aviso en auditoría KAG de orden: {e}")
+        return order_dict
+
 if __name__ == '__main__':
     status = get_active_menus()
     print("Estado actual del restaurante:", json.dumps(status, indent=2))
+

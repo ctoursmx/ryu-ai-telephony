@@ -10,13 +10,23 @@ import json
 import time
 import asyncio
 import datetime
+import threading
 import urllib.request
 from pathlib import Path
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 import edge_tts
 from openai import OpenAI
 
-load_dotenv()
+from kag_engine import kag_engine
+from proto_service import ProtoService
+from db.graph_db import db_manager
+from security_guard import input_sanitizer
+
 
 # --- CONFIGURACIÓN CENTRAL ---
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -39,7 +49,16 @@ class RyuVoiceAgent:
         self.caller_name = caller_name
         self.conversation_history = []
         self.order_confirmed = False
-        self.greeting = "¡Hola, buenas tardes! Gracias por llamar a Ryu en Tequila. ¿Qué te gustaría ordenar hoy?"
+        self.session_id = f"ryu_call_{int(time.time())}_{caller_phone[-4:] if len(caller_phone)>=4 else '0000'}"
+
+        # Consultar perfil en Grafo / DB para clientes recurrentes
+        self.customer_profile = db_manager.get_customer_profile(caller_phone)
+        if self.customer_profile and self.customer_profile.get("name") and self.customer_profile["name"] != "Cliente":
+            self.caller_name = self.customer_profile["name"]
+            self.greeting = f"¡Hola, buenas tardes {self.caller_name}! Qué gusto que llames de nuevo a Ryu en Tequila. ¿Qué te gustaría ordenar hoy?"
+        else:
+            self.greeting = "¡Hola, buenas tardes! Gracias por llamar a Ryu en Tequila. ¿Qué te gustaría ordenar hoy?"
+
 
     def get_time_and_menu_status(self):
         now = datetime.datetime.now()
@@ -115,6 +134,15 @@ class RyuVoiceAgent:
         return ""
 
     def think_and_respond(self, user_text: str) -> str:
+        # Blindaje de seguridad: Sanitización contra prompt flooding / text bombing
+        sanitized_input = input_sanitizer.sanitize_text(user_text, max_chars=350)
+        if not sanitized_input.strip():
+            return "Disculpa, no alcancé a escucharte bien. ¿Podrías indicarme qué te gustaría ordenar?"
+
+        # Blindaje contra repetición compulsiva / spam
+        if input_sanitizer.is_spam_repetition(sanitized_input, self.conversation_history):
+            return "Ya registré esa indicación en tu cuenta. ¿Deseas agregar algún otro platillo o bebida?"
+
         dia, hora, estado, menu_activo = self.get_time_and_menu_status()
         now = datetime.datetime.now()
         is_after_730pm = (now.hour * 60 + now.minute) >= 1170 # 7:30 PM (19:30)
@@ -127,6 +155,14 @@ class RyuVoiceAgent:
             except Exception:
                 pass
                 
+        # 1. Normalización KAG de fonética y alias aprendidos en el grafo
+        clean_user_text, replacements = kag_engine.normalize_user_text(sanitized_input)
+
+        
+        # 2. Hechos inmutables desde el Grafo de Conocimiento (KAG Ground Truth)
+        kag_facts = kag_engine.retrieve_ground_truth_facts(clean_user_text, now)
+        kag_prompt_block = kag_engine.generate_kag_context_prompt(kag_facts, self.customer_profile)
+        
         system_context = (
             f"{current_prompt}\n\n"
             f"--- ESTADO EN TIEMPO REAL (TEQUILA, JALISCO) ---\n"
@@ -135,7 +171,8 @@ class RyuVoiceAgent:
             f"• Tarifa de envío estándar actual: {costo_envio_base}\n"
             f"• Estado del local: {estado}\n"
             f"• Menú disponible en este momento: {menu_activo}\n"
-            f"--------------------------------------------------"
+            f"--------------------------------------------------\n"
+            f"{kag_prompt_block}"
         )
         
         messages = [
@@ -144,9 +181,7 @@ class RyuVoiceAgent:
         
         for msg in self.conversation_history[-35:]:
             messages.append(msg)
-            
-        # Corregir errores comunes de transcripción telefónica en español mexicano
-        clean_user_text = user_text
+
         clean_user_text = re.sub(r"\bsucho\b", "sushi", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bsuchi\b", "sushi", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bsucesos\b", "sushis", clean_user_text, flags=re.IGNORECASE)
@@ -296,11 +331,25 @@ class RyuVoiceAgent:
         
         bot_response = response.choices[0].message.content or "" if response else ""
         
+        # 3. Guardián Anti-Alucinación KAG (Auditoría de hechos contra el Grafo)
+        bot_response, v_result = kag_engine.audit_and_correct_response(bot_response, kag_facts)
+        if v_result.price_corrected:
+            print(f"🛡️ [KAG Anti-Alucinación]: Corrección de precios aplicada -> {v_result.discrepancy_reasons}")
+            
+        # 4. Bucle de Autoaprendizaje Continuo KAG
+        kag_engine.learn_from_interaction(
+            session_id=self.session_id,
+            caller_phone=self.caller_phone,
+            user_text=clean_user_text,
+            bot_response=bot_response
+        )
+        
         self.conversation_history.append({"role": "user", "content": clean_user_text})
         self.conversation_history.append({"role": "assistant", "content": bot_response})
         
         # Guardián de confirmación: NUNCA cerrar la llamada si el cliente estaba haciendo una pregunta
         lower_resp = bot_response.lower()
+
         if any(p in lower_resp for p in ["pasé tu pedido a cocina", "enviado a cocina", "quedó agendado", "quedo agendado", "[comanda]"]):
             if is_question:
                 print("🛡️ [Guardián de Confirmación]: El bot intentó confirmar pero el cliente hizo una pregunta. Cancelando confirmación prematura.")
@@ -551,3 +600,70 @@ class RyuVoiceAgent:
                 print(">>> Comanda enviada a Telegram con éxito.")
         except Exception as e:
             print(f">>> Error enviando a Telegram: {e}")
+
+        # 5. Serialización Protobuf y Persistencia en PostgreSQL / Apache AGE
+        try:
+            m_tot = re.search(r"Total a cobrar:?\s*</b>?\s*\$?(\d+)", comanda_clean, re.IGNORECASE)
+            tot_val = float(m_tot.group(1)) if m_tot else 0.0
+
+            m_ship = re.search(r"Costo de Env[ií]o:?\s*</b>?\s*\$?(\d+)", comanda_clean, re.IGNORECASE)
+            ship_val = float(m_ship.group(1)) if m_ship else 0.0
+
+            m_addr = re.search(r"Modalidad y Direcci[oó]n:?\s*</b>?\s*([^\n\r]+)", comanda_clean, re.IGNORECASE)
+            addr_val = m_addr.group(1).strip() if m_addr else ""
+
+            m_pay = re.search(r"Forma de pago:?\s*</b>?\s*([^\n\r]+)", comanda_clean, re.IGNORECASE)
+            pay_val = m_pay.group(1).strip() if m_pay else "Efectivo"
+
+            # Parsear items individuales
+            items_list = []
+            for line in comanda_clean.splitlines():
+                if line.strip().startswith("•") or line.strip().startswith("-"):
+                    item_name_m = re.search(r"[•\-]\s*(?:\d+x\s*)?([^:$]+)", line)
+                    price_m = re.search(r"\$(\d+)", line)
+                    if item_name_m and price_m:
+                        items_list.append({
+                            "name": item_name_m.group(1).strip(),
+                            "unit_price": float(price_m.group(1)),
+                            "quantity": 1,
+                            "notes": line.strip()
+                        })
+
+            order_payload = {
+                "order_id": f"RYU-{int(time.time())}",
+                "session_id": self.session_id,
+                "customer_phone": self.caller_phone,
+                "customer_name": self.caller_name,
+                "items": items_list,
+                "items_subtotal": max(0.0, tot_val - ship_val),
+                "shipping_fee": ship_val,
+                "total_amount": tot_val,
+                "delivery_type": "domicilio" if "domicilio" in addr_val.lower() else "sucursal",
+                "address": addr_val,
+                "payment_method": pay_val,
+                "is_future_order": is_future_order,
+                "scheduled_time": sched_time if is_future_order else "",
+                "raw_ticket_text": ticket
+            }
+
+            proto_bytes = ProtoService.serialize_order_to_bytes(order_payload)
+            db_saved = db_manager.save_order(order_payload, proto_bytes)
+            if db_saved:
+                print(f"📦 [Protobuf + DB]: Comanda {order_payload['order_id']} serializada ({len(proto_bytes)} bytes) y persistida exitosamente.")
+
+            # 6. Despacho Soft Restaurant (SQL Server) + Impresión Multiestación y Comanda Prioridad IA
+            try:
+                from soft_restaurant_bridge import dispatch_order
+                # Despacho en segundo plano para no demorar la respuesta de audio al cliente
+                threading.Thread(
+                    target=dispatch_order,
+                    args=(order_payload,),
+                    daemon=True,
+                    name=f"dispatch-{order_payload['order_id']}"
+                ).start()
+                print(f"🚀 [Soft Restaurant & Comandas]: Despacho en segundo plano iniciado para comanda {order_payload['order_id']}.")
+            except Exception as err_sr:
+                print(f"⚠️ Aviso despachando a Soft Restaurant / Comandas: {err_sr}")
+        except Exception as err_db:
+            print(f"Aviso guardando comanda en base de datos: {err_db}")
+

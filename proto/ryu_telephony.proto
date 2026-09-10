@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package ryu.telephony.session;
+
+enum SpeakerRole {
+  SPEAKER_UNSPECIFIED = 0;
+  USER = 1;
+  ASSISTANT = 2;
+  SYSTEM = 3;
+}
+
+message LatencyMetrics {
+  double stt_latency_sec = 1;
+  double llm_latency_sec = 2;
+  double kag_latency_sec = 3;
+  double tts_latency_sec = 4;
+  double total_turn_latency_sec = 5;
+}
+
+message SpeechTurn {
+  int32 turn_index = 1;
+  string timestamp = 2;
+  SpeakerRole speaker = 3;
+  string raw_transcript = 4;
+  string cleaned_text = 5;
+  repeated string recognized_entities = 6;
+  string assistant_response = 7;
+  LatencyMetrics metrics = 8;
+  bool was_fact_corrected = 9;
+  string correction_note = 10;
+}
+
+message CallSession {
+  string session_id = 1;
+  string caller_phone = 2;
+  string caller_name = 3;
+  string start_time = 4;
+  string end_time = 5;
+  double total_duration_sec = 6;
+  bool order_completed = 7;
+  string associated_order_id = 8;
+  repeated SpeechTurn turns = 9;
+  string termination_reason = 10;
+}

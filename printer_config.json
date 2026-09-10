@@ -1,16 +1,33 @@
 {
   "mode": "escpos_network",
+  "enable_sql_injection": true,
+  "enable_escpos_printing": true,
   "soft_restaurant_db": {
     "server": "localhost\\SOFTRESTAURANT",
     "database": "SOFTRESTAURANT10",
     "user": "sa",
-    "password": "your_password"
+    "password": "your_password",
+    "driver": "ODBC Driver 17 for SQL Server",
+    "trusted_connection": false
+  },
+  "priority_alert_settings": {
+    "enabled": true,
+    "header_title": "¡¡ATENCIÓN COCINA - ALTA PRIORIDAD!!",
+    "source_badge": "PEDIDO TOMADO POR INTELIGENCIA ARTIFICIAL",
+    "promised_delivery_time": "40 a 50 minutos",
+    "print_to_all_stations": true,
+    "expediter_printer_key": "expediter"
   },
   "printers": {
+    "expediter": {
+      "ip": "192.168.1.100",
+      "port": 9100,
+      "name": "Impresora Principal / Expedición y Caja"
+    },
     "sushi_bar": {
       "ip": "192.168.1.101",
       "port": 9100,
-      "name": "Impresora Sushi"
+      "name": "Impresora Barra Sushi"
     },
     "hot_kitchen": {
       "ip": "192.168.1.102",

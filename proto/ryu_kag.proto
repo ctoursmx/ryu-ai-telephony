@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package ryu.kag;
+
+enum EntityType {
+  ENTITY_UNSPECIFIED = 0;
+  DISH = 1;
+  CATEGORY = 2;
+  INGREDIENT = 3;
+  ZONE = 4;
+  COMBO = 5;
+  RULE = 6;
+  CUSTOMER = 7;
+}
+
+message KnowledgeFact {
+  EntityType entity_type = 1;
+  string entity_id = 2;
+  string canonical_name = 3;
+  double price = 4;
+  string category = 5;
+  bool is_available_now = 6;
+  string schedule_details = 7;
+  repeated string ingredients = 8;
+  repeated string allergens = 9;
+  double shipping_fee = 10;
+  repeated string aliases = 11;
+  double confidence_score = 12;
+}
+
+message VerificationRequest {
+  string raw_user_prompt = 1;
+  string generated_response = 2;
+  repeated string extracted_dishes = 3;
+  double proposed_total = 4;
+  double proposed_shipping = 5;
+}
+
+message VerificationResult {
+  bool is_valid = 1;
+  bool price_corrected = 2;
+  double verified_items_total = 3;
+  double verified_shipping_fee = 4;
+  double verified_grand_total = 5;
+  string corrected_response = 6;
+  repeated string discrepancy_reasons = 7;
+  repeated KnowledgeFact grounded_facts = 8;
+}
+
+message LearningFeedbackEvent {
+  string event_id = 1;
+  string session_id = 2;
+  string customer_phone = 3;
+  string original_text = 4;
+  string corrected_intent = 5;
+  string learned_alias = 6;
+  string target_canonical_entity = 7;
+  EntityType entity_type = 8;
+  string notes = 9;
+  string created_at = 10;
+  bool applied_to_graph = 11;
+}

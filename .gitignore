@@ -43,6 +43,8 @@ ENV/
 *.log
 logs/
 *.sqlite3
+*.db
+
 
 # Archivos temporales de agentes y desarrollo
 scratch/

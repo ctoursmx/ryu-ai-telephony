@@ -32,11 +32,11 @@ def run_simulation():
         if res['available_menus']['japanese']: menus.append("Japonés (1pm-11pm)")
         if res['available_menus']['italian']: menus.append("Italiano (Vie-Dom 1pm-7pm)")
         if res['available_menus']['snacks']: menus.append("Snacks (7pm-11pm)")
-        
         status_str = ", ".join(menus) if menus else "CERRADO"
         print(f" • {label:30} -> {status_str}")
         
-    print("\n--- 2. EJEMPLO DE COMANDA GENERADA PARA TELEGRAM ---")
+    print("\n--- 2. AUDITORÍA FACTUAL KAG (ANTI-ALUCINACIÓN) ---")
+
     mock_order = {
         "order_id": "RYU-204",
         "customer_name": "Ana Martínez",
@@ -47,15 +47,27 @@ def run_simulation():
         "payment_method": "Efectivo",
         "payment_change_for": 500,
         "items": [
-            { "name": "Lasagna Italiana", "price": 150, "quantity": 1 },
+            { "name": "Lasagna Tradicional", "price": 180, "quantity": 1 }, # Precio inflado/alucinado para probar KAG
             { "name": "Sushi Cheese Explosion", "price": 135, "quantity": 1 },
-            { "name": "Soda Italiana Mora Azul-Boba", "price": 45, "quantity": 1 }
+            { "name": "Refresco (500ml)", "price": 35, "quantity": 1 }
         ]
     }
-    
+    from order_service import audit_order_with_kag, create_protobuf_order
+    mock_order = audit_order_with_kag(mock_order)
+
+    print("\n--- 3. EJEMPLO DE COMANDA GENERADA PARA TELEGRAM ---")
     ticket = format_telegram_ticket(mock_order)
     print(ticket)
+
+    print("\n--- 4. SERIALIZACIÓN PROTOCOL BUFFERS (COMPACTACIÓN BINARIA) ---")
+    proto_bytes = create_protobuf_order(mock_order)
+    if proto_bytes:
+        print(f" • Payload Protobuf generado: {len(proto_bytes)} bytes.")
+        from proto_service import ProtoService
+        rec = ProtoService.deserialize_order_from_bytes(proto_bytes)
+        print(f" • Deserialización verificada: Orden #{rec.get('order_id')} de {rec.get('customer_name')} por ${rec.get('total_amount')} MXN.")
     print("\n=========================================================")
 
 if __name__ == '__main__':
     run_simulation()
+

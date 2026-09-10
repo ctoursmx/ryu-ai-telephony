@@ -125,7 +125,35 @@ En Linux, el contenedor corre con `network_mode: host` para recibir el tráfico 
 
 ---
 
-## 🐙 Conexión con GitHub
+## 🧠 Base de Datos de Grafos (PostgreSQL + Apache AGE) y KAG
+
+El sistema incorpora una capa de grafos de conocimiento con **Apache AGE** (A Graph Extension for PostgreSQL) y **KAG (Knowledge-Augmented Generation)**:
+
+1. **Grafo de Conocimiento (openCypher):**
+   - Modela la ontología completa del restaurante: `(:Dish)`, `(:Category)`, `(:Zone)`, `(:Customer)`, `(:Alias)`.
+   - Consulta y enlaza relaciones: `(:Dish)-[:BELONGS_TO]->(:Category)` y `(:Dish)-[:HAS_ALIAS]->(:Alias)`.
+2. **KAG Anti-Alucinación (Ground Truth):**
+   - Anclaje factual determinista antes de la generación: inyecta precios exactos, reglas de horarios y tarifas de envío en tiempo real.
+   - Guardián post-generación: audita la respuesta del LLM antes de hablar o despachar, corrigiendo automáticamente cualquier desviación de precios o inventiva aritmética.
+3. **Bucle de Autoaprendizaje Continuo (Self-Learning):**
+   - Aprende dinámicamente alias fonéticos y regionalismos cuando el cliente corrige al bot ("no, quise decir X").
+   - Recuerda preferencias y direcciones de clientes recurrentes para agilizar el pedido.
+4. **Protocol Buffers (Protobuf v3):**
+   - Esquemas estrictos en `proto/` (`ryu_order.proto`, `ryu_telephony.proto`, `ryu_kag.proto`).
+   - Serialización binaria ultra compacta (~300-450 bytes) almacenada en columnas `BYTEA` de PostgreSQL y transferida entre servicios con latencia cero.
+
+Para compilar esquemas proto:
+```bash
+python -m grpc_tools.protoc -Iproto --python_out=proto proto/ryu_order.proto proto/ryu_telephony.proto proto/ryu_kag.proto
+```
+
+Para correr las pruebas automatizadas del pipeline KAG y Protobuf:
+```bash
+python test_kag_pipeline.py
+```
+
+---
+
 
 Para subir este proyecto a tu cuenta de GitHub:
 

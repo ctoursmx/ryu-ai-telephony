@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package ryu.telephony.order;
+
+enum DeliveryType {
+  DELIVERY_UNSPECIFIED = 0;
+  DOMICILIO = 1;
+  SUCURSAL = 2;
+}
+
+enum PaymentMethod {
+  PAYMENT_UNSPECIFIED = 0;
+  EFECTIVO = 1;
+  TARJETA = 2;
+  TRANSFERENCIA = 3;
+}
+
+enum OrderStatus {
+  STATUS_UNSPECIFIED = 0;
+  PENDIENTE_PREPARACION = 1;
+  EN_COCINA = 2;
+  LISTO_PARA_ENTREGA = 3;
+  EN_CAMINO = 4;
+  ENTREGADO = 5;
+  CANCELADO = 6;
+  PROGRAMADO_FUTURO = 7;
+}
+
+message OrderItem {
+  string item_id = 1;
+  string name = 2;
+  double unit_price = 3;
+  int32 quantity = 4;
+  double subtotal = 5;
+  repeated string options = 6;
+  string notes = 7;
+  bool is_combo_included = 8;
+  string category = 9;
+}
+
+message DeliveryInfo {
+  DeliveryType type = 1;
+  string address = 2;
+  string references = 3;
+  string zone_name = 4;
+  double shipping_fee = 5;
+  bool is_night_rate_applied = 6;
+}
+
+message PaymentInfo {
+  PaymentMethod method = 1;
+  double paid_with_amount = 2;
+  double change_due = 3;
+}
+
+message Order {
+  string order_id = 1;
+  string session_id = 2;
+  string customer_phone = 3;
+  string customer_name = 4;
+  repeated OrderItem items = 5;
+  double items_subtotal = 6;
+  double shipping_fee = 7;
+  double total_amount = 8;
+  DeliveryInfo delivery = 9;
+  PaymentInfo payment = 10;
+  OrderStatus status = 11;
+  bool is_future_order = 12;
+  string scheduled_time = 13;
+  string created_at = 14;
+  string audit_hash = 15;
+  string raw_ticket_text = 16;
+}

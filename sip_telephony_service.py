@@ -51,8 +51,14 @@ if sys.platform == "win32":
 
 import pyVoIP
 from pyVoIP.VoIP import VoIPPhone, PhoneStatus, CallState
-from pyVoIP import RTP, SIP
 from voice_engine_ryu import RyuVoiceAgent
+from security_guard import (
+    CallWatchdog,
+    call_rate_limiter,
+    input_sanitizer,
+    cleanup_temp_audio_files
+)
+
 
 # ----------------------------------------------------------------------
 # 1. PARCHES DE ARQUITECTURA CRITICOS PARA pyVoIP
@@ -696,15 +702,37 @@ def handle_incoming_call(call):
     print(f"=======================================================")
     
     try:
+        caller_phone = extract_caller_phone(call)
+        print(f"📱 [Teléfono Detectado del Cliente]: {caller_phone}")
+
+        # 1. Blindaje Anti-Spam / Anti-Flooding (CallRateLimiter)
+        can_accept, reject_reason = call_rate_limiter.can_accept_call(caller_phone)
+        if not can_accept:
+            print(f"🛑 [Anti-Spam]: Llamada bloqueada de {caller_phone}. Razón: {reject_reason}")
+            try:
+                call.answer()
+                audio_bloqueo = asyncio.run(synthesize_speech_alaw(
+                    "Estimado cliente, por seguridad tu línea ha alcanzado el límite de llamadas permitidas por ahora. Por favor intenta de nuevo en unos minutos. ¡Hasta luego!",
+                    None
+                ))
+                play_audio_to_call(call, audio_bloqueo)
+                time.sleep(1)
+            except Exception:
+                pass
+            call.hangup()
+            return
+
+        call_rate_limiter.record_call_start(caller_phone)
         call.answer()
         print(">>> Llamada descolgada exitosamente.")
+
+        # 2. Inicializar Guardián de Tiempo y Turnos (CallWatchdog)
+        watchdog = CallWatchdog(call_id=call_id, max_duration_sec=360, warning_threshold_sec=300, max_turns=20)
         
         if hasattr(call, "RTPClients") and call.RTPClients:
             c = call.RTPClients[0]
             print(f"[Audio RTP]: Codec: {c.preference} | Destino: {c.outIP}:{c.outPort}")
             
-        caller_phone = extract_caller_phone(call)
-        print(f"📱 [Teléfono Detectado del Cliente]: {caller_phone}")
         agent = RyuVoiceAgent(caller_phone=caller_phone, caller_name="Cliente")
         
         print(f">>> [RyuBot]: \"{agent.greeting}\"")
@@ -718,6 +746,19 @@ def handle_incoming_call(call):
         silencios_consecutivos = 0
         
         while call.state == CallState.ANSWERED and not agent.order_confirmed:
+            # Supervisión continua de tiempo y turnos máximos
+            w_status, w_msg = watchdog.check_status()
+            if w_status == "WARNING_TIME":
+                print(f"⚠️ [Watchdog Alerta de Tiempo (Minuto 5)]: {w_msg}")
+                w_audio = asyncio.run(synthesize_speech_alaw(w_msg, agent))
+                play_audio_to_call(call, w_audio)
+            elif w_status in ["EXPIRED_TIME", "EXPIRED_TURNS"]:
+                print(f"🛑 [Watchdog Límite de Llamada Alcanzado ({w_status})]: {w_msg}")
+                exp_audio = asyncio.run(synthesize_speech_alaw(w_msg, agent))
+                play_audio_to_call(call, exp_audio)
+                time.sleep(1)
+                break
+
             print("\n[Escuchando al cliente por telefono...]")
             pcm_audio = record_user_speech(call)
             
@@ -735,38 +776,37 @@ def handle_incoming_call(call):
                     print(f">>> [RyuBot Recordatorio]: \"{reminder}\"")
                     reminder_audio = asyncio.run(synthesize_speech_alaw(reminder, agent))
                     play_audio_to_call(call, reminder_audio)
-                elif silencios_consecutivos == 8:
+                elif silencios_consecutivos == 6:
                     reminder = "Aquí sigo en la línea a tus órdenes. Tómate el tiempo necesario para armar tu orden."
                     print(f">>> [RyuBot Recordatorio]: \"{reminder}\"")
                     reminder_audio = asyncio.run(synthesize_speech_alaw(reminder, agent))
                     play_audio_to_call(call, reminder_audio)
-                elif silencios_consecutivos == 18:
-                    reminder = "Sigo aquí contigo esperándote, avísame cuando tengas lista la siguiente parte de tu pedido."
+                elif silencios_consecutivos == 9:
+                    reminder = "Sigo aquí contigo esperándote, avísame cuando tengas lista tu orden."
                     print(f">>> [RyuBot Recordatorio]: \"{reminder}\"")
                     reminder_audio = asyncio.run(synthesize_speech_alaw(reminder, agent))
                     play_audio_to_call(call, reminder_audio)
-                elif silencios_consecutivos == 30:
-                    reminder = "Aquí sigo escuchando con calma, no te preocupes."
-                    print(f">>> [RyuBot Recordatorio]: \"{reminder}\"")
-                    reminder_audio = asyncio.run(synthesize_speech_alaw(reminder, agent))
-                    play_audio_to_call(call, reminder_audio)
-                elif silencios_consecutivos >= 45:
-                    despedida = "Por inactividad prolongada voy a terminar la llamada. Si gustas volver a marcar, estamos a tus órdenes. ¡Hasta luego!"
-                    print(f">>> [RyuBot Despedida]: \"{despedida}\"")
+                elif silencios_consecutivos >= 12:
+                    despedida = "Por inactividad voy a terminar la llamada para liberar la línea. Si gustas volver a marcar, estamos a tus órdenes. ¡Hasta luego!"
+                    print(f">>> [RyuBot Despedida por Inactividad]: \"{despedida}\"")
                     despedida_audio = asyncio.run(synthesize_speech_alaw(despedida, agent))
                     play_audio_to_call(call, despedida_audio)
                     break
                 continue
 
-                
             silencios_consecutivos = 0
             
             t0 = time.time()
-            user_text = transcribe_pcm_memory(agent, pcm_audio)
+            raw_user_text = transcribe_pcm_memory(agent, pcm_audio)
             stt_time = round((time.time() - t0) * 1000)
+            
+            # Sanitización de longitud para prevenir prompt flooding / text bombing
+            user_text = input_sanitizer.sanitize_text(raw_user_text, max_chars=350)
+            watchdog.record_turn()
             
             if not user_text:
                 continue
+
                 
             print(f">>> [Cliente ({stt_time}ms)]: \"{user_text}\"")
             
@@ -821,6 +861,12 @@ def handle_incoming_call(call):
         if call.state == CallState.ANSWERED:
             call.hangup()
             print(">>> Llamada finalizada normalmente.")
+
+        # 3. Registrar duración para control de abusos y purgar audios huérfanos
+        if 'watchdog' in locals() and 'caller_phone' in locals():
+            call_rate_limiter.record_call_end(caller_phone, watchdog.elapsed_seconds)
+        cleanup_temp_audio_files()
+
             
     except Exception as e:
         print(f"Error procesando llamada {call_id}: {e}")
