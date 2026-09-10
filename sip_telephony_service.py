@@ -79,11 +79,16 @@ from security_guard import (
 # A) Control de reintentos infinitos
 pyVoIP.REGISTER_FAILURE_THRESHOLD = 99999
 pyVoIP.TRANSMIT_DELAY_REDUCTION = 0.0
+pyVoIP.DEBUG = True
 
 # B) Responder 200 OK a pings OPTIONS de Zadarma (RFC 3261 Heartbeat)
 original_parse_message = SIP.SIPClient.parse_message
 
 def patched_parse_message(self, message):
+    if message.type != SIP.SIPMessageType.MESSAGE:
+        print(f"📥 [SIP Response]: Status={getattr(message, 'status', None)} | CSeq={message.headers.get('CSeq')} | Via={message.headers.get('Via')}")
+        if getattr(message, 'status', None) == SIP.SIPStatus.OK:
+            return
     if message.type == SIP.SIPMessageType.MESSAGE and message.method == "OPTIONS":
         response = self.gen_ok(message)
         try:
