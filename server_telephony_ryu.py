@@ -539,44 +539,392 @@ async def update_announcement(request: Request):
     save_restaurant_state(state)
     return state
 
-@app.get("/api/menu-items")
-def get_menu_items():
-    """Catálogo aplanado de todos los platillos para el buscador del dashboard"""
+CATEGORY_NAMES = {
+    # Japanese
+    "entremeses": "Entremeses",
+    "kushiage_brochetas": "Kushiages (Brochetas)",
+    "ensaladas": "Ensaladas Frescas",
+    "sashimi": "Sashimi",
+    "nigiris": "Nigiris Tradicionales",
+    "sopas": "Sopas & Ramen",
+    "yakimeshi": "Arroz Yakimeshi",
+    "teppanyaki_teriyaki": "Teppanyaki & Teriyaki",
+    "platillos_fuertes": "Platillos Fuertes",
+    "sushi_rollos": "Rollos de Sushi",
+    
+    # Italian
+    "platillos": "Platillos Tradicionales",
+    "paninis_y_pitas": "Paninis y Pitas Artesanales",
+    "ensaladas_italianas": "Ensaladas Italianas",
+    "sodas_italianas": "Sodas Italianas con Boba",
+    
+    # Snacks
+    "paquetes_y_promos": "Paquetes & Promos",
+    "hamburguesas": "Hamburguesas",
+    "hot_dogs": "Hot Dogs",
+    "tortas": "Tortas de Pierna",
+    "snacks_fritos_y_papas": "Snacks Fritos & Papas",
+    "toppings_extras": "Toppings Extras",
+    "bebidas": "Bebidas & Refrescos",
+    "postres": "Postres & Helados"
+}
+
+def get_full_hierarchical_menu():
     menu_path = Path(__file__).parent / "menu_ryu.json"
-    items = []
+    state = load_restaurant_state()
+    dish_overrides = state.get("dish_overrides", {})
+    unavailable_dishes = set(state.get("unavailable_dishes", []))
+
+    if not menu_path.exists():
+        return {"schedules": {}, "menus": {}}
+
+    try:
+        with open(menu_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception as e:
+        print(f"Error leyendo menu_ryu.json: {e}")
+        return {"schedules": {}, "menus": {}}
+
+    schedules = data.get("schedules", {})
+    menu_raw = data.get("menu", {})
+    result_menus = {}
+
+    menu_meta = {
+        "japanese": {
+            "title": "Comida Japonesa & General",
+            "icon": "🍣",
+            "schedule_label": schedules.get("japanese", {}).get("description", "1:00 PM a 6:30 PM (L-D)")
+        },
+        "snacks": {
+            "title": "Snacks, Hamburguesas & Hot Dogs",
+            "icon": "🍔",
+            "schedule_label": schedules.get("snacks", {}).get("description", "6:30 PM a 10:30 PM (L-D)")
+        },
+        "italian": {
+            "title": "Comida Italiana (Capri Cucina)",
+            "icon": "🍕",
+            "schedule_label": schedules.get("italian", {}).get("description", "1:00 PM a 6:30 PM (Viernes, Sábados y Domingos)")
+        }
+    }
+
+    for menu_key in ["japanese", "snacks", "italian"]:
+        meta = menu_meta.get(menu_key, {})
+        section_content = menu_raw.get(menu_key, {})
+        categories = []
+
+        if isinstance(section_content, dict):
+            for cat_key, items in section_content.items():
+                cat_name = CATEGORY_NAMES.get(cat_key, cat_key.replace("_", " ").capitalize())
+                dishes = []
+
+                if isinstance(items, list):
+                    for it in items:
+                        if isinstance(it, dict) and "name" in it:
+                            dish_id = it.get("id", f"{menu_key}_{cat_key}_{len(dishes)}")
+                            ov = dish_overrides.get(dish_id, {})
+                            
+                            name = ov.get("name", it.get("name"))
+                            price = ov.get("price", it.get("price", 0))
+                            desc = ov.get("description", it.get("description", ""))
+                            sched_mode = ov.get("schedule_mode", "menu_default")
+                            custom_start = ov.get("custom_start", "")
+                            custom_end = ov.get("custom_end", "")
+                            
+                            is_active = ov.get("is_active", True)
+                            if name in unavailable_dishes:
+                                is_active = False
+
+                            dishes.append({
+                                "id": dish_id,
+                                "name": name,
+                                "price": price,
+                                "description": desc,
+                                "menu_key": menu_key,
+                                "category_key": cat_key,
+                                "category_name": cat_name,
+                                "schedule_mode": sched_mode,
+                                "custom_start": custom_start,
+                                "custom_end": custom_end,
+                                "is_active": is_active
+                            })
+                elif cat_key == "paninis_y_pitas" and isinstance(items, dict):
+                    desc_templates = {
+                        "BBQ": "Fajitas de pollo en salsa BBQ artesanal con queso gratinado. Incluye papas a la francesa.",
+                        "Chipotle": "Fajitas de pollo en cremosa salsa chipotle con queso gratinado. Incluye papas a la francesa.",
+                        "Cheesesteak": "Finas tiras de res salteadas con cebolla y queso gratinado. Incluye papas a la francesa.",
+                        "Pollo Clásico": "Pechuga de pollo a la plancha a las finas hierbas con queso gratinado. Incluye papas a la francesa.",
+                        "Pollo Crispy": "Tiras de pollo crujiente empanizado con queso gratinado. Incluye papas a la francesa.",
+                        "Carnes Frías": "Jamón de pierna, salami y queso derretido artesanal. Incluye papas a la francesa."
+                    }
+                    for esp in items.get("especialidades", []):
+                        esp_name = esp.get("name", "")
+                        base_desc = desc_templates.get(esp_name, "Deliciosa especialidad con queso derretido y papas a la francesa.")
+                        
+                        p_id = f"{esp.get('id', 'it')}_panini"
+                        p_ov = dish_overrides.get(p_id, {})
+                        p_name = p_ov.get("name", f"Panini {esp_name}")
+                        p_active = p_ov.get("is_active", True)
+                        if p_name in unavailable_dishes:
+                            p_active = False
+
+                        dishes.append({
+                            "id": p_id,
+                            "name": p_name,
+                            "price": p_ov.get("price", 100),
+                            "description": p_ov.get("description", f"{base_desc} Servido en pan panini rústico crujiente."),
+                            "menu_key": menu_key,
+                            "category_key": cat_key,
+                            "category_name": cat_name,
+                            "schedule_mode": p_ov.get("schedule_mode", "menu_default"),
+                            "custom_start": p_ov.get("custom_start", ""),
+                            "custom_end": p_ov.get("custom_end", ""),
+                            "is_active": p_active
+                        })
+
+                        pita_id = f"{esp.get('id', 'it')}_pita"
+                        pita_ov = dish_overrides.get(pita_id, {})
+                        pita_name = pita_ov.get("name", f"Pita {esp_name}")
+                        pita_active = pita_ov.get("is_active", True)
+                        if pita_name in unavailable_dishes:
+                            pita_active = False
+
+                        dishes.append({
+                            "id": pita_id,
+                            "name": pita_name,
+                            "price": pita_ov.get("price", 120),
+                            "description": pita_ov.get("description", f"{base_desc} Servido en pan pita artesanal suave."),
+                            "menu_key": menu_key,
+                            "category_key": cat_key,
+                            "category_name": cat_name,
+                            "schedule_mode": pita_ov.get("schedule_mode", "menu_default"),
+                            "custom_start": pita_ov.get("custom_start", ""),
+                            "custom_end": pita_ov.get("custom_end", ""),
+                            "is_active": pita_active
+                        })
+
+                if dishes:
+                    categories.append({
+                        "id": cat_key,
+                        "name": cat_name,
+                        "count": len(dishes),
+                        "dishes": dishes
+                    })
+
+        total_dishes = sum(len(c["dishes"]) for c in categories)
+        result_menus[menu_key] = {
+            "title": meta.get("title"),
+            "icon": meta.get("icon"),
+            "schedule_label": meta.get("schedule_label"),
+            "total_dishes": total_dishes,
+            "categories": categories
+        }
+
+    return {
+        "schedules": schedules,
+        "menus": result_menus
+    }
+
+@app.get("/api/menu/full")
+def api_get_full_menu():
+    """Retorna la jerarquía completa de los 3 menús con categorías, platillos, precios y horarios."""
+    return get_full_hierarchical_menu()
+
+@app.post("/api/menu/dish/update")
+async def api_update_dish(request: Request):
+    """Actualiza nombre, precio, descripción, horario y disponibilidad de un platillo específico."""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para editar platillos."})
+
+    data = await request.json()
+    dish_id = str(data.get("dish_id", "")).strip()
+    if not dish_id:
+        return JSONResponse(status_code=400, content={"error": "Falta el ID del platillo (dish_id)"})
+
+    state = load_restaurant_state()
+    dish_overrides = state.setdefault("dish_overrides", {})
+    unavailable_dishes = state.setdefault("unavailable_dishes", [])
+
+    new_name = str(data.get("name", "")).strip()
+    try:
+        new_price = float(data.get("price", 0))
+    except (ValueError, TypeError):
+        new_price = 0.0
+    new_desc = str(data.get("description", "")).strip()
+    new_sched_mode = str(data.get("schedule_mode", "menu_default")).strip()
+    custom_start = str(data.get("custom_start", "")).strip()
+    custom_end = str(data.get("custom_end", "")).strip()
+    is_active = bool(data.get("is_active", True))
+
+    current_ov = dish_overrides.get(dish_id, {})
+    old_name = current_ov.get("name", new_name)
+
+    # Actualizar estado de disponibilidad
+    if not is_active:
+        if new_name and new_name not in unavailable_dishes:
+            unavailable_dishes.append(new_name)
+    else:
+        if new_name in unavailable_dishes:
+            unavailable_dishes.remove(new_name)
+        if old_name in unavailable_dishes:
+            unavailable_dishes.remove(old_name)
+
+    dish_overrides[dish_id] = {
+        "name": new_name,
+        "price": new_price,
+        "description": new_desc,
+        "schedule_mode": new_sched_mode,
+        "custom_start": custom_start,
+        "custom_end": custom_end,
+        "is_active": is_active,
+        "_updated_at": time.time()
+    }
+
+    # También actualizar menu_ryu.json directamente para persistencia estricta
+    menu_path = Path(__file__).parent / "menu_ryu.json"
+    if menu_path.exists():
+        try:
+            with open(menu_path, "r", encoding="utf-8") as f:
+                raw_data = json.load(f)
+            
+            # Buscar el platillo por ID en las secciones
+            updated_raw = False
+            for sec_name, sec_dict in raw_data.get("menu", {}).items():
+                if isinstance(sec_dict, dict):
+                    for cat_name, items_list in sec_dict.items():
+                        if isinstance(items_list, list):
+                            for d in items_list:
+                                if isinstance(d, dict) and d.get("id") == dish_id:
+                                    if new_name: d["name"] = new_name
+                                    d["price"] = new_price
+                                    if new_desc: d["description"] = new_desc
+                                    updated_raw = True
+                                    break
+            if updated_raw:
+                with open(menu_path, "w", encoding="utf-8") as f:
+                    json.dump(raw_data, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"Aviso al sincronizar menu_ryu.json: {e}")
+
+    save_restaurant_state(state)
+    return {"status": "ok", "dish_id": dish_id, "dish": dish_overrides[dish_id]}
+
+@app.get("/api/menu/schedules")
+def api_get_schedules():
+    """Retorna los horarios de los 3 menús."""
+    menu_path = Path(__file__).parent / "menu_ryu.json"
     if menu_path.exists():
         try:
             with open(menu_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                menu = data.get("menu", {})
-                for section_name, section_content in menu.items():
-                    if isinstance(section_content, dict):
-                        for cat_name, dish_list in section_content.items():
-                            if isinstance(dish_list, list):
-                                for d in dish_list:
-                                    if isinstance(d, dict) and "name" in d:
-                                        items.append({
-                                            "id": d.get("id", ""),
-                                            "name": d.get("name", ""),
-                                            "category": cat_name.replace("_", " ").capitalize(),
-                                            "price": d.get("price", 0)
-                                        })
-                            elif cat_name == "paninis_y_pitas" and isinstance(dish_list, dict):
-                                for esp in dish_list.get("especialidades", []):
-                                    items.append({
-                                        "id": esp.get("id", ""),
-                                        "name": f"Panini {esp.get('name', '')}",
-                                        "category": "Paninis y Pitas",
-                                        "price": 100
-                                    })
-                                    items.append({
-                                        "id": esp.get("id", "") + "_p",
-                                        "name": f"Pita {esp.get('name', '')}",
-                                        "category": "Paninis y Pitas",
-                                        "price": 120
-                                    })
+            return data.get("schedules", {})
+        except Exception:
+            pass
+    return {}
+
+@app.post("/api/menu/schedules")
+async def api_update_schedules(request: Request):
+    """Actualiza los horarios de disponibilidad de los 3 menús."""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para cambiar horarios."})
+
+    data = await request.json()
+    menu_path = Path(__file__).parent / "menu_ryu.json"
+    if menu_path.exists():
+        try:
+            with open(menu_path, "r", encoding="utf-8") as f:
+                raw_data = json.load(f)
+            if "schedules" not in raw_data:
+                raw_data["schedules"] = {}
+            for k in ["japanese", "italian", "snacks"]:
+                if k in data:
+                    raw_data["schedules"][k] = data[k]
+            with open(menu_path, "w", encoding="utf-8") as f:
+                json.dump(raw_data, f, ensure_ascii=False, indent=2)
         except Exception as e:
-            print(f"Error al leer menu_ryu.json: {e}")
+            return JSONResponse(status_code=500, content={"error": f"Error guardando horarios: {e}"})
+
+    state = load_restaurant_state()
+    state["schedules_override"] = data
+    save_restaurant_state(state)
+    return {"status": "ok", "schedules": data}
+
+@app.get("/api/ingredients")
+def api_get_ingredients():
+    """Retorna el catálogo de 45+ ingredientes con estado de disponibilidad en tiempo real."""
+    state = load_restaurant_state()
+    catalog = state.get("ingredient_catalog", [])
+    unavailable = set(state.get("unavailable_ingredients", []))
+    
+    enriched = []
+    for ing in catalog:
+        ing_id = ing.get("id", "").strip().lower()
+        enriched.append({
+            **ing,
+            "available": ing_id not in unavailable
+        })
+        
+    return {
+        "ingredients": enriched,
+        "unavailable_count": len(unavailable),
+        "total_count": len(enriched)
+    }
+
+@app.post("/api/ingredients/save")
+async def api_save_ingredient(request: Request):
+    """Agrega o actualiza un ingrediente en el catálogo oficial."""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para modificar ingredientes."})
+
+    data = await request.json()
+    ing_id = str(data.get("id", "")).strip().lower()
+    name = str(data.get("name", "")).strip()
+    category = str(data.get("category", "General")).strip()
+    substitute = str(data.get("substitute", "otra opción disponible")).strip()
+    affected = str(data.get("affected_dishes", "")).strip()
+
+    if not ing_id or not name:
+        return JSONResponse(status_code=400, content={"error": "ID y Nombre son obligatorios"})
+
+    state = load_restaurant_state()
+    catalog = state.setdefault("ingredient_catalog", [])
+    
+    found = False
+    for ing in catalog:
+        if ing.get("id") == ing_id:
+            ing["name"] = name
+            ing["category"] = category
+            ing["substitute"] = substitute
+            ing["affected_dishes"] = affected
+            found = True
+            break
+            
+    if not found:
+        catalog.append({
+            "id": ing_id,
+            "name": name,
+            "category": category,
+            "substitute": substitute,
+            "affected_dishes": affected
+        })
+
+    save_restaurant_state(state)
+    return {"status": "ok", "ingredient": {"id": ing_id, "name": name, "category": category, "substitute": substitute, "affected_dishes": affected}}
+
+@app.get("/api/menu-items")
+def get_menu_items():
+    """Catálogo aplanado de todos los platillos para el buscador del dashboard"""
+    full_menu = get_full_hierarchical_menu()
+    items = []
+    for menu_key, m_info in full_menu.get("menus", {}).items():
+        for cat in m_info.get("categories", []):
+            for d in cat.get("dishes", []):
+                items.append({
+                    "id": d["id"],
+                    "name": d["name"],
+                    "category": cat["name"],
+                    "price": d["price"],
+                    "menu": m_info["title"]
+                })
     return items
 
 @app.get("/api/kitchen-prompt-preview")
