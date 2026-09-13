@@ -703,6 +703,7 @@ def get_full_hierarchical_menu():
                         })
 
                 if dishes:
+                    dishes.sort(key=lambda d: d.get("name", "").lower())
                     categories.append({
                         "id": cat_key,
                         "name": cat_name,
@@ -710,6 +711,7 @@ def get_full_hierarchical_menu():
                         "dishes": dishes
                     })
 
+        categories.sort(key=lambda c: c.get("name", "").lower())
         total_dishes = sum(len(c["dishes"]) for c in categories)
         result_menus[menu_key] = {
             "title": meta.get("title"),
@@ -863,6 +865,7 @@ def api_get_ingredients():
             "available": ing_id not in unavailable
         })
         
+    enriched.sort(key=lambda x: x.get("name", "").lower())
     return {
         "ingredients": enriched,
         "unavailable_count": len(unavailable),

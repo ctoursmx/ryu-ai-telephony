@@ -14,74 +14,18 @@
   ],
   "ingredient_catalog": [
     {
-      "id": "camaron",
-      "name": "Camarón",
-      "category": "Mariscos",
-      "substitute": "carne de res o pollo",
-      "affected_dishes": "Kushiage de Camarón, Nigiri Ebi (Camarón), Ramen, Yakimeshi de Camarón, Yakimeshi Mixto y 30 más"
+      "id": "aderezo_cesar",
+      "name": "Aderezo César / Italiano",
+      "category": "Salsas",
+      "substitute": "aderezo ranch o vinagreta",
+      "affected_dishes": "Chipotle Roll, Alitas (Orden individual 10 piezas), Boneless (Orden individual 10 piezas), Aderezo Extra"
     },
     {
-      "id": "salmon",
-      "name": "Salmón",
-      "category": "Mariscos",
-      "substitute": "camarón o atún fresco",
-      "affected_dishes": "Sashimi de Salmón, Nigiri Syake (Salmón), Teppanyaki / Teriyaki de Salmón, Salmón Roll, Furia Roll y 4 más"
-    },
-    {
-      "id": "atun",
-      "name": "Atún",
-      "category": "Mariscos",
-      "substitute": "salmón o ensalada tampico",
-      "affected_dishes": "Tuna Roll"
-    },
-    {
-      "id": "pulpo",
-      "name": "Pulpo",
-      "category": "Mariscos",
-      "substitute": "camarón fresco o salmón",
-      "affected_dishes": "Sashimi de Pulpo, Nigiri Tako (Pulpo), Arcoíris Roll Especial (Arcogrid), Mechudo, Hulk Especial"
-    },
-    {
-      "id": "surimi",
-      "name": "Surimi (Cangrejo)",
-      "category": "Mariscos",
-      "substitute": "camarón o ensalada tampico",
-      "affected_dishes": "Nigiri Kanikama (Cangrejo), Sushi Empanizado, Sushi Philadelphia, Sushi California, Kani Roll y 5 más"
-    },
-    {
-      "id": "pescado",
-      "name": "Pescado Blanco",
-      "category": "Mariscos",
-      "substitute": "salmón o camarón",
-      "affected_dishes": "Tataki (Ceviche), Sashimi de Pescado, Teppanyaki / Teriyaki de Filete (Pescado), Sakana Furai, Filete de Pescado Especial"
-    },
-    {
-      "id": "anguila",
-      "name": "Anguila",
-      "category": "Mariscos",
-      "substitute": "salmón sellado con salsa dulce",
-      "affected_dishes": "Platillos que contengan Anguila"
-    },
-    {
-      "id": "masago",
-      "name": "Masago (Huevas)",
-      "category": "Mariscos",
-      "substitute": "ajonjolí tostado o alga nori",
-      "affected_dishes": "México Roll, Sushi Masago"
-    },
-    {
-      "id": "res",
-      "name": "Carne de Res / Molida",
-      "category": "Carnes",
-      "substitute": "pechuga de pollo o cerdo",
-      "affected_dishes": "Kushiage de Res, Ensalada de Res, Sashimi de Res, Yakimeshi de Carne (Res), Yakimeshi Mixto y 20 más"
-    },
-    {
-      "id": "pollo",
-      "name": "Pechuga de Pollo",
-      "category": "Carnes",
-      "substitute": "carne de res o milanesa",
-      "affected_dishes": "Kushiage de Pollo, Ensalada de Pollo, Ramen, Yakimeshi de Pollo, Yakimeshi Mixto y 20 más"
+      "id": "aguacate",
+      "name": "Aguacate",
+      "category": "Vegetales",
+      "substitute": "pepino extra o ensalada fresca",
+      "affected_dishes": "Ebydon, Sushi Philadelphia, Sushi California, Esfera Dragón Ball, Avocado Roll y 5 más"
     },
     {
       "id": "alitas",
@@ -91,6 +35,27 @@
       "affected_dishes": "Combo Individual 2, Combo Individual 1, Paquete 3, Combo Ryu Especial, Pa' Que Compartas y 6 más"
     },
     {
+      "id": "anguila",
+      "name": "Anguila",
+      "category": "Mariscos",
+      "substitute": "salmón sellado con salsa dulce",
+      "affected_dishes": "Platillos que contengan Anguila"
+    },
+    {
+      "id": "arroz",
+      "name": "Arroz de Sushi / Gohan / Yakimeshi",
+      "category": "Bases",
+      "substitute": "fideo udon o ensalada mixta",
+      "affected_dishes": "Rollo Primavera, Nigiri Ebi (Camarón), Nigiri Tako (Pulpo), Nigiri Kanikama (Cangrejo), Nigiri Syake (Salmón) y 45 más"
+    },
+    {
+      "id": "atun",
+      "name": "Atún",
+      "category": "Mariscos",
+      "substitute": "salmón o ensalada tampico",
+      "affected_dishes": "Tuna Roll"
+    },
+    {
       "id": "boneless",
       "name": "Boneless de Pollo",
       "category": "Carnes",
@@ -98,32 +63,11 @@
       "affected_dishes": "Paquete 3, Paquete Mix, Pa' Que Compartas, Caja Ryu Mix, Boneless (Orden individual 10 piezas)"
     },
     {
-      "id": "tocino",
-      "name": "Tocino",
-      "category": "Carnes",
-      "substitute": "jamón o chorizo dorado",
-      "affected_dishes": "Puerquitos Locos, Oishi Roll Especial, Panchito, Tocino Roll, Hamburguesa Big Ryu y 7 más"
-    },
-    {
-      "id": "chorizo",
-      "name": "Chorizo",
-      "category": "Carnes",
-      "substitute": "tocino dorado o jamón",
-      "affected_dishes": "Cheese Explosion (Cheese Roll), Hot Dog Supremo, Hot Dog Godzilla"
-    },
-    {
-      "id": "salchicha",
-      "name": "Salchicha para Hot Dog",
-      "category": "Carnes",
-      "substitute": "tocino o jamón",
-      "affected_dishes": "Promo Hot Dog (3 piezas), Hamburguesa Ranchera Especial, Hamburguesa Carolina Especial, Hot Dog Sencillo, Hot Dog Supremo y 3 más"
-    },
-    {
-      "id": "jamon",
-      "name": "Jamón de Pierna / Carnes Frías",
-      "category": "Carnes",
-      "substitute": "tocino o pepperoni",
-      "affected_dishes": "Filete de Pescado Especial, Filete de Pollo Especial, Panini Carnes Frías, Pita Carnes Frías, Hamburguesa Hawaiana y 1 más"
+      "id": "camaron",
+      "name": "Camarón",
+      "category": "Mariscos",
+      "substitute": "carne de res o pollo",
+      "affected_dishes": "Kushiage de Camarón, Nigiri Ebi (Camarón), Ramen, Yakimeshi de Camarón, Yakimeshi Mixto y 30 más"
     },
     {
       "id": "cerdo",
@@ -133,39 +77,32 @@
       "affected_dishes": "Ramen"
     },
     {
-      "id": "queso_philadelphia",
-      "name": "Queso Philadelphia (Crema)",
-      "category": "Lácteos",
-      "substitute": "queso gratinado o preparación sin queso crema",
-      "affected_dishes": "Camarones Philadelphia, Ebydon, Sushi Empanizado, Sushi Philadelphia, Arcoíris Roll Especial (Arcogrid) y 7 más"
+      "id": "res",
+      "name": "Carne de Res / Molida",
+      "category": "Carnes",
+      "substitute": "pechuga de pollo o cerdo",
+      "affected_dishes": "Kushiage de Res, Ensalada de Res, Sashimi de Res, Yakimeshi de Carne (Res), Yakimeshi Mixto y 20 más"
     },
     {
-      "id": "queso_oaxaca",
-      "name": "Queso Oaxaca",
-      "category": "Lácteos",
-      "substitute": "queso mozzarella o asadero",
-      "affected_dishes": "Hot Dog Supremo, Queso Oaxaca"
+      "id": "cebolla",
+      "name": "Cebolla",
+      "category": "Vegetales",
+      "substitute": "cebollín fresco o sin cebolla",
+      "affected_dishes": "Ramen, Promo Tortas (3 Tortas Teleras), Hamburguesa de Res, Hamburguesa de Pollo a la Plancha, Hamburguesa de Pollo Empanizado y 9 más"
     },
     {
-      "id": "queso_mozzarella",
-      "name": "Queso Mozzarella / Parmesano",
-      "category": "Lácteos",
-      "substitute": "queso Oaxaca o queso asadero",
-      "affected_dishes": "Lasagna Tradicional, Boloñesa, Fettuccine Alfredo, Promo Tortas (3 Tortas Teleras), Hamburguesa Ranchera Especial y 5 más"
+      "id": "champiñones",
+      "name": "Champiñones",
+      "category": "Vegetales",
+      "substitute": "vegetales salteados mixtos",
+      "affected_dishes": "Platillos que contengan Champiñones"
     },
     {
-      "id": "queso_amarillo",
-      "name": "Queso Amarillo / Cheddar",
-      "category": "Lácteos",
-      "substitute": "queso Oaxaca o mozzarella",
-      "affected_dishes": "Hamburguesa de Res, Hamburguesa de Pollo a la Plancha, Hamburguesa de Pollo Empanizado, Hamburguesa de Camarón, Hamburguesa Hawaiana y 4 más"
-    },
-    {
-      "id": "pasta_lasana",
-      "name": "Pasta de Lasaña",
-      "category": "Panes y Pastas",
-      "substitute": "espagueti boloñesa o fettuccine alfredo",
-      "affected_dishes": "Lasagna Tradicional"
+      "id": "chorizo",
+      "name": "Chorizo",
+      "category": "Carnes",
+      "substitute": "tocino dorado o jamón",
+      "affected_dishes": "Cheese Explosion (Cheese Roll), Hot Dog Supremo, Hot Dog Godzilla"
     },
     {
       "id": "espagueti",
@@ -182,18 +119,39 @@
       "affected_dishes": "Fettuccine Alfredo"
     },
     {
-      "id": "pan_pita",
-      "name": "Pan Pita",
-      "category": "Panes y Pastas",
-      "substitute": "pan panini alargado crujiente",
-      "affected_dishes": "Pita BBQ, Pita Chipotle, Pita Cheesesteak, Pita Pollo Clásico, Pita Pollo Crispy y 1 más"
+      "id": "fideo_udon_ramen",
+      "name": "Fideo Udon / Ramen",
+      "category": "Bases",
+      "substitute": "arroz yakimeshi o sopa especial",
+      "affected_dishes": "Udon, Sopa Especial, Ramen, Udon Plancha"
     },
     {
-      "id": "pan_panini",
-      "name": "Pan Panini",
-      "category": "Panes y Pastas",
-      "substitute": "pan pita redondo suave",
-      "affected_dishes": "Panini BBQ, Panini Chipotle, Panini Cheesesteak, Panini Pollo Clásico, Panini Pollo Crispy y 1 más"
+      "id": "jamon",
+      "name": "Jamón de Pierna / Carnes Frías",
+      "category": "Carnes",
+      "substitute": "tocino o pepperoni",
+      "affected_dishes": "Filete de Pescado Especial, Filete de Pollo Especial, Panini Carnes Frías, Pita Carnes Frías, Hamburguesa Hawaiana y 1 más"
+    },
+    {
+      "id": "jitomate",
+      "name": "Jitomate / Tomate",
+      "category": "Vegetales",
+      "substitute": "cebolla caramelizada o ensalada fresca",
+      "affected_dishes": "Lasagna Tradicional, Promo Tortas (3 Tortas Teleras), Hamburguesa de Res, Hamburguesa de Pollo a la Plancha, Hamburguesa de Pollo Empanizado y 4 más"
+    },
+    {
+      "id": "lechuga",
+      "name": "Lechuga",
+      "category": "Vegetales",
+      "substitute": "pepino fresco o ensalada mixta",
+      "affected_dishes": "Ensalada Verde, Promo Tortas (3 Tortas Teleras), Hamburguesa de Res, Hamburguesa de Pollo a la Plancha, Hamburguesa de Pollo Empanizado y 3 más"
+    },
+    {
+      "id": "masago",
+      "name": "Masago (Huevas)",
+      "category": "Mariscos",
+      "substitute": "ajonjolí tostado o alga nori",
+      "affected_dishes": "México Roll, Sushi Masago"
     },
     {
       "id": "pan_hamburguesa",
@@ -210,60 +168,18 @@
       "affected_dishes": "Promo Hot Dog (3 piezas), Hot Dog Sencillo, Hot Dog Supremo, Hot Dog Godzilla"
     },
     {
-      "id": "arroz",
-      "name": "Arroz de Sushi / Gohan / Yakimeshi",
-      "category": "Bases",
-      "substitute": "fideo udon o ensalada mixta",
-      "affected_dishes": "Rollo Primavera, Nigiri Ebi (Camarón), Nigiri Tako (Pulpo), Nigiri Kanikama (Cangrejo), Nigiri Syake (Salmón) y 45 más"
+      "id": "pan_panini",
+      "name": "Pan Panini",
+      "category": "Panes y Pastas",
+      "substitute": "pan pita redondo suave",
+      "affected_dishes": "Panini BBQ, Panini Chipotle, Panini Cheesesteak, Panini Pollo Clásico, Panini Pollo Crispy y 1 más"
     },
     {
-      "id": "fideo_udon_ramen",
-      "name": "Fideo Udon / Ramen",
-      "category": "Bases",
-      "substitute": "arroz yakimeshi o sopa especial",
-      "affected_dishes": "Udon, Sopa Especial, Ramen, Udon Plancha"
-    },
-    {
-      "id": "aguacate",
-      "name": "Aguacate",
-      "category": "Vegetales",
-      "substitute": "pepino extra o ensalada fresca",
-      "affected_dishes": "Ebydon, Sushi Philadelphia, Sushi California, Esfera Dragón Ball, Avocado Roll y 5 más"
-    },
-    {
-      "id": "jitomate",
-      "name": "Jitomate / Tomate",
-      "category": "Vegetales",
-      "substitute": "cebolla caramelizada o ensalada fresca",
-      "affected_dishes": "Lasagna Tradicional, Promo Tortas (3 Tortas Teleras), Hamburguesa de Res, Hamburguesa de Pollo a la Plancha, Hamburguesa de Pollo Empanizado y 4 más"
-    },
-    {
-      "id": "cebolla",
-      "name": "Cebolla",
-      "category": "Vegetales",
-      "substitute": "cebollín fresco o sin cebolla",
-      "affected_dishes": "Ramen, Promo Tortas (3 Tortas Teleras), Hamburguesa de Res, Hamburguesa de Pollo a la Plancha, Hamburguesa de Pollo Empanizado y 9 más"
-    },
-    {
-      "id": "lechuga",
-      "name": "Lechuga",
-      "category": "Vegetales",
-      "substitute": "pepino fresco o ensalada mixta",
-      "affected_dishes": "Ensalada Verde, Promo Tortas (3 Tortas Teleras), Hamburguesa de Res, Hamburguesa de Pollo a la Plancha, Hamburguesa de Pollo Empanizado y 3 más"
-    },
-    {
-      "id": "pepino",
-      "name": "Pepino",
-      "category": "Vegetales",
-      "substitute": "aguacate o lechuga",
-      "affected_dishes": "Sushi Empanizado, Sushi Philadelphia, Sushi California, Esfera Dragón Ball, Arcoíris Roll Especial (Arcogrid) y 3 más"
-    },
-    {
-      "id": "platano_frito",
-      "name": "Plátano Frito / Macho",
-      "category": "Vegetales",
-      "substitute": "aguacate por fuera o empanizado crocante",
-      "affected_dishes": "Nigiri Banana (Plátano), Plátano Roll, Brochetas Dulces de Plátano, Brochetas de Plátano Frito"
+      "id": "pan_pita",
+      "name": "Pan Pita",
+      "category": "Panes y Pastas",
+      "substitute": "pan panini alargado crujiente",
+      "affected_dishes": "Pita BBQ, Pita Chipotle, Pita Cheesesteak, Pita Pollo Clásico, Pita Pollo Crispy y 1 más"
     },
     {
       "id": "papas_francesas",
@@ -273,11 +189,102 @@
       "affected_dishes": "Combo Nuggets, Combo Individual 2, Combo Individual 1, Paquete 3, Paquete Mix y 11 más"
     },
     {
-      "id": "champiñones",
-      "name": "Champiñones",
+      "id": "pasta_lasana",
+      "name": "Pasta de Lasaña",
+      "category": "Panes y Pastas",
+      "substitute": "espagueti boloñesa o fettuccine alfredo",
+      "affected_dishes": "Lasagna Tradicional"
+    },
+    {
+      "id": "pollo",
+      "name": "Pechuga de Pollo",
+      "category": "Carnes",
+      "substitute": "carne de res o milanesa",
+      "affected_dishes": "Kushiage de Pollo, Ensalada de Pollo, Ramen, Yakimeshi de Pollo, Yakimeshi Mixto y 20 más"
+    },
+    {
+      "id": "pepino",
+      "name": "Pepino",
       "category": "Vegetales",
-      "substitute": "vegetales salteados mixtos",
-      "affected_dishes": "Platillos que contengan Champiñones"
+      "substitute": "aguacate o lechuga",
+      "affected_dishes": "Sushi Empanizado, Sushi Philadelphia, Sushi California, Esfera Dragón Ball, Arcoíris Roll Especial (Arcogrid) y 3 más"
+    },
+    {
+      "id": "pescado",
+      "name": "Pescado Blanco",
+      "category": "Mariscos",
+      "substitute": "salmón o camarón",
+      "affected_dishes": "Tataki (Ceviche), Sashimi de Pescado, Teppanyaki / Teriyaki de Filete (Pescado), Sakana Furai, Filete de Pescado Especial"
+    },
+    {
+      "id": "platano_frito",
+      "name": "Plátano Frito / Macho",
+      "category": "Vegetales",
+      "substitute": "aguacate por fuera o empanizado crocante",
+      "affected_dishes": "Nigiri Banana (Plátano), Plátano Roll, Brochetas Dulces de Plátano, Brochetas de Plátano Frito"
+    },
+    {
+      "id": "pulpo",
+      "name": "Pulpo",
+      "category": "Mariscos",
+      "substitute": "camarón fresco o salmón",
+      "affected_dishes": "Sashimi de Pulpo, Nigiri Tako (Pulpo), Arcoíris Roll Especial (Arcogrid), Mechudo, Hulk Especial"
+    },
+    {
+      "id": "queso_amarillo",
+      "name": "Queso Amarillo / Cheddar",
+      "category": "Lácteos",
+      "substitute": "queso Oaxaca o mozzarella",
+      "affected_dishes": "Hamburguesa de Res, Hamburguesa de Pollo a la Plancha, Hamburguesa de Pollo Empanizado, Hamburguesa de Camarón, Hamburguesa Hawaiana y 4 más"
+    },
+    {
+      "id": "queso_mozzarella",
+      "name": "Queso Mozzarella / Parmesano",
+      "category": "Lácteos",
+      "substitute": "queso Oaxaca o queso asadero",
+      "affected_dishes": "Lasagna Tradicional, Boloñesa, Fettuccine Alfredo, Promo Tortas (3 Tortas Teleras), Hamburguesa Ranchera Especial y 5 más"
+    },
+    {
+      "id": "queso_oaxaca",
+      "name": "Queso Oaxaca",
+      "category": "Lácteos",
+      "substitute": "queso mozzarella o asadero",
+      "affected_dishes": "Hot Dog Supremo, Queso Oaxaca"
+    },
+    {
+      "id": "queso_philadelphia",
+      "name": "Queso Philadelphia (Crema)",
+      "category": "Lácteos",
+      "substitute": "queso gratinado o preparación sin queso crema",
+      "affected_dishes": "Camarones Philadelphia, Ebydon, Sushi Empanizado, Sushi Philadelphia, Arcoíris Roll Especial (Arcogrid) y 7 más"
+    },
+    {
+      "id": "salchicha",
+      "name": "Salchicha para Hot Dog",
+      "category": "Carnes",
+      "substitute": "tocino o jamón",
+      "affected_dishes": "Promo Hot Dog (3 piezas), Hamburguesa Ranchera Especial, Hamburguesa Carolina Especial, Hot Dog Sencillo, Hot Dog Supremo y 3 más"
+    },
+    {
+      "id": "salmon",
+      "name": "Salmón",
+      "category": "Mariscos",
+      "substitute": "camarón o atún fresco",
+      "affected_dishes": "Sashimi de Salmón, Nigiri Syake (Salmón), Teppanyaki / Teriyaki de Salmón, Salmón Roll, Furia Roll y 4 más"
+    },
+    {
+      "id": "salsa_chipotle",
+      "name": "Salsa / Aderezo Chipotle",
+      "category": "Salsas",
+      "substitute": "mayonesa sazonada o aderezo ranch",
+      "affected_dishes": "Chipotle Roll, Furia Roll, Panini Chipotle, Pita Chipotle"
+    },
+    {
+      "id": "salsa_bbq",
+      "name": "Salsa BBQ",
+      "category": "Salsas",
+      "substitute": "salsa teriyaki o búfalo",
+      "affected_dishes": "Panini BBQ, Pita BBQ"
     },
     {
       "id": "salsa_bufalo",
@@ -287,11 +294,11 @@
       "affected_dishes": "Platillos que contengan Salsa Búfalo (Red Hot)"
     },
     {
-      "id": "salsa_bbq",
-      "name": "Salsa BBQ",
+      "id": "salsa_soya",
+      "name": "Salsa de Soya Preparada",
       "category": "Salsas",
-      "substitute": "salsa teriyaki o búfalo",
-      "affected_dishes": "Panini BBQ, Pita BBQ"
+      "substitute": "salsa tampico o chiles toreados",
+      "affected_dishes": "Hulk, Hulk Especial"
     },
     {
       "id": "salsa_mango_habanero",
@@ -308,25 +315,18 @@
       "affected_dishes": "Teppanyaki / Teriyaki de Filete (Pescado), Teppanyaki / Teriyaki de Res, Teppanyaki / Teriyaki de Pollo, Teppanyaki / Teriyaki de Camarón, Teppanyaki / Teriyaki Mixto y 4 más"
     },
     {
-      "id": "salsa_chipotle",
-      "name": "Salsa / Aderezo Chipotle",
-      "category": "Salsas",
-      "substitute": "mayonesa sazonada o aderezo ranch",
-      "affected_dishes": "Chipotle Roll, Furia Roll, Panini Chipotle, Pita Chipotle"
+      "id": "surimi",
+      "name": "Surimi (Cangrejo)",
+      "category": "Mariscos",
+      "substitute": "camarón o ensalada tampico",
+      "affected_dishes": "Nigiri Kanikama (Cangrejo), Sushi Empanizado, Sushi Philadelphia, Sushi California, Kani Roll y 5 más"
     },
     {
-      "id": "salsa_soya",
-      "name": "Salsa de Soya Preparada",
-      "category": "Salsas",
-      "substitute": "salsa tampico o chiles toreados",
-      "affected_dishes": "Hulk, Hulk Especial"
-    },
-    {
-      "id": "aderezo_cesar",
-      "name": "Aderezo César / Italiano",
-      "category": "Salsas",
-      "substitute": "aderezo ranch o vinagreta",
-      "affected_dishes": "Chipotle Roll, Alitas (Orden individual 10 piezas), Boneless (Orden individual 10 piezas), Aderezo Extra"
+      "id": "tocino",
+      "name": "Tocino",
+      "category": "Carnes",
+      "substitute": "jamón o chorizo dorado",
+      "affected_dishes": "Puerquitos Locos, Oishi Roll Especial, Panchito, Tocino Roll, Hamburguesa Big Ryu y 7 más"
     }
   ],
   "dish_overrides": {

@@ -908,7 +908,10 @@
                 </button>
             `;
 
-            categories.forEach(cat => {
+            // Ordenar categorías alfabéticamente
+            const sortedCategories = [...categories].sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
+
+            sortedCategories.forEach(cat => {
                 const isActive = currentActive === cat.id;
                 html += `
                     <button onclick="selectCategory('${menuKey}', '${cat.id}')" class="category-chip ${isActive ? 'active' : 'bg-[#141820] text-gray-400 hover:text-white'} px-3 py-1.5 rounded-xl border border-[#262c3b] whitespace-nowrap transition">
@@ -948,6 +951,9 @@
                     allDishes = allDishes.concat(cat.dishes || []);
                 }
             });
+
+            // Ordenar platillos alfabéticamente (A-Z)
+            allDishes.sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
 
             if (query) {
                 allDishes = allDishes.filter(d => 
@@ -1030,7 +1036,9 @@
             document.getElementById('tabCount_ingredients').innerText = `${ingredientsData.length}`;
             document.getElementById('tabCount_ingredients').className = `text-[11px] px-2 py-0.2 rounded-full font-mono font-semibold ${unavailableCount > 0 ? 'bg-red-950/80 text-red-400 border border-red-800' : 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/60'}`;
 
-            const categories = ['all', 'Mariscos', 'Carnes', 'Lácteos', 'Panes y Pastas', 'Bases', 'Vegetales', 'Salsas', 'Snacks'];
+            const rawCats = ['Bases', 'Carnes', 'General', 'Lácteos', 'Mariscos', 'Panes y Pastas', 'Salsas', 'Snacks', 'Vegetales'];
+            rawCats.sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+            const categories = ['all', ...rawCats];
             const containerChips = document.getElementById('ingredientCategoriesChips');
             
             let chipsHtml = '';
@@ -1074,6 +1082,9 @@
                     (i.affected_dishes && i.affected_dishes.toLowerCase().includes(currentIngredientSearch))
                 );
             }
+
+            // Ordenar ingredientes alfabéticamente (A-Z)
+            list.sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }));
 
             if (list.length === 0) {
                 container.innerHTML = `
