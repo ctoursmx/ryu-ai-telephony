@@ -1,0 +1,102 @@
+{
+  "_last_updated": "2026-09-13T01:32:42.467133",
+  "is_open": true,
+  "service_override": "",
+  "prep_time_override": "",
+  "unavailable_ingredients": [],
+  "unavailable_dishes": [],
+  "daily_promotions": [],
+  "ingredient_catalog": [
+    {
+      "id": "pulpo",
+      "name": "Pulpo",
+      "category": "Mariscos",
+      "substitute": "camarón fresco o salmón",
+      "affected_dishes": "Mechudo, Arcoíris Roll, Sashimi de Pulpo, Nigiri Tako, Chow Mein Mixto"
+    },
+    {
+      "id": "camaron",
+      "name": "Camarón",
+      "category": "Mariscos",
+      "substitute": "carne de res o pollo",
+      "affected_dishes": "Kushiage de Camarón, Eby Roll, Cheese Explosion, Brochetas Yakitori, Tempura Ebi"
+    },
+    {
+      "id": "salmon",
+      "name": "Salmón",
+      "category": "Mariscos",
+      "substitute": "camarón o atún fresco",
+      "affected_dishes": "Salmón Roll, Pink Salmón, Especial No. 1, Sashimi de Salmón"
+    },
+    {
+      "id": "res",
+      "name": "Carne de Res",
+      "category": "Carnes",
+      "substitute": "pollo o cerdo",
+      "affected_dishes": "Hamburguesas de Res, Kushiage de Res, Teppanyaki de Res, Gyosas de Res"
+    },
+    {
+      "id": "pollo",
+      "name": "Pechuga de Pollo",
+      "category": "Carnes",
+      "substitute": "carne de res",
+      "affected_dishes": "Hamburguesas de Pollo, Alitas, Boneless, Tori Karaage, Chow Mein de Pollo"
+    },
+    {
+      "id": "aguacate",
+      "name": "Aguacate",
+      "category": "Vegetales",
+      "substitute": "pepino extra o ensalada fresca",
+      "affected_dishes": "Sushi California, Avocado Roll, Hamburguesas, Mechudo"
+    },
+    {
+      "id": "queso_philadelphia",
+      "name": "Queso Philadelphia",
+      "category": "Lácteos",
+      "substitute": "queso Oaxaca o preparación sin queso crema",
+      "affected_dishes": "Sushi Philadelphia, Empanizado, Cheese Explosion, Plátano Roll"
+    },
+    {
+      "id": "queso_oaxaca",
+      "name": "Queso Oaxaca",
+      "category": "Lácteos",
+      "substitute": "queso amarillo o queso mozzarella",
+      "affected_dishes": "Hot Dog Supremo, Topping Extra de Queso"
+    },
+    {
+      "id": "pan_pita",
+      "name": "Pan Pita",
+      "category": "Panadería",
+      "substitute": "pan panini alargado crujiente",
+      "affected_dishes": "Todas las especialidades de Pitas Italianas"
+    },
+    {
+      "id": "pan_panini",
+      "name": "Pan Panini",
+      "category": "Panadería",
+      "substitute": "pan pita redondo suave",
+      "affected_dishes": "Todas las especialidades de Paninis Italianos"
+    },
+    {
+      "id": "chorizo",
+      "name": "Chorizo",
+      "category": "Carnes",
+      "substitute": "tocino dorado o jamón",
+      "affected_dishes": "Cheese Explosion (Cheese Roll), Hot Dog Godzilla, Hot Dog Supremo"
+    },
+    {
+      "id": "tocino",
+      "name": "Tocino",
+      "category": "Carnes",
+      "substitute": "jamón o chorizo",
+      "affected_dishes": "Tocino Roll, Puerquitos Locos, Big Ryu, Hot Dogs"
+    },
+    {
+      "id": "atun",
+      "name": "Atún",
+      "category": "Mariscos",
+      "substitute": "salmón o ensalada tampico",
+      "affected_dishes": "Tuna Roll"
+    }
+  ]
+}

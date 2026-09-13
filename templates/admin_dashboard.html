@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Panel de Control Ryu - Existencias y Promociones</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0c0e12; color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .glass-card { background: #141820; border: 1px solid #232936; border-radius: 16px; }
+        .switch-toggle { transition: all 0.25s ease; }
+        .badge-pulse { animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.75; transform: scale(0.98); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0c0e12; }
+        ::-webkit-scrollbar-thumb { background: #232936; border-radius: 4px; }
+    </style>
+</head>
+<body class="min-h-screen pb-12">
+
+    <!-- Top Navbar -->
+    <nav class="sticky top-0 z-50 bg-[#10131a]/90 backdrop-blur border-b border-[#232936] px-4 py-3">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🍣</span>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-white flex items-center gap-2">
+                        Restaurante Ryu
+                        <span class="text-xs bg-red-600/20 text-red-400 border border-red-500/30 px-2 py-0.5 rounded-full font-mono font-semibold">ADMIN IA</span>
+                    </h1>
+                    <p class="text-xs text-gray-400">Control de Existencias y Promociones en Tiempo Real</p>
+                </div>
+            </div>
+
+            <!-- Global Status Indicator -->
+            <div class="flex items-center gap-3">
+                <div id="syncIndicator" class="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3 py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span class="font-medium">IA Conectada</span>
+                </div>
+                <button onclick="refreshState()" class="p-2 rounded-lg bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 transition text-sm">
+                    <i class="fa-solid fa-arrows-rotate" id="refreshIcon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 mt-6 space-y-6">
+
+        <!-- Banner de Apertura y Aviso Rápido -->
+        <div class="glass-card p-4 sm:p-5 border-l-4 border-l-red-500">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="p-3 bg-red-500/10 rounded-xl text-red-400 text-xl">
+                        <i class="fa-solid fa-store"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 class="font-semibold text-white">Estado del Restaurante para Pedidos</h2>
+                            <span id="openBadge" class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ABIERTO</span>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-0.5">Si desactivas la recepción, la IA contestará amablemente que por el momento cocina está cerrada.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="isOpenToggle" onchange="toggleStoreOpen(this.checked)" class="sr-only peer" checked>
+                        <div class="w-14 h-7 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Avisos de Tiempo y Cocina -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 pt-4 border-t border-[#232936]">
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">⏱️ Tiempo de Entrega Estimado</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="prepTimeInput" placeholder="Ej: 40 a 55 min (habitual)" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-lg px-3 py-1.5 text-sm text-white focus:border-red-500 focus:outline-none">
+                        <button onclick="saveAnnouncements()" class="bg-[#1e2533] hover:bg-[#2b3548] text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium transition">Guardar</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-300 mb-1">📢 Aviso Especial de Cocina (Opcional)</label>
+                    <div class="flex gap-2">
+                        <input type="text" id="serviceOverrideInput" placeholder="Ej: Demora de 15 min por lluvia intensa" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-lg px-3 py-1.5 text-sm text-white focus:border-red-500 focus:outline-none">
+                        <button onclick="saveAnnouncements()" class="bg-[#1e2533] hover:bg-[#2b3548] text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium transition">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 1: INGREDIENTES CRÍTICOS (1-TAP ON/OFF) -->
+        <section class="space-y-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="text-red-500">⚡</span> Existencia de Ingredientes Críticos
+                    </h2>
+                    <p class="text-xs text-gray-400">Toca cualquier ingrediente para marcarlo como AGOTADO. La IA dejará de ofrecerlo y sugerirá sustitutos de inmediato.</p>
+                </div>
+                <span id="unavailableCountBadge" class="text-xs bg-gray-800 text-gray-300 border border-gray-700 px-2.5 py-1 rounded-full font-mono">0 Agotados</span>
+            </div>
+
+            <!-- Grid de Ingredientes -->
+            <div id="ingredientsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                <!-- Se inyecta dinámicamente con JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: PROMOCIONES DEL DÍA -->
+        <section class="glass-card p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#232936] pb-3">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="text-amber-400">🎉</span> Promociones del Día en la IA
+                    </h2>
+                    <p class="text-xs text-gray-400">La IA mencionará esta promoción a los clientes al saludar y cuando pregunten qué promociones hay hoy.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-400">Estado Promo:</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="promoActiveToggle" onchange="togglePromoActive(this.checked)" class="sr-only peer" checked>
+                        <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Editor de Texto de la Promoción -->
+            <div>
+                <label class="block text-xs font-semibold text-gray-300 mb-1.5">Texto de la Promoción Oficial</label>
+                <textarea id="promoTextInput" rows="2" placeholder="Ej: Hoy martes tenemos 2x1 en todos los rollos de sushi tradicionales (Empanizado y Philadelphia)." class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl p-3 text-sm text-white focus:border-amber-500 focus:outline-none"></textarea>
+            </div>
+
+            <!-- Plantillas de Promociones Frecuentes -->
+            <div>
+                <label class="block text-xs font-medium text-gray-400 mb-2">⚡ Cargar Promoción Rápida por Día:</label>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="setPromoPreset('Hoy lunes: 2x1 en hamburguesas sencillas de res y pollo')" class="text-xs bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 border border-gray-700/60 px-3 py-1.5 rounded-lg transition">Lunes de Hamburguesas</button>
+                    <button onclick="setPromoPreset('Hoy martes: 2x1 en todos los sushis tradicionales empanizados y philadelphia')" class="text-xs bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 border border-gray-700/60 px-3 py-1.5 rounded-lg transition">Martes 2x1 Sushi</button>
+                    <button onclick="setPromoPreset('Hoy miércoles: En la compra de 15 alitas o boneless llévate papas francesas de regalo')" class="text-xs bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 border border-gray-700/60 px-3 py-1.5 rounded-lg transition">Miércoles de Alitas</button>
+                    <button onclick="setPromoPreset('Hoy jueves: 2x1 en sodas italianas con boba en la compra de cualquier panini o pita')" class="text-xs bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 border border-gray-700/60 px-3 py-1.5 rounded-lg transition">Jueves Italiano</button>
+                    <button onclick="setPromoPreset('Hoy fin de semana: Tabla de Sushi Mixta de 30 bocadillos con bebidas incluidas por solo $300 pesos')" class="text-xs bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 border border-gray-700/60 px-3 py-1.5 rounded-lg transition">Fin de Semana Sushi</button>
+                </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+                <button onclick="savePromotion()" class="bg-amber-500 hover:bg-amber-600 text-black font-bold px-5 py-2 rounded-xl text-sm transition flex items-center gap-2 shadow-lg shadow-amber-500/10">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar y Aplicar en la IA
+                </button>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: PLATILLOS ESPECÍFICOS AGOTADOS -->
+        <section class="glass-card p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#232936] pb-3">
+                <div>
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <span class="text-purple-400">🍽️</span> Desactivar Platillos Específicos
+                    </h2>
+                    <p class="text-xs text-gray-400">Si se terminó un platillo preparado (ej. Lasagna o un sushi específico), búscalo aquí y apágalo.</p>
+                </div>
+            </div>
+
+            <!-- Buscador y selector de platillos -->
+            <div class="flex gap-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-500 text-xs"></i>
+                    <input type="text" id="dishSearchInput" oninput="filterDishes(this.value)" placeholder="Buscar platillo por nombre (ej: Mechudo, Lasagna, Alitas...)" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl pl-9 pr-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none">
+                </div>
+            </div>
+
+            <!-- Lista de platillos agotados actualmente -->
+            <div id="unavailableDishesChips" class="flex flex-wrap gap-2 pt-1">
+                <!-- Se llena con JS -->
+            </div>
+
+            <!-- Dropdown de resultados de búsqueda -->
+            <div id="dishSearchResults" class="max-h-48 overflow-y-auto space-y-1 bg-[#0c0e12] border border-[#232936] rounded-xl p-2 hidden">
+                <!-- Se llena con JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: MONITOR Y VISTA PREVIA DEL PROMPT EN VIVO -->
+        <section class="glass-card p-5 space-y-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-sm font-bold text-gray-300 flex items-center gap-2">
+                        <i class="fa-solid fa-terminal text-gray-500"></i> Vista Previa en Vivo de lo que la IA lee en cada llamada
+                    </h2>
+                    <p class="text-xs text-gray-500">Este es el bloque de instrucciones exacto que se inyecta al bot en tiempo real.</p>
+                </div>
+                <button onclick="updatePromptPreview()" class="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-right"></i> Actualizar
+                </button>
+            </div>
+            <pre id="promptPreviewBox" class="bg-[#090b0e] border border-[#1e2430] rounded-xl p-3.5 text-xs font-mono text-emerald-400 whitespace-pre-wrap overflow-x-auto max-h-44">Cargando estado...</pre>
+        </section>
+
+    </main>
+
+    <!-- Toast de Notificación Flotante -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-emerald-500 text-black font-semibold px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-sm">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toastMsg">Actualizado con éxito</span>
+    </div>
+
+    <!-- Scripts de Interacción -->
+    <script>
+        let currentState = {};
+        let allMenuItems = [];
+
+        // Íconos por categoría de ingrediente
+        const categoryIcons = {
+            'Mariscos': '🐙',
+            'Carnes': '🥩',
+            'Vegetales': '🥑',
+            'Lácteos': '🧀',
+            'Panadería': '🥖'
+        };
+
+        async function init() {
+            await loadState();
+            await loadMenuCatalog();
+            updatePromptPreview();
+        }
+
+        async function loadState() {
+            try {
+                const res = await fetch('/api/state');
+                currentState = await res.json();
+                renderState();
+            } catch (err) {
+                console.error('Error al cargar estado:', err);
+                showToast('Error de conexión con el servidor', true);
+            }
+        }
+
+        async function loadMenuCatalog() {
+            try {
+                const res = await fetch('/api/menu-items');
+                allMenuItems = await res.json();
+            } catch (err) {
+                console.error('Error al cargar menú:', err);
+            }
+        }
+
+        function renderState() {
+            // 1. Estado abierto/cerrado
+            const isOpen = currentState.is_open !== false;
+            document.getElementById('isOpenToggle').checked = isOpen;
+            const openBadge = document.getElementById('openBadge');
+            if (isOpen) {
+                openBadge.innerText = 'ABIERTO';
+                openBadge.className = 'text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+            } else {
+                openBadge.innerText = 'CERRADO MANUALMENTE';
+                openBadge.className = 'text-xs font-semibold px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 border border-red-500/30';
+            }
+
+            // 2. Avisos
+            document.getElementById('prepTimeInput').value = currentState.prep_time_override || '';
+            document.getElementById('serviceOverrideInput').value = currentState.service_override || '';
+
+            // 3. Promociones
+            const promos = currentState.daily_promotions || [];
+            if (promos.length > 0) {
+                document.getElementById('promoTextInput').value = promos[0].text || '';
+                document.getElementById('promoActiveToggle').checked = promos[0].active !== false;
+            } else {
+                document.getElementById('promoTextInput').value = '';
+                document.getElementById('promoActiveToggle').checked = false;
+            }
+
+            // 4. Grid de Ingredientes
+            renderIngredientsGrid();
+
+            // 5. Platillos agotados
+            renderUnavailableDishes();
+
+            // 6. Contador
+            const unavailCount = (currentState.unavailable_ingredients || []).length;
+            const badge = document.getElementById('unavailableCountBadge');
+            badge.innerText = unavailCount + ' Agotados';
+            badge.className = unavailCount > 0 
+                ? 'text-xs bg-red-950/80 text-red-400 border border-red-800 px-2.5 py-1 rounded-full font-mono font-bold'
+                : 'text-xs bg-gray-800 text-gray-300 border border-gray-700 px-2.5 py-1 rounded-full font-mono';
+        }
+
+        function renderIngredientsGrid() {
+            const container = document.getElementById('ingredientsGrid');
+            container.innerHTML = '';
+
+            const catalog = currentState.ingredient_catalog || [];
+            const unavail = currentState.unavailable_ingredients || [];
+
+            catalog.forEach(item => {
+                const isOut = unavail.includes(item.id);
+                const card = document.createElement('div');
+                card.className = `glass-card p-4 transition-all duration-200 cursor-pointer select-none border ${
+                    isOut ? 'border-red-500/70 bg-red-950/15' : 'border-[#232936] hover:border-gray-600'
+                }`;
+                card.onclick = () => toggleIngredient(item.id, isOut);
+
+                const icon = categoryIcons[item.category] || '🥢';
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-2xl">${icon}</span>
+                            <div>
+                                <h3 class="font-bold text-white text-base leading-tight">${item.name}</h3>
+                                <span class="text-[11px] text-gray-400">${item.category}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-lg transition ${
+                            isOut ? 'bg-red-500 text-white shadow-lg shadow-red-500/30' : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                        }">
+                            ${isOut ? 'AGOTADO' : 'DISPONIBLE'}
+                        </span>
+                    </div>
+
+                    <div class="mt-3 pt-2.5 border-t border-[#232936]/60 text-xs">
+                        <span class="text-gray-400">Sustituto en IA:</span>
+                        <p class="font-medium ${isOut ? 'text-amber-300' : 'text-gray-300'} leading-snug">${item.substitute}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderUnavailableDishes() {
+            const container = document.getElementById('unavailableDishesChips');
+            container.innerHTML = '';
+            const unavail = currentState.unavailable_dishes || [];
+
+            if (unavail.length === 0) {
+                container.innerHTML = '<span class="text-xs text-gray-500 italic">Todos los platillos del menú están disponibles actualmente.</span>';
+                return;
+            }
+
+            unavail.forEach(dish => {
+                const chip = document.createElement('div');
+                chip.className = 'flex items-center gap-2 bg-red-950/60 border border-red-800 text-red-300 px-3 py-1 rounded-xl text-xs font-medium';
+                chip.innerHTML = `
+                    <span>⛔ ${dish}</span>
+                    <button onclick="removeUnavailableDish('${dish}')" class="text-red-400 hover:text-white font-bold ml-1">✕</button>
+                `;
+                container.appendChild(chip);
+            });
+        }
+
+        async function toggleIngredient(ingId, currentlyOut) {
+            try {
+                const res = await fetch('/api/stock/ingredient', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ingredient_id: ingId,
+                        available: currentlyOut // If it was out, we make it available
+                    })
+                });
+                currentState = await res.json();
+                renderState();
+                updatePromptPreview();
+                showToast(currentlyOut ? `🟢 ${ingId.toUpperCase()} marcado como DISPONIBLE` : `🔴 ${ingId.toUpperCase()} marcado como AGOTADO`);
+            } catch (err) {
+                showToast('Error al actualizar ingrediente', true);
+            }
+        }
+
+        async function toggleStoreOpen(isOpen) {
+            try {
+                const res = await fetch('/api/announcement', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ is_open: isOpen })
+                });
+                currentState = await res.json();
+                renderState();
+                updatePromptPreview();
+                showToast(isOpen ? '🟢 Restaurante ABIERTO para pedidos' : '🔴 Restaurante CERRADO temporalmente');
+            } catch (err) {
+                showToast('Error al cambiar apertura', true);
+            }
+        }
+
+        async function saveAnnouncements() {
+            const prepTime = document.getElementById('prepTimeInput').value.trim();
+            const serviceOverride = document.getElementById('serviceOverrideInput').value.trim();
+
+            try {
+                const res = await fetch('/api/announcement', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prep_time_override: prepTime,
+                        service_override: serviceOverride
+                    })
+                });
+                currentState = await res.json();
+                renderState();
+                updatePromptPreview();
+                showToast('Avisos de cocina guardados');
+            } catch (err) {
+                showToast('Error al guardar avisos', true);
+            }
+        }
+
+        function setPromoPreset(text) {
+            document.getElementById('promoTextInput').value = text;
+            document.getElementById('promoActiveToggle').checked = true;
+        }
+
+        async function togglePromoActive(active) {
+            savePromotion();
+        }
+
+        async function savePromotion() {
+            const text = document.getElementById('promoTextInput').value.trim();
+            const active = document.getElementById('promoActiveToggle').checked;
+
+            const promos = text ? [{ id: 'promo_today', text: text, active: active }] : [];
+
+            try {
+                const res = await fetch('/api/promotions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ promotions: promos })
+                });
+                currentState = await res.json();
+                renderState();
+                updatePromptPreview();
+                showToast(active ? '🎉 Promoción activa aplicada en la IA' : 'Promoción desactivada');
+            } catch (err) {
+                showToast('Error al guardar promoción', true);
+            }
+        }
+
+        function filterDishes(query) {
+            const box = document.getElementById('dishSearchResults');
+            if (!query.trim() || query.length < 2) {
+                box.classList.add('hidden');
+                return;
+            }
+
+            const q = query.toLowerCase();
+            const matches = allMenuItems.filter(item => 
+                item.name.toLowerCase().includes(q) || 
+                (item.category && item.category.toLowerCase().includes(q))
+            ).slice(0, 8);
+
+            if (matches.length === 0) {
+                box.innerHTML = '<p class="text-xs text-gray-500 p-2">No se encontraron platillos con ese nombre.</p>';
+                box.classList.remove('hidden');
+                return;
+            }
+
+            box.innerHTML = '';
+            matches.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-2 hover:bg-[#1a202c] rounded-lg cursor-pointer text-xs';
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold text-white">${item.name}</span>
+                        <span class="text-gray-400 ml-2">(${item.category || 'General'})</span>
+                    </div>
+                    <button class="bg-red-900/60 hover:bg-red-800 text-red-200 px-2 py-1 rounded">Marcar Agotado</button>
+                `;
+                div.onclick = () => addUnavailableDish(item.name);
+                box.appendChild(div);
+            });
+            box.classList.remove('hidden');
+        }
+
+        async function addUnavailableDish(dishName) {
+            document.getElementById('dishSearchInput').value = '';
+            document.getElementById('dishSearchResults').classList.add('hidden');
+
+            try {
+                const res = await fetch('/api/stock/dish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dish_name: dishName, available: false })
+                });
+                currentState = await res.json();
+                renderState();
+                updatePromptPreview();
+                showToast(`⛔ ${dishName} marcado como AGOTADO`);
+            } catch (err) {
+                showToast('Error al desactivar platillo', true);
+            }
+        }
+
+        async function removeUnavailableDish(dishName) {
+            try {
+                const res = await fetch('/api/stock/dish', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dish_name: dishName, available: true })
+                });
+                currentState = await res.json();
+                renderState();
+                updatePromptPreview();
+                showToast(`🟢 ${dishName} disponible nuevamente`);
+            } catch (err) {
+                showToast('Error al reactivar platillo', true);
+            }
+        }
+
+        async function updatePromptPreview() {
+            try {
+                const res = await fetch('/api/kitchen-prompt-preview');
+                const data = await res.json();
+                document.getElementById('promptPreviewBox').innerText = data.prompt || '(Sin alertas de inventario ni promociones activas. Menú operando normalmente).';
+            } catch (err) {
+                document.getElementById('promptPreviewBox').innerText = 'Error al cargar vista previa.';
+            }
+        }
+
+        async function refreshState() {
+            const icon = document.getElementById('refreshIcon');
+            icon.classList.add('fa-spin');
+            await loadState();
+            await updatePromptPreview();
+            setTimeout(() => icon.classList.remove('fa-spin'), 600);
+            showToast('Estado sincronizado');
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.className = `fixed bottom-5 right-5 z-50 transition-all duration-300 font-semibold px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-sm ${
+                isError ? 'bg-red-500 text-white' : 'bg-emerald-400 text-black'
+            }`;
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+
+            setTimeout(() => {
+                toast.style.transform = 'translateY(6rem)';
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

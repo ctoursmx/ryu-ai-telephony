@@ -1015,8 +1015,25 @@ def start_watchdog_thread():
     t = threading.Thread(target=watchdog_loop, daemon=True, name="SIP Watchdog")
     t.start()
 
+def start_web_admin_thread(port: int = 8000):
+    """Inicia el panel de control web administrativo FastAPI en un hilo demonio paralelo."""
+    def run_server():
+        try:
+            import uvicorn
+            from server_telephony_ryu import app as web_app
+            print(f"🌐 [Panel Web Administrativo] Iniciado en http://0.0.0.0:{port}/admin (Existencias y Promociones)")
+            uvicorn.run(web_app, host="0.0.0.0", port=port, log_level="warning")
+        except Exception as e:
+            print(f"Aviso al iniciar Panel Web: {e}")
+
+    t = threading.Thread(target=run_server, daemon=True, name="WebAdminServer")
+    t.start()
+
 def main():
     global GLOBAL_PHONE
+    
+    # Iniciar panel de control web administrativo en http://localhost:8000/admin
+    start_web_admin_thread(8000)
     
     # 1. Cargar y precalentar faster-whisper en RAM
     get_whisper_model()

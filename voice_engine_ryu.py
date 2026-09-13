@@ -77,6 +77,95 @@ elif PROMPT_FULL_PATH.exists():
 else:
     SYSTEM_PROMPT = "Eres la recepcionista telefónica de Ryu en Tequila. Habla con calidez humana mexicana, sin emojis ni viñetas."
 
+# --- ESTADO DINÁMICO DE INVENTARIO Y PROMOCIONES ---
+RESTAURANT_STATE_PATH = Path(__file__).parent / "restaurant_state.json"
+_CACHED_STATE = None
+_CACHED_STATE_MTIME = 0
+
+def load_restaurant_state() -> dict:
+    global _CACHED_STATE, _CACHED_STATE_MTIME
+    try:
+        if RESTAURANT_STATE_PATH.exists():
+            mtime = RESTAURANT_STATE_PATH.stat().st_mtime
+            if _CACHED_STATE is None or mtime != _CACHED_STATE_MTIME:
+                with open(RESTAURANT_STATE_PATH, "r", encoding="utf-8") as f:
+                    _CACHED_STATE = json.load(f)
+                    _CACHED_STATE_MTIME = mtime
+            return _CACHED_STATE
+    except Exception as e:
+        print(f"Aviso al cargar restaurant_state.json: {e}")
+    return {
+        "is_open": True,
+        "service_override": "",
+        "prep_time_override": "",
+        "unavailable_ingredients": [],
+        "unavailable_dishes": [],
+        "daily_promotions": [],
+        "ingredient_catalog": []
+    }
+
+def save_restaurant_state(state: dict) -> bool:
+    global _CACHED_STATE, _CACHED_STATE_MTIME
+    try:
+        state["_last_updated"] = datetime.datetime.now().isoformat()
+        with open(RESTAURANT_STATE_PATH, "w", encoding="utf-8") as f:
+            json.dump(state, f, ensure_ascii=False, indent=2)
+        _CACHED_STATE = state
+        _CACHED_STATE_MTIME = RESTAURANT_STATE_PATH.stat().st_mtime
+        return True
+    except Exception as e:
+        print(f"Error al guardar restaurant_state.json: {e}")
+        return False
+
+def build_kitchen_dynamic_prompt() -> str:
+    state = load_restaurant_state()
+    lines = []
+    
+    # 1. Ingredientes agotados y reglas de sustitución
+    unavailable_ing_ids = state.get("unavailable_ingredients", [])
+    if unavailable_ing_ids:
+        catalog = {item["id"]: item for item in state.get("ingredient_catalog", [])}
+        lines.append("🚨 AVISO URGENTE DE COCINA - INGREDIENTES TEMPORALMENTE AGOTADOS:")
+        for ing_id in unavailable_ing_ids:
+            item = catalog.get(ing_id, {"name": ing_id.capitalize(), "substitute": "otra proteína disponible"})
+            name_upper = item['name'].upper()
+            name_lower = item['name'].lower()
+            substitute = item.get('substitute', 'otra opción disponible')
+            affected = item.get('affected_dishes', '')
+            lines.append(f"  • {name_upper} ESTÁ AGOTADO.")
+            if affected:
+                lines.append(f"    - Platillos afectados: {affected}.")
+            lines.append(f"    - REGLA ESTRICTA AL CLIENTE: Si el cliente pide cualquier platillo con {name_lower}, infórmale amablemente:")
+            lines.append(f"      \"Disculpa, por el momento se nos agotó el {name_lower}, pero te lo podemos preparar con {substitute}, ¿te gustaría que lo preparemos así?\".")
+            lines.append(f"    - Si el cliente acepta el sustituto, anótalo claramente en la orden para cocina.")
+
+    # 2. Platillos específicos agotados
+    unavailable_dishes = state.get("unavailable_dishes", [])
+    if unavailable_dishes:
+        lines.append("\n⛔ PLATILLOS ESPECÍFICOS AGOTADOS HOY:")
+        for dish in unavailable_dishes:
+            lines.append(f"  • {dish}: Infórmale con amabilidad que por hoy se agotó y sugiérele otra opción similar de la misma categoría.")
+
+    # 3. Promociones activas del día
+    active_promos = [p["text"] for p in state.get("daily_promotions", []) if p.get("active")]
+    if active_promos:
+        lines.append("\n🎉 PROMOCIONES OFICIALES DEL DÍA:")
+        for promo in active_promos:
+            lines.append(f"  • {promo}")
+        lines.append("  - REGLA: Si el cliente pregunta qué promociones hay hoy, o si es la primera interacción y resulta oportuno, menciónale esta promoción con entusiasmo.")
+
+    # 4. Avisos especiales de demora o servicio
+    service_override = state.get("service_override", "").strip()
+    if service_override:
+        lines.append(f"\n📢 AVISO ESPECIAL DE SERVICIO: {service_override}")
+        
+    prep_override = state.get("prep_time_override", "").strip()
+    if prep_override:
+        lines.append(f"⏱️ TIEMPO DE ENTREGA ACTUALIZADO: {prep_override} (en lugar de los 40-55 min habituales).")
+        
+    return "\n".join(lines)
+
+openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 class RyuVoiceAgent:
     def __init__(self, caller_phone="Desconocido", caller_name="Cliente"):
         self.caller_phone = caller_phone
@@ -99,6 +188,13 @@ class RyuVoiceAgent:
         dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
         dia_semana = dias[now.weekday()]
         hora_str = now.strftime("%I:%M %p")
+        
+        # Validar si gerencia cerró manualmente la toma de pedidos desde el panel web
+        state = load_restaurant_state()
+        if not state.get("is_open", True):
+            estado = "CERRADO TEMPORALMENTE (Por indicación de gerencia en el panel web: no se reciben pedidos por el momento)."
+            menu_activo = "Ninguno (Cerrado por indicación de gerencia)"
+            return dia_semana, hora_str, estado, menu_activo
         
         # --- MODO DE PRUEBAS (TODOS LOS MENÚS DISPONIBLES) ---
         # Cambiar a False cuando se pase a producción real con horarios estrictos
@@ -187,10 +283,12 @@ class RyuVoiceAgent:
         # 1. Normalización KAG de fonética y alias aprendidos en el grafo
         clean_user_text, replacements = kag_engine.normalize_user_text(sanitized_input)
 
-        
         # 2. Hechos inmutables desde el Grafo de Conocimiento (KAG Ground Truth)
         kag_facts = kag_engine.retrieve_ground_truth_facts(clean_user_text, now)
         kag_prompt_block = kag_engine.generate_kag_context_prompt(kag_facts, self.customer_profile)
+
+        dynamic_kitchen_block = build_kitchen_dynamic_prompt()
+        dynamic_section = f"\n\n--- INVENTARIO DINÁMICO Y PROMOCIONES EN VIVO ---\n{dynamic_kitchen_block}\n--------------------------------------------------" if dynamic_kitchen_block else ""
         
         system_context = (
             f"{current_prompt}\n\n"
@@ -202,6 +300,7 @@ class RyuVoiceAgent:
             f"• Menú disponible en este momento: {menu_activo}\n"
             f"--------------------------------------------------\n"
             f"{kag_prompt_block}"
+            f"{dynamic_section}"
         )
         
         messages = [
