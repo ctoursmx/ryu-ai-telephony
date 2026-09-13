@@ -585,7 +585,7 @@ def get_full_hierarchical_menu():
         print(f"Error leyendo menu_ryu.json: {e}")
         return {"schedules": {}, "menus": {}}
 
-    schedules = data.get("schedules", {})
+    schedules = state.get("schedules_override") or data.get("schedules", {})
     menu_raw = data.get("menu", {})
     result_menus = {}
 
@@ -813,6 +813,9 @@ async def api_update_dish(request: Request):
 @app.get("/api/menu/schedules")
 def api_get_schedules():
     """Retorna los horarios de los 3 menús."""
+    state = load_restaurant_state()
+    if state.get("schedules_override"):
+        return state["schedules_override"]
     menu_path = Path(__file__).parent / "menu_ryu.json"
     if menu_path.exists():
         try:

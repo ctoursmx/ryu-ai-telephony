@@ -96,7 +96,7 @@
             <div class="flex items-center gap-2 sm:gap-3">
                 <div id="syncIndicator" class="flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-3 py-1.5 rounded-full">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span class="font-medium">IA Conectada</span>
+                    <span class="font-medium">Ecosistema en línea</span>
                 </div>
                 <button onclick="refreshAllData()" title="Sincronizar Datos" class="p-2 rounded-xl bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 transition text-sm">
                     <i class="fa-solid fa-arrows-rotate" id="refreshIcon"></i>
@@ -338,7 +338,7 @@
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-[#232936] pb-3">
                     <div>
                         <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                            <span class="text-amber-400">🎉</span> Promociones del Día en la IA
+                            <span class="text-amber-400">🎉</span> Promociones del Día en el Ecosistema
                         </h3>
                         <p class="text-xs text-gray-400">La recepcionista con IA mencionará esta promoción a los clientes al saludar y cuando pregunten qué ofertas hay hoy.</p>
                     </div>
@@ -371,7 +371,7 @@
 
                 <div class="flex justify-end pt-2">
                     <button onclick="savePromotion()" class="bg-amber-500 hover:bg-amber-600 text-black font-bold px-6 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-lg shadow-amber-500/20">
-                        <i class="fa-solid fa-floppy-disk"></i> Guardar y Aplicar en la IA
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar y Aplicar en el Ecosistema
                     </button>
                 </div>
             </div>
@@ -383,9 +383,9 @@
         <section id="tabContent_schedules" class="space-y-4 hidden">
             <div class="glass-card p-4 sm:p-5 border-l-4 border-l-blue-500">
                 <h3 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
-                    <span>⏰</span> Configuración de Horarios de Disponibilidad por Menú
+                    <span>⏰</span> Configuración de Horarios y Días Oficiales por Menú
                 </h3>
-                <p class="text-xs text-gray-400 mt-0.5">La IA consulta estos horarios en cada llamada para saber con total exactitud qué menú ofrecer al cliente según el día y la hora.</p>
+                <p class="text-xs text-gray-400 mt-0.5">El ecosistema y la IA consultan estos horarios y días en cada llamada para saber con total exactitud qué menú ofrecer al cliente en tiempo real.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -397,19 +397,55 @@
                     </div>
                     <p class="text-xs text-gray-400">Rollos, entremeses, kushiages, ramen, yakimeshi, teppanyaki.</p>
                     
-                    <div class="space-y-2 pt-2">
-                        <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Hora Inicio</label>
-                            <input type="time" id="sched_jp_start" value="13:00" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500">
+                    <div class="space-y-3 pt-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Hora Inicio</label>
+                                <input type="time" id="sched_jp_start" value="13:00" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Hora Fin</label>
+                                <input type="time" id="sched_jp_end" value="18:30" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500">
+                            </div>
                         </div>
+
                         <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Hora Fin</label>
-                            <input type="time" id="sched_jp_end" value="18:30" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Días Habilitados</label>
-                            <div class="text-xs text-gray-300 bg-[#0c0e12] p-2.5 rounded-xl border border-[#2d3748]">
-                                Lunes a Domingo (Todos los días)
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-[11px] font-medium text-gray-400">Días que se Ofrece</label>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" onclick="setAllDays('jp', true)" class="text-[10px] text-red-400 hover:text-red-300 bg-red-950/40 border border-red-800/40 px-1.5 py-0.5 rounded transition">Todos</button>
+                                    <button type="button" onclick="setAllDays('jp', false)" class="text-[10px] text-gray-400 hover:text-gray-300 bg-[#1a202c] border border-gray-700/60 px-1.5 py-0.5 rounded transition">Ninguno</button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1">
+                                <label class="cursor-pointer text-center" title="Lunes">
+                                    <input type="checkbox" id="sched_jp_monday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-500 transition">Lu</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Martes">
+                                    <input type="checkbox" id="sched_jp_tuesday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-500 transition">Ma</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Miércoles">
+                                    <input type="checkbox" id="sched_jp_wednesday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-500 transition">Mi</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Jueves">
+                                    <input type="checkbox" id="sched_jp_thursday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-500 transition">Ju</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Viernes">
+                                    <input type="checkbox" id="sched_jp_friday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-500 transition">Vi</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Sábado">
+                                    <input type="checkbox" id="sched_jp_saturday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-500 transition">Sá</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Domingo">
+                                    <input type="checkbox" id="sched_jp_sunday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-500 transition">Do</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -423,19 +459,55 @@
                     </div>
                     <p class="text-xs text-gray-400">Hamburguesas, hot dogs, alitas, boneless, tortas, papas.</p>
                     
-                    <div class="space-y-2 pt-2">
-                        <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Hora Inicio</label>
-                            <input type="time" id="sched_sn_start" value="18:30" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                    <div class="space-y-3 pt-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Hora Inicio</label>
+                                <input type="time" id="sched_sn_start" value="18:30" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Hora Fin</label>
+                                <input type="time" id="sched_sn_end" value="22:30" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
+                            </div>
                         </div>
+
                         <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Hora Fin</label>
-                            <input type="time" id="sched_sn_end" value="22:30" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Días Habilitados</label>
-                            <div class="text-xs text-gray-300 bg-[#0c0e12] p-2.5 rounded-xl border border-[#2d3748]">
-                                Lunes a Domingo (Turno nocturno)
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-[11px] font-medium text-gray-400">Días que se Ofrece</label>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" onclick="setAllDays('sn', true)" class="text-[10px] text-amber-400 hover:text-amber-300 bg-amber-950/40 border border-amber-800/40 px-1.5 py-0.5 rounded transition">Todos</button>
+                                    <button type="button" onclick="setAllDays('sn', false)" class="text-[10px] text-gray-400 hover:text-gray-300 bg-[#1a202c] border border-gray-700/60 px-1.5 py-0.5 rounded transition">Ninguno</button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1">
+                                <label class="cursor-pointer text-center" title="Lunes">
+                                    <input type="checkbox" id="sched_sn_monday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-amber-500 peer-checked:text-black peer-checked:border-amber-400 transition">Lu</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Martes">
+                                    <input type="checkbox" id="sched_sn_tuesday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-amber-500 peer-checked:text-black peer-checked:border-amber-400 transition">Ma</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Miércoles">
+                                    <input type="checkbox" id="sched_sn_wednesday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-amber-500 peer-checked:text-black peer-checked:border-amber-400 transition">Mi</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Jueves">
+                                    <input type="checkbox" id="sched_sn_thursday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-amber-500 peer-checked:text-black peer-checked:border-amber-400 transition">Ju</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Viernes">
+                                    <input type="checkbox" id="sched_sn_friday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-amber-500 peer-checked:text-black peer-checked:border-amber-400 transition">Vi</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Sábado">
+                                    <input type="checkbox" id="sched_sn_saturday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-amber-500 peer-checked:text-black peer-checked:border-amber-400 transition">Sá</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Domingo">
+                                    <input type="checkbox" id="sched_sn_sunday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-amber-500 peer-checked:text-black peer-checked:border-amber-400 transition">Do</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -449,19 +521,56 @@
                     </div>
                     <p class="text-xs text-gray-400">Lasaña, spaguetti, fettuccine, paninis, pitas artesanales.</p>
                     
-                    <div class="space-y-2 pt-2">
-                        <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Hora Inicio</label>
-                            <input type="time" id="sched_it_start" value="13:00" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <div class="space-y-3 pt-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Hora Inicio</label>
+                                <input type="time" id="sched_it_start" value="13:00" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1">Hora Fin</label>
+                                <input type="time" id="sched_it_end" value="18:30" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            </div>
                         </div>
+
                         <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Hora Fin</label>
-                            <input type="time" id="sched_it_end" value="18:30" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] text-gray-400 mb-1">Días Habilitados</label>
-                            <div class="text-xs text-emerald-300 bg-[#0c0e12] p-2.5 rounded-xl border border-[#2d3748]">
-                                Viernes, Sábado y Domingo (Fines de semana)
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="block text-[11px] font-medium text-gray-400">Días que se Ofrece</label>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" onclick="setWeekendDays('it')" class="text-[10px] text-emerald-400 hover:text-emerald-300 bg-emerald-950/40 border border-emerald-800/40 px-1.5 py-0.5 rounded transition">Fin de Sem</button>
+                                    <button type="button" onclick="setAllDays('it', true)" class="text-[10px] text-gray-300 hover:text-white bg-[#1a202c] border border-gray-700/60 px-1.5 py-0.5 rounded transition">Todos</button>
+                                    <button type="button" onclick="setAllDays('it', false)" class="text-[10px] text-gray-400 hover:text-gray-300 bg-[#1a202c] border border-gray-700/60 px-1.5 py-0.5 rounded transition">Ninguno</button>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-7 gap-1">
+                                <label class="cursor-pointer text-center" title="Lunes">
+                                    <input type="checkbox" id="sched_it_monday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-500 transition">Lu</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Martes">
+                                    <input type="checkbox" id="sched_it_tuesday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-500 transition">Ma</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Miércoles">
+                                    <input type="checkbox" id="sched_it_wednesday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-500 transition">Mi</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Jueves">
+                                    <input type="checkbox" id="sched_it_thursday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-500 transition">Ju</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Viernes">
+                                    <input type="checkbox" id="sched_it_friday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-500 transition">Vi</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Sábado">
+                                    <input type="checkbox" id="sched_it_saturday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-500 transition">Sá</span>
+                                </label>
+                                <label class="cursor-pointer text-center" title="Domingo">
+                                    <input type="checkbox" id="sched_it_sunday" class="peer sr-only">
+                                    <span class="block py-1.5 rounded-lg text-xs font-semibold bg-[#0c0e12] border border-[#2d3748] text-gray-400 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-500 transition">Do</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -470,7 +579,7 @@
 
             <div class="flex justify-end pt-2">
                 <button onclick="saveSchedules()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition flex items-center gap-2 shadow-lg shadow-blue-600/20">
-                    <i class="fa-solid fa-clock"></i> Guardar Horarios Oficiales
+                    <i class="fa-solid fa-clock"></i> Guardar y Aplicar Horarios en el Ecosistema
                 </button>
             </div>
         </section>
@@ -1281,21 +1390,72 @@
         }
 
         // =====================================================================
-        // GESTIÓN DE HORARIOS DE MENÚS
+        // GESTIÓN DE HORARIOS Y DÍAS DE MENÚS
         // =====================================================================
+        const DAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+        function setAllDays(prefix, checked) {
+            DAY_KEYS.forEach(d => {
+                const el = document.getElementById(`sched_${prefix}_${d}`);
+                if (el) el.checked = checked;
+            });
+        }
+
+        function setWeekendDays(prefix) {
+            DAY_KEYS.forEach(d => {
+                const el = document.getElementById(`sched_${prefix}_${d}`);
+                if (el) el.checked = (d === 'friday' || d === 'saturday' || d === 'sunday');
+            });
+        }
+
+        function getSelectedDays(prefix) {
+            return DAY_KEYS.filter(d => {
+                const el = document.getElementById(`sched_${prefix}_${d}`);
+                return el && el.checked;
+            });
+        }
+
+        function formatDaysSpan(days) {
+            const dayNames = {
+                monday: 'Lunes', tuesday: 'Martes', wednesday: 'Miércoles',
+                thursday: 'Jueves', friday: 'Viernes', saturday: 'Sábado', sunday: 'Domingo'
+            };
+            if (!days || days.length === 0) return 'Deshabilitado (0 días)';
+            if (days.length === 7) return 'Lunes a Domingo (Todos los días)';
+            if (days.length === 3 && days.includes('friday') && days.includes('saturday') && days.includes('sunday')) {
+                return 'Viernes, Sábado y Domingo';
+            }
+            return days.map(d => dayNames[d] || d).join(', ');
+        }
+
         function renderSchedulesTab() {
             if (!schedulesData) return;
             if (schedulesData.japanese) {
                 document.getElementById('sched_jp_start').value = schedulesData.japanese.start_time || '13:00';
                 document.getElementById('sched_jp_end').value = schedulesData.japanese.end_time || '18:30';
+                const jpDays = schedulesData.japanese.days || DAY_KEYS;
+                DAY_KEYS.forEach(d => {
+                    const el = document.getElementById(`sched_jp_${d}`);
+                    if (el) el.checked = jpDays.includes(d);
+                });
             }
             if (schedulesData.snacks) {
                 document.getElementById('sched_sn_start').value = schedulesData.snacks.start_time || '18:30';
                 document.getElementById('sched_sn_end').value = schedulesData.snacks.end_time || '22:30';
+                const snDays = schedulesData.snacks.days || DAY_KEYS;
+                DAY_KEYS.forEach(d => {
+                    const el = document.getElementById(`sched_sn_${d}`);
+                    if (el) el.checked = snDays.includes(d);
+                });
             }
             if (schedulesData.italian) {
                 document.getElementById('sched_it_start').value = schedulesData.italian.start_time || '13:00';
                 document.getElementById('sched_it_end').value = schedulesData.italian.end_time || '18:30';
+                const itDays = schedulesData.italian.days || ['friday', 'saturday', 'sunday'];
+                DAY_KEYS.forEach(d => {
+                    const el = document.getElementById(`sched_it_${d}`);
+                    if (el) el.checked = itDays.includes(d);
+                });
             }
         }
 
@@ -1303,27 +1463,38 @@
             const token = getAuthToken();
             if (!token) return showLoginModal();
 
+            const jpDays = getSelectedDays('jp');
+            const snDays = getSelectedDays('sn');
+            const itDays = getSelectedDays('it');
+
+            const jpStart = document.getElementById('sched_jp_start').value;
+            const jpEnd = document.getElementById('sched_jp_end').value;
+            const snStart = document.getElementById('sched_sn_start').value;
+            const snEnd = document.getElementById('sched_sn_end').value;
+            const itStart = document.getElementById('sched_it_start').value;
+            const itEnd = document.getElementById('sched_it_end').value;
+
             const payload = {
                 japanese: {
                     name: "Comida Japonesa & General",
-                    start_time: document.getElementById('sched_jp_start').value,
-                    end_time: document.getElementById('sched_jp_end').value,
-                    days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
-                    description: `Disponible de ${document.getElementById('sched_jp_start').value} a ${document.getElementById('sched_jp_end').value} todos los días.`
+                    start_time: jpStart,
+                    end_time: jpEnd,
+                    days: jpDays,
+                    description: `Disponible (${formatDaysSpan(jpDays)}) de ${jpStart} a ${jpEnd}.`
                 },
                 snacks: {
                     name: "Menú Snacks, Promociones, Hamburguesas y Hot Dogs",
-                    start_time: document.getElementById('sched_sn_start').value,
-                    end_time: document.getElementById('sched_sn_end').value,
-                    days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
-                    description: `Disponible de ${document.getElementById('sched_sn_start').value} a ${document.getElementById('sched_sn_end').value} todos los días.`
+                    start_time: snStart,
+                    end_time: snEnd,
+                    days: snDays,
+                    description: `Disponible (${formatDaysSpan(snDays)}) de ${snStart} a ${snEnd}.`
                 },
                 italian: {
                     name: "Comida Italiana (Capri Cucina Italiana)",
-                    start_time: document.getElementById('sched_it_start').value,
-                    end_time: document.getElementById('sched_it_end').value,
-                    days: ["friday", "saturday", "sunday"],
-                    description: `Disponible exclusivamente Viernes, Sábado y Domingo de ${document.getElementById('sched_it_start').value} a ${document.getElementById('sched_it_end').value}.`
+                    start_time: itStart,
+                    end_time: itEnd,
+                    days: itDays,
+                    description: `Disponible (${formatDaysSpan(itDays)}) de ${itStart} a ${itEnd}.`
                 }
             };
 
@@ -1338,7 +1509,7 @@
                 });
 
                 if (res.ok) {
-                    showToast('Horarios de menú guardados en la IA');
+                    showToast('Horarios y días de menú aplicados en el ecosistema');
                     await refreshAllData();
                 } else {
                     showToast('Error al guardar horarios', true);

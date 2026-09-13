@@ -196,44 +196,66 @@ class RyuVoiceAgent:
         dia_semana = dias[now.weekday()]
         hora_str = now.strftime("%I:%M %p")
         
-        # Validar si gerencia cerró manualmente la toma de pedidos desde el panel web
+        # 1. Validar si gerencia cerró manualmente la toma de pedidos desde el panel web
         state = load_restaurant_state()
         if not state.get("is_open", True):
             estado = "CERRADO TEMPORALMENTE (Por indicación de gerencia en el panel web: no se reciben pedidos por el momento)."
             menu_activo = "Ninguno (Cerrado por indicación de gerencia)"
             return dia_semana, hora_str, estado, menu_activo
         
-        # --- MODO DE PRUEBAS (TODOS LOS MENÚS DISPONIBLES) ---
-        # Cambiar a False cuando se pase a producción real con horarios estrictos
-        TESTING_MODE_ALL_MENUS = True
-        
-        if TESTING_MODE_ALL_MENUS:
+        # 2. Si se activa explícitamente el modo forzado de pruebas en el estado
+        if state.get("testing_mode_all_menus", False):
             estado = "ABIERTO (MODO DE PRUEBAS: Todos los menús y platillos están habilitados para ordenar a cualquier hora)."
             menu_activo = "TODOS DISPONIBLES (Menú Japonés, Menú de Snacks y Menú Italiano)"
             return dia_semana, hora_str, estado, menu_activo
             
-        minutos = now.hour * 60 + now.minute
-        is_weekend = now.weekday() in [4, 5, 6] # Viernes, Sábado, Domingo
-        
-        # Horarios oficiales de producción:
-        # 1:00 PM (780 min) a 6:30 PM (1110 min): Japonés (+ Italiano si fin de semana)
-        # 6:30 PM (1110 min) a 10:30 PM (1350 min): Solo Snacks
-        if minutos < 780:
-            estado = "CERRADO (El restaurante abre a la 1:00 PM)."
-            menu_activo = "Ninguno (Cerrado por el momento)"
-        elif 780 <= minutos < 1110:
-            if is_weekend:
-                estado = "ABIERTO. Menú Japonés Y Menú Italiano activos (hasta las 6:30 PM)."
-                menu_activo = "Menú Japonés y Menú Italiano"
-            else:
-                estado = "ABIERTO. Solo Menú Japonés activo (hasta las 6:30 PM. A partir de las 6:30 PM entra Snacks)."
-                menu_activo = "Menú Japonés"
-        elif 1110 <= minutos <= 1350:
-            estado = "ABIERTO. Solo Menú de Snacks activo (Hamburguesas, Hot Dogs, Boneless, Alitas, Paquetes)."
-            menu_activo = "Menú de Snacks"
+        day_keys = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        current_day_key = day_keys[now.weekday()]
+        current_minutes = now.hour * 60 + now.minute
+
+        # Cargar horarios oficiales (desde override de gerencia o desde menu_ryu.json)
+        schedules = state.get("schedules_override")
+        if not schedules:
+            menu_path = Path(__file__).parent / "menu_ryu.json"
+            if menu_path.exists():
+                try:
+                    with open(menu_path, "r", encoding="utf-8") as f:
+                        schedules = json.load(f).get("schedules", {})
+                except Exception:
+                    schedules = {}
+        if not schedules:
+            schedules = {}
+
+        menu_configs = [
+            ("japanese", "Menú Japonés", schedules.get("japanese")),
+            ("snacks", "Menú de Snacks (Hamburguesas, Hot Dogs, Boneless, Alitas)", schedules.get("snacks")),
+            ("italian", "Menú Italiano (Capri Cucina Italiana)", schedules.get("italian"))
+        ]
+
+        active_menus_list = []
+        for key, display_name, sched in menu_configs:
+            if not sched or not isinstance(sched, dict):
+                continue
+            allowed_days = [str(d).lower().strip() for d in sched.get("days", [])]
+            if current_day_key not in allowed_days:
+                continue
+            
+            try:
+                start_parts = sched.get("start_time", "00:00").split(":")
+                end_parts = sched.get("end_time", "23:59").split(":")
+                start_m = int(start_parts[0]) * 60 + int(start_parts[1])
+                end_m = int(end_parts[0]) * 60 + int(end_parts[1])
+                if start_m <= current_minutes <= end_m:
+                    active_menus_list.append(display_name)
+            except Exception:
+                active_menus_list.append(display_name)
+
+        if active_menus_list:
+            menu_activo = " y ".join(active_menus_list)
+            estado = f"ABIERTO. Menús activos en este momento: {menu_activo}."
         else:
-            estado = "CERRADO (El restaurante cerró a las 10:30 PM)."
-            menu_activo = "Ninguno (Cerrado)"
+            estado = f"CERRADO (Fuera del horario de servicio oficial para {dia_semana} a las {hora_str})."
+            menu_activo = "Ninguno (Cerrado por horario en este momento)"
             
         return dia_semana, hora_str, estado, menu_activo
 
