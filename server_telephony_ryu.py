@@ -13,6 +13,10 @@ import hashlib
 import secrets
 import collections
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from voice_engine_ryu import (
@@ -337,9 +341,9 @@ async def api_ack_pos_order(order_id: str, request: Request):
 # AUTENTICACIÓN Y BLINDAJE DE SEGURIDAD PARA EL PANEL DE CONTROL
 # ======================================================================
 
-ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "ryu_tequila_2026")
-ADMIN_SECRET_KEY = os.getenv("ADMIN_SECRET_KEY", "ryu_admin_jwt_secret_token_tequila_2026")
+ADMIN_USERNAME = str(os.getenv("ADMIN_USERNAME") or "admin").strip()
+ADMIN_PASSWORD = str(os.getenv("ADMIN_PASSWORD") or "ryu_tequila_2026").strip()
+ADMIN_SECRET_KEY = str(os.getenv("ADMIN_SECRET_KEY") or "ryu_admin_jwt_secret_token_tequila_2026").strip()
 
 # Rate limiter contra ataques de fuerza bruta en el login (máx 5 intentos fallidos en 10 min por IP)
 login_failed_attempts: dict[str, list[float]] = collections.defaultdict(list)
