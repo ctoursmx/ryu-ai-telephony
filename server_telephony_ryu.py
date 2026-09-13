@@ -8,6 +8,10 @@ Reconocimiento en tiempo real + Respuesta inmediata + Edge-TTS + Telegram
 import os
 import json
 import time
+import hmac
+import hashlib
+import secrets
+import collections
 from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
@@ -330,6 +334,110 @@ async def api_ack_pos_order(order_id: str, request: Request):
     return {"status": "ok" if success else "error", "order_id": order_id}
 
 # ======================================================================
+# AUTENTICACIÓN Y BLINDAJE DE SEGURIDAD PARA EL PANEL DE CONTROL
+# ======================================================================
+
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "ryu_tequila_2026")
+ADMIN_SECRET_KEY = os.getenv("ADMIN_SECRET_KEY", "ryu_admin_jwt_secret_token_tequila_2026")
+
+# Rate limiter contra ataques de fuerza bruta en el login (máx 5 intentos fallidos en 10 min por IP)
+login_failed_attempts: dict[str, list[float]] = collections.defaultdict(list)
+
+def verify_admin_auth(request: Request) -> bool:
+    """Verifica si la petición cuenta con credenciales válidas (Token Bearer, Cookie o Basic Auth)."""
+    auth_header = request.headers.get("Authorization", "")
+    token = ""
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:].strip()
+    elif "X-Admin-Token" in request.headers:
+        token = request.headers["X-Admin-Token"].strip()
+    elif "admin_token" in request.cookies:
+        token = request.cookies["admin_token"].strip()
+
+    if token:
+        try:
+            parts = token.split(":")
+            if len(parts) == 3:
+                uname, exp_str, sig = parts
+                exp_ts = int(exp_str)
+                if exp_ts > time.time() and secrets.compare_digest(uname, ADMIN_USERNAME):
+                    expected_sig = hmac.new(ADMIN_SECRET_KEY.encode(), f"{uname}:{exp_str}".encode(), hashlib.sha256).hexdigest()
+                    if secrets.compare_digest(sig, expected_sig):
+                        return True
+        except Exception:
+            pass
+
+    # Soporte para HTTP Basic Auth estándar
+    if auth_header.startswith("Basic "):
+        import base64
+        try:
+            decoded = base64.b64decode(auth_header[6:]).decode("utf-8")
+            u, p = decoded.split(":", 1)
+            if secrets.compare_digest(u, ADMIN_USERNAME) and secrets.compare_digest(p, ADMIN_PASSWORD):
+                return True
+        except Exception:
+            pass
+
+    return False
+
+
+@app.post("/api/auth/login")
+async def api_auth_login(request: Request):
+    """Autenticación de personal del restaurante con protección anti fuerza bruta."""
+    client_ip = request.client.host if request.client else "unknown"
+    now = time.time()
+    
+    # Limpiar intentos viejos (> 10 min)
+    login_failed_attempts[client_ip] = [t for t in login_failed_attempts[client_ip] if (now - t) < 600]
+    if len(login_failed_attempts[client_ip]) >= 5:
+        return JSONResponse(
+            status_code=429,
+            content={"error": "Demasiados intentos fallidos. Por seguridad, el acceso está bloqueado temporalmente por 10 minutos."}
+        )
+        
+    try:
+        data = await request.json()
+    except Exception:
+        data = {}
+        
+    u = str(data.get("username", "")).strip()
+    p = str(data.get("password", "")).strip()
+    
+    if secrets.compare_digest(u, ADMIN_USERNAME) and secrets.compare_digest(p, ADMIN_PASSWORD):
+        login_failed_attempts[client_ip] = []
+        exp_ts = int(now) + 86400 * 30  # Sesión válida por 30 días
+        payload = f"{ADMIN_USERNAME}:{exp_ts}"
+        sig = hmac.new(ADMIN_SECRET_KEY.encode(), payload.encode(), hashlib.sha256).hexdigest()
+        token = f"{payload}:{sig}"
+        
+        response = JSONResponse(content={"status": "ok", "token": token, "username": ADMIN_USERNAME})
+        response.set_cookie(
+            key="admin_token",
+            value=token,
+            max_age=86400 * 30,
+            httponly=True,
+            samesite="lax",
+            secure=True
+        )
+        return response
+    else:
+        login_failed_attempts[client_ip].append(now)
+        remaining = max(0, 5 - len(login_failed_attempts[client_ip]))
+        return JSONResponse(
+            status_code=401,
+            content={"error": f"Usuario o contraseña incorrectos. Intentos restantes: {remaining}"}
+        )
+
+
+@app.get("/api/auth/check")
+def api_auth_check(request: Request):
+    """Verifica si la sesión actual es válida."""
+    is_auth = verify_admin_auth(request)
+    return {"authenticated": is_auth, "username": ADMIN_USERNAME if is_auth else None}
+
+
+# ======================================================================
 # RUTAS DE ADMINISTRACIÓN EN TIEMPO REAL (STOCK, PROMOCIONES Y HORARIOS)
 # ======================================================================
 
@@ -343,12 +451,15 @@ def admin_dashboard():
 
 @app.get("/api/state")
 def get_state():
-    """Retorna el estado dinámico actual"""
+    """Retorna el estado dinámico actual del restaurante"""
     return load_restaurant_state()
 
 @app.post("/api/stock/ingredient")
 async def toggle_ingredient(request: Request):
     """Conmuta la disponibilidad de un ingrediente crítico (ej. pulpo, camarón, etc.)"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado. Inicia sesión para modificar existencias."})
+        
     data = await request.json()
     ing_id = str(data.get("ingredient_id", "")).strip().lower()
     available = bool(data.get("available", True))
@@ -370,6 +481,9 @@ async def toggle_ingredient(request: Request):
 @app.post("/api/stock/dish")
 async def toggle_dish(request: Request):
     """Conmuta la disponibilidad de un platillo específico"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado. Inicia sesión para modificar platillos."})
+        
     data = await request.json()
     dish_name = str(data.get("dish_name", "")).strip()
     available = bool(data.get("available", True))
@@ -391,6 +505,9 @@ async def toggle_dish(request: Request):
 @app.post("/api/promotions")
 async def update_promotions(request: Request):
     """Actualiza las promociones del día aplicadas en la IA"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado. Inicia sesión para actualizar promociones."})
+        
     data = await request.json()
     promotions = data.get("promotions", [])
     
@@ -402,6 +519,9 @@ async def update_promotions(request: Request):
 @app.post("/api/announcement")
 async def update_announcement(request: Request):
     """Actualiza avisos de demora, apertura o notas de cocina"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado. Inicia sesión para cambiar avisos."})
+        
     data = await request.json()
     state = load_restaurant_state()
     
@@ -456,8 +576,10 @@ def get_menu_items():
     return items
 
 @app.get("/api/kitchen-prompt-preview")
-def get_kitchen_prompt_preview():
-    """Vista previa del bloque de prompt dinámico que la IA lee en cada llamada"""
+def get_kitchen_prompt_preview(request: Request):
+    """Vista previa del bloque de prompt dinámico que la IA lee en cada llamada (requiere auth)"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para ver el prompt interno."})
     prompt = build_kitchen_dynamic_prompt()
     return {"prompt": prompt}
 
