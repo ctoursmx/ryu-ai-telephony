@@ -1,5 +1,5 @@
 {
-  "_last_updated": "2026-09-13T14:10:31.622930",
+  "_last_updated": "2026-09-13T14:22:59.531803",
   "is_open": true,
   "service_override": "",
   "prep_time_override": "",
@@ -340,5 +340,211 @@
       "is_active": true,
       "_updated_at": 1789329316.5351021
     }
+  },
+  "delivery_settings": {
+    "urban_daytime_fee": 0.0,
+    "night_surcharge_enabled": true,
+    "night_surcharge_mode": "auto",
+    "night_surcharge_time": "19:00",
+    "night_surcharge_fee": 15.0,
+    "special_zones": [
+      {
+        "id": "zon_01",
+        "name": "Aguacatillo",
+        "fee": 30.0,
+        "enabled": true,
+        "aliases": [
+          "el aguacatillo",
+          "aguacatillo"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_13",
+        "name": "Amatitán",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "amatitan",
+          "amatitán",
+          "entrada amatitan"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_12",
+        "name": "Cantaritos El Güero",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "cantaritos el guero",
+          "los cantaritos",
+          "cantaritos",
+          "el guero"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_03",
+        "name": "Caseta",
+        "fee": 50.0,
+        "enabled": true,
+        "aliases": [
+          "la caseta",
+          "caseta de cobro",
+          "caseta autopista"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_04",
+        "name": "Fundición",
+        "fee": 50.0,
+        "enabled": true,
+        "aliases": [
+          "la fundicion",
+          "fundicion",
+          "la fundición"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_16",
+        "name": "Magdalena",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "magdalena",
+          "municipio magdalena"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_11",
+        "name": "Medineño",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "el medineño",
+          "medineno",
+          "medineño"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_06",
+        "name": "Mirador",
+        "fee": 80.0,
+        "enabled": true,
+        "aliases": [
+          "el mirador",
+          "mirador"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_07",
+        "name": "Parador Turístico",
+        "fee": 80.0,
+        "enabled": true,
+        "aliases": [
+          "parador turistico",
+          "parador",
+          "el parador"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_02",
+        "name": "Penal",
+        "fee": 30.0,
+        "enabled": true,
+        "aliases": [
+          "el penal",
+          "penal de tequila",
+          "centro penitenciario"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_14",
+        "name": "Puerta de En Medio",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "puerta de en medio",
+          "la puerta de en medio",
+          "puerta de enmedio"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_15",
+        "name": "San Martín",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "san martin",
+          "san martín"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_09",
+        "name": "San Pedro",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "san pedro",
+          "poblado san pedro"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_10",
+        "name": "Santa Ana",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "santa ana",
+          "santaana",
+          "santa anna"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_17",
+        "name": "Santa Teresa",
+        "fee": 100.0,
+        "enabled": true,
+        "aliases": [
+          "santa teresa"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_08",
+        "name": "Tierra de Agave",
+        "fee": 80.0,
+        "enabled": true,
+        "aliases": [
+          "tierra de agave",
+          "fraccionamiento tierra de agave"
+        ],
+        "notes": "Tarifa especial foránea"
+      },
+      {
+        "id": "zon_05",
+        "name": "Toma",
+        "fee": 80.0,
+        "enabled": true,
+        "aliases": [
+          "la toma",
+          "balneario la toma",
+          "toma"
+        ],
+        "notes": "Tarifa especial foránea"
+      }
+    ]
   }
 }

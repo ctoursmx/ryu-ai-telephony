@@ -10,6 +10,7 @@ import re
 import json
 import logging
 from datetime import datetime
+from pathlib import Path
 
 from typing import Dict, Any, List, Optional, Tuple
 
@@ -123,12 +124,64 @@ class KAGEngine:
                 if dish not in matched_dishes:
                     matched_dishes.append(dish)
 
+        # Cargar configuración dinámica de entregas desde restaurant_state.json
+        state_path = Path(__file__).parent / "restaurant_state.json"
+        del_settings = {}
+        if state_path.exists():
+            try:
+                with open(state_path, "r", encoding="utf-8") as f:
+                    st = json.load(f)
+                    del_settings = st.get("delivery_settings", {})
+            except Exception:
+                pass
+
+        # Evaluar tarifa nocturna urbana
+        mode = del_settings.get("night_surcharge_mode", "auto")
+        cutoff_time = del_settings.get("night_surcharge_time", "19:00")
+        try:
+            ch, cm = [int(x) for x in cutoff_time.split(":")]
+            cutoff_mins = ch * 60 + cm
+        except Exception:
+            cutoff_mins = 1140 # 19:00 (7:00 PM)
+
+        cur_mins = current_dt.hour * 60 + current_dt.minute
+        surcharge_fee = float(del_settings.get("night_surcharge_fee", 15.0))
+        urban_base_fee = float(del_settings.get("urban_daytime_fee", 0.0))
+        is_surcharge_enabled = del_settings.get("night_surcharge_enabled", True)
+
+        if mode == "forced_on":
+            is_night_fee_active = True
+        elif mode == "forced_off":
+            is_night_fee_active = False
+        else: # "auto"
+            is_night_fee_active = is_surcharge_enabled and (cur_mins >= cutoff_mins)
+
+        # Cargar o actualizar zonas especiales desde el estado si están presentes
+        special_zones = del_settings.get("special_zones")
+        zones_lookup = {}
+        if special_zones and isinstance(special_zones, list):
+            for z in special_zones:
+                if not z.get("enabled", True):
+                    continue
+                name_clean = z.get("name", "").strip().lower()
+                z_info = {
+                    "name": z.get("name", ""),
+                    "fee": float(z.get("fee", 0.0)),
+                    "is_rural": True
+                }
+                if name_clean:
+                    zones_lookup[name_clean] = z_info
+                for al in z.get("aliases", []):
+                    if al:
+                        zones_lookup[al.strip().lower()] = z_info
+        else:
+            zones_lookup = self.zones_index
+
         # Buscar zonas de envío mencionadas
         matched_zone = None
         shipping_fee = 0.0
-        is_after_730pm = (current_dt.hour * 60 + current_dt.minute) >= 1170
 
-        for z_key, zone in self.zones_index.items():
+        for z_key, zone in zones_lookup.items():
             if z_key in lower_text:
                 matched_zone = zone
                 shipping_fee = zone["fee"]
@@ -136,17 +189,23 @@ class KAGEngine:
 
         if not matched_zone:
             # Zona urbana regular de Tequila
-            shipping_fee = 15.0 if is_after_730pm else 0.0
-            zone_desc = "Tequila Urbano ($15 MXN tarifa nocturna después de 7:30 PM)" if is_after_730pm else "Tequila Urbano ($0 MXN Gratis antes de 7:30 PM)"
+            shipping_fee = (urban_base_fee + surcharge_fee) if is_night_fee_active else urban_base_fee
+            if is_night_fee_active:
+                zone_desc = f"Tequila Urbano (${int(shipping_fee)} MXN con tarifa de servicio nocturno activa)"
+            else:
+                if shipping_fee == 0:
+                    zone_desc = "Tequila Urbano ($0 MXN Envío gratis en este momento)"
+                else:
+                    zone_desc = f"Tequila Urbano (${int(shipping_fee)} MXN tarifa estándar)"
         else:
-            zone_desc = f"{matched_zone['name']} (${int(shipping_fee)} MXN tarifa especial foránea)"
+            zone_desc = f"{matched_zone['name']} (${int(shipping_fee)} MXN tarifa especial de entrega a esta localidad)"
 
         return {
             "matched_dishes": matched_dishes,
             "matched_zone": matched_zone,
             "shipping_fee": shipping_fee,
             "zone_description": zone_desc,
-            "is_night_fee": is_after_730pm
+            "is_night_fee": is_night_fee_active
         }
 
     def generate_kag_context_prompt(self, facts: Dict[str, Any], customer_profile: Optional[Dict[str, Any]] = None) -> str:

@@ -170,7 +170,44 @@ def build_kitchen_dynamic_prompt() -> str:
     if prep_override:
         lines.append(f"⏱️ TIEMPO DE ENTREGA ACTUALIZADO: {prep_override} (en lugar de los 40-55 min habituales).")
         
-    return "\n".join(lines)
+def get_delivery_conditions_summary(state: dict = None, now: datetime.datetime = None) -> tuple[str, bool]:
+    """Calcula la tarifa base y si el recargo nocturno está activo según la configuración dinámica."""
+    if state is None:
+        state = load_restaurant_state()
+    if now is None:
+        now = datetime.datetime.now()
+        
+    del_settings = state.get("delivery_settings", {})
+    mode = del_settings.get("night_surcharge_mode", "auto")
+    cutoff_time = del_settings.get("night_surcharge_time", "19:00")
+    try:
+        ch, cm = [int(x) for x in cutoff_time.split(":")]
+        cutoff_mins = ch * 60 + cm
+    except Exception:
+        cutoff_mins = 1140 # 19:00 (7:00 PM)
+
+    cur_mins = now.hour * 60 + now.minute
+    surcharge_fee = int(del_settings.get("night_surcharge_fee", 15))
+    urban_base_fee = int(del_settings.get("urban_daytime_fee", 0))
+    is_surcharge_enabled = del_settings.get("night_surcharge_enabled", True)
+
+    if mode == "forced_on":
+        is_night_active = True
+    elif mode == "forced_off":
+        is_night_active = False
+    else:
+        is_night_active = is_surcharge_enabled and (cur_mins >= cutoff_mins)
+
+    if is_night_active:
+        total_fee = urban_base_fee + surcharge_fee
+        summary = f"${total_fee} MXN (Tarifa de servicio a domicilio nocturno activa dentro de Tequila urbano)"
+    else:
+        if urban_base_fee == 0:
+            summary = "$0 MXN (Envío gratis dentro de Tequila urbano en este horario)"
+        else:
+            summary = f"${urban_base_fee} MXN (Tarifa de envío estándar dentro de Tequila urbano)"
+
+    return summary, is_night_active
 
 openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 class RyuVoiceAgent:
@@ -304,8 +341,8 @@ class RyuVoiceAgent:
 
         dia, hora, estado, menu_activo = self.get_time_and_menu_status()
         now = datetime.datetime.now()
-        is_after_730pm = (now.hour * 60 + now.minute) >= 1170 # 7:30 PM (19:30)
-        costo_envio_base = "$15 MXN (Tarifa de envío nocturno activa después de las 7:30 PM)" if is_after_730pm else "$0 MXN (Envío gratis dentro de Tequila antes de las 7:30 PM)"
+        state = load_restaurant_state()
+        costo_envio_base, is_night_active = get_delivery_conditions_summary(state, now)
         
         current_prompt = SYSTEM_PROMPT
                 

@@ -224,6 +224,11 @@
                 <span>⏰</span>
                 <span>Horarios de Menús</span>
             </button>
+            <button onclick="switchTab('delivery')" id="tabBtn_delivery" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl border border-transparent whitespace-nowrap transition text-gray-400 hover:text-white">
+                <span>🛵</span>
+                <span>Condiciones de Entrega</span>
+                <span id="tabCount_delivery" class="text-[11px] px-2 py-0.2 bg-blue-950/60 text-blue-400 border border-blue-800/60 rounded-full font-mono font-semibold">17</span>
+            </button>
             <button onclick="switchTab('preview')" id="tabBtn_preview" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl border border-transparent whitespace-nowrap transition text-gray-400 hover:text-white">
                 <span>👁️</span>
                 <span>Monitor IA</span>
@@ -585,7 +590,124 @@
         </section>
 
         <!-- ================================================================= -->
-        <!-- SECCIÓN 7: MONITOR PROMPT EN VIVO DE LA IA -->
+        <!-- SECCIÓN 7: CONDICIONES DE ENTREGA Y TARIFAS ESPECIALES -->
+        <!-- ================================================================= -->
+        <section id="tabContent_delivery" class="space-y-5 hidden">
+            <!-- Header Banner -->
+            <div class="glass-card p-4 sm:p-5 border-l-4 border-l-blue-500 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div>
+                    <h3 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
+                        <span>🛵</span> Condiciones de Entrega, Tarifa Nocturna y Zonas Especiales
+                    </h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Controla las tarifas de servicio a domicilio dentro de Tequila y las tarifas especiales para comunidades y poblados foráneos en tiempo real.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="deliveryLiveBadge" class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Cargando estado...
+                    </span>
+                </div>
+            </div>
+
+            <!-- Card 1: Política Urbana de Tequila y Recargo Nocturno -->
+            <div class="glass-card p-5 sm:p-6 space-y-4 border-t-4 border-t-blue-500">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#232936] pb-3">
+                    <div>
+                        <h4 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                            <span>🏙️</span> Envío Urbano en Tequila & Recargo Nocturno ($15 MXN)
+                        </h4>
+                        <p class="text-xs text-gray-400">Configura cuándo y cómo se aplica el cobro extra por servicio a domicilio en la zona urbana de Tequila.</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-[#0c0e12] p-1.5 rounded-xl border border-[#2d3748]">
+                        <span class="text-xs text-gray-400 pl-2">Recargo Nocturno:</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="delivNightToggle" onchange="toggleNightSurchargeEnabled(this.checked)" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-1">
+                    <!-- Modo de Aplicación -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-semibold text-gray-300">Modo de Aplicación</label>
+                        <select id="delivNightMode" onchange="updateDeliveryModeHelp()" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none">
+                            <option value="auto">⏰ Automático por Horario</option>
+                            <option value="forced_on">⚡ Cobrar Recargo Ahora (Forzado)</option>
+                            <option value="forced_off">🎁 Envío Gratis / Sin Recargo (Forzado)</option>
+                        </select>
+                        <p id="delivModeHelp" class="text-[11px] text-gray-400">Aplica a partir de la hora configurada.</p>
+                    </div>
+
+                    <!-- Hora Inicio Recargo -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-semibold text-gray-300">Hora Inicio Cobro Nocturno</label>
+                        <input type="time" id="delivNightTime" value="19:00" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none">
+                        <p class="text-[11px] text-gray-400">Ej: 19:00 (7:00 PM) o 19:30</p>
+                    </div>
+
+                    <!-- Monto Recargo Nocturno -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-semibold text-gray-300">Monto Recargo Nocturno ($ MXN)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2 text-gray-400 text-sm font-bold">$</span>
+                            <input type="number" id="delivNightFee" value="15" min="0" step="1" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl pl-7 pr-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none font-bold">
+                        </div>
+                        <p class="text-[11px] text-gray-400">Tarifa fija estándar: $15 MXN</p>
+                    </div>
+
+                    <!-- Costo Base Diurno -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-semibold text-gray-300">Costo Base Diurno ($ MXN)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-2 text-gray-400 text-sm font-bold">$</span>
+                            <input type="number" id="delivDayFee" value="0" min="0" step="1" class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl pl-7 pr-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none font-bold">
+                        </div>
+                        <p class="text-[11px] text-gray-400">0 = Envío Gratis de día</p>
+                    </div>
+                </div>
+
+                <!-- Resumen en vivo de la regla -->
+                <div class="p-3 bg-[#0c0e12] border border-[#1e2533] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-blue-400 text-sm"></i>
+                        <span class="text-xs text-gray-300 font-medium">Instrucción en llamada para la IA:</span>
+                        <span id="delivLiveInstruction" class="text-xs font-bold text-emerald-400">Cargando...</span>
+                    </div>
+                    <button onclick="saveDeliveryGeneralSettings()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-blue-600/20 whitespace-nowrap">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar y Aplicar en el Ecosistema
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card 2: Localidades y Puntos Especiales Foráneos -->
+            <div class="glass-card p-5 sm:p-6 space-y-4 border-t-4 border-t-indigo-500">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-[#232936] pb-3">
+                    <div>
+                        <h4 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                            <span>📍</span> Tarifas Especiales por Punto / Localidad Concreta
+                        </h4>
+                        <p class="text-xs text-gray-400">Poblados y puntos con cargo especial (La Toma, El Medineño, Magdalena, Amatitán, etc.). Si se apaga el switch, no se cobra cargo extra a esa zona.</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <div class="relative flex-1 sm:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+                            <input type="text" id="deliveryZoneSearchInput" oninput="filterDeliveryZones()" placeholder="Buscar localidad o punto..." class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl pl-8 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <button onclick="openNewZoneModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 transition whitespace-nowrap shadow-lg shadow-indigo-600/20">
+                            <i class="fa-solid fa-plus"></i> Nueva Localidad
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid de Tarjetas de Zonas Especiales -->
+                <div id="deliveryZonesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                    <!-- Dinámico con JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- SECCIÓN 8: MONITOR PROMPT EN VIVO DE LA IA -->
         <!-- ================================================================= -->
         <section id="tabContent_preview" class="space-y-4 hidden">
             <div class="glass-card p-5 space-y-3">
@@ -758,6 +880,69 @@
         </div>
     </div>
 
+    <!-- ===================================================================== -->
+    <!-- MODAL PARA AGREGAR / EDITAR LOCALIDAD ESPECIAL DE ENTREGA -->
+    <!-- ===================================================================== -->
+    <div id="deliveryZoneModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 hidden">
+        <div class="glass-card w-full max-w-md p-5 sm:p-7 border border-[#2d3748] shadow-2xl relative">
+            <div class="flex items-center justify-between border-b border-[#232936] pb-3 mb-4">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <span>📍</span> <span id="zoneModalTitle">Nueva Localidad de Entrega</span>
+                </h3>
+                <button onclick="closeZoneModal()" class="text-gray-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="zoneForm" onsubmit="handleZoneSave(event)" class="space-y-3">
+                <input type="hidden" id="zoneModalId">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Nombre del Punto o Localidad</label>
+                    <input type="text" id="zoneModalName" required placeholder="Ej: La Toma, El Medineño, Magdalena..."
+                        class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3.5 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Tarifa de Entrega Especial ($ MXN)</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-2 text-gray-400 text-xs font-bold">$</span>
+                        <input type="number" id="zoneModalFee" required min="0" step="1" placeholder="80"
+                            class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl pl-7 pr-3 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none font-bold">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Palabras Clave / Alias (Separadas por coma)</label>
+                    <input type="text" id="zoneModalAliases" placeholder="Ej: la toma, balneario la toma, toma"
+                        class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3.5 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none">
+                    <p class="text-[10px] text-gray-400 mt-0.5">La IA identificará cualquiera de estas variantes durante la llamada.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-300 mb-1">Notas de Servicio (Opcional)</label>
+                    <input type="text" id="zoneModalNotes" placeholder="Ej: Tarifa especial foránea, entrega en caseta"
+                        class="w-full bg-[#0c0e12] border border-[#2d3748] rounded-xl px-3.5 py-2 text-xs text-white focus:border-indigo-500 focus:outline-none">
+                </div>
+
+                <div class="flex items-center justify-between pt-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="zoneModalEnabled" class="rounded bg-gray-900 border-gray-700 text-indigo-600 focus:ring-0" checked>
+                        <span class="text-xs text-gray-300">Tarifa Habilitada</span>
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#232936]">
+                    <button type="button" onclick="closeZoneModal()" class="px-4 py-2 bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 rounded-xl text-xs font-medium transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-indigo-600/20">
+                        <i class="fa-solid fa-floppy-disk"></i> Guardar Localidad
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast de Notificación Flotante -->
     <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-emerald-500 text-black font-semibold px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-2 text-sm">
         <i class="fa-solid fa-circle-check"></i>
@@ -772,6 +957,8 @@
         let ingredientsData = [];
         let schedulesData = {};
         let currentState = {};
+        let deliveryData = null;
+        let currentZoneSearch = '';
         
         let activeTab = 'japanese';
         let activeCategoryByMenu = {
@@ -928,7 +1115,18 @@
                 schedulesData = fullMenuData.schedules || {};
                 renderSchedulesTab();
 
-                // 5. Monitor IA
+                // 5. Condiciones de Entrega
+                try {
+                    const resDeliv = await fetch('/api/delivery-settings');
+                    if (resDeliv.ok) {
+                        deliveryData = await resDeliv.json();
+                        renderDeliveryTab();
+                    }
+                } catch (delivErr) {
+                    console.warn('Error cargando condiciones de entrega:', delivErr);
+                }
+
+                // 6. Monitor IA
                 updatePromptPreview();
 
             } catch (err) {
@@ -1520,6 +1718,293 @@
         }
 
         // =====================================================================
+        // GESTIÓN DE CONDICIONES DE ENTREGA Y ZONAS ESPECIALES
+        // =====================================================================
+        function updateDeliveryModeHelp() {
+            const mode = document.getElementById('delivNightMode').value;
+            const help = document.getElementById('delivModeHelp');
+            if (mode === 'auto') {
+                help.innerText = '⏰ Aplica automáticamente según la hora configurada.';
+            } else if (mode === 'forced_on') {
+                help.innerText = '⚡ Forzado: Se cobra el recargo de $15 en cada llamada ahora.';
+            } else {
+                help.innerText = '🎁 Forzado: Envío gratis o sin recargo en este momento.';
+            }
+        }
+
+        function renderDeliveryTab() {
+            if (!deliveryData || !deliveryData.settings) return;
+            const s = deliveryData.settings;
+            const cur = deliveryData.current_status || {};
+
+            // 1. Valores en los inputs
+            document.getElementById('delivDayFee').value = s.urban_daytime_fee !== undefined ? s.urban_daytime_fee : 0;
+            document.getElementById('delivNightToggle').checked = s.night_surcharge_enabled !== false;
+            document.getElementById('delivNightMode').value = s.night_surcharge_mode || 'auto';
+            document.getElementById('delivNightTime').value = s.night_surcharge_time || '19:00';
+            document.getElementById('delivNightFee').value = s.night_surcharge_fee !== undefined ? s.night_surcharge_fee : 15;
+
+            updateDeliveryModeHelp();
+
+            // 2. Badges en vivo
+            const liveBadge = document.getElementById('deliveryLiveBadge');
+            const liveInst = document.getElementById('delivLiveInstruction');
+            if (cur.is_night_active) {
+                liveBadge.className = 'text-xs font-semibold px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-1.5';
+                liveBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> Tarifa Nocturna ACTIVA (+$15)';
+            } else {
+                liveBadge.className = 'text-xs font-semibold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1.5';
+                liveBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Envío Diurno Estándar ($0)';
+            }
+            liveInst.innerText = cur.summary_text || 'Envío a domicilio regulado';
+
+            // 3. Renderizar Grid de Zonas Especiales
+            renderSpecialZonesGrid();
+        }
+
+        function renderSpecialZonesGrid() {
+            if (!deliveryData || !deliveryData.settings) return;
+            const zones = deliveryData.settings.special_zones || [];
+            const grid = document.getElementById('deliveryZonesGrid');
+            const countPill = document.getElementById('tabCount_delivery');
+
+            const activeCount = zones.filter(z => z.enabled !== false).length;
+            if (countPill) countPill.innerText = `${activeCount}/${zones.length}`;
+
+            const q = currentZoneSearch.toLowerCase().trim();
+            const filtered = zones.filter(z => {
+                if (!q) return true;
+                const matchName = (z.name || '').toLowerCase().includes(q);
+                const matchAliases = (z.aliases || []).some(a => a.toLowerCase().includes(q));
+                const matchNotes = (z.notes || '').toLowerCase().includes(q);
+                return matchName || matchAliases || matchNotes;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-8 text-gray-500 text-sm">
+                        <i class="fa-solid fa-map-location-dot text-2xl mb-2 block"></i>
+                        No se encontraron localidades especiales con "${escapeHtml(currentZoneSearch)}"
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(z => {
+                const isEnabled = z.enabled !== false;
+                const aliasesStr = (z.aliases || []).join(', ');
+                html += `
+                    <div class="glass-card p-4 flex flex-col justify-between border transition hover:border-[#3b475c] ${!isEnabled ? 'opacity-65 border-red-950/40' : 'border-[#232936]'}">
+                        <div>
+                            <div class="flex items-start justify-between gap-2 mb-1.5">
+                                <h5 class="font-bold text-white text-sm leading-snug">${escapeHtml(z.name)}</h5>
+                                <span class="text-xs font-bold ${isEnabled ? 'text-indigo-400 bg-indigo-950/60 border border-indigo-800/60' : 'text-gray-500 bg-gray-900 border border-gray-800'} px-2 py-0.5 rounded-lg whitespace-nowrap">
+                                    $${parseInt(z.fee || 0)} MXN
+                                </span>
+                            </div>
+
+                            ${aliasesStr ? `
+                                <div class="text-[10px] text-gray-400 bg-[#0c0e12] border border-[#1e2533] p-1.5 rounded-lg mb-2 line-clamp-2" title="Palabras clave detectadas por la IA: ${escapeHtml(aliasesStr)}">
+                                    <span class="text-indigo-400 font-semibold">Alias:</span> ${escapeHtml(aliasesStr)}
+                                </div>
+                            ` : ''}
+
+                            ${z.notes ? `
+                                <p class="text-[11px] text-gray-400 mb-2 italic">
+                                    ${escapeHtml(z.notes)}
+                                </p>
+                            ` : ''}
+                        </div>
+
+                        <div class="pt-3 border-t border-[#1e2533] flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" ${isEnabled ? 'checked' : ''} onchange="toggleZoneQuick('${escapeHtml(z.id)}', this.checked)" class="sr-only peer">
+                                    <div class="w-8 h-4 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-indigo-600"></div>
+                                </label>
+                                <span class="text-[10px] font-semibold ${isEnabled ? 'text-indigo-300' : 'text-gray-500'}">
+                                    ${isEnabled ? 'Activa' : 'Pausada'}
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-1">
+                                <button onclick='openEditZoneModal(${JSON.stringify(z).replace(/'/g, "&apos;")})' title="Editar Tarifa" class="p-1.5 rounded-lg bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 transition text-xs">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="deleteZoneConfirm('${escapeHtml(z.id)}', '${escapeHtml(z.name)}')" title="Eliminar Localidad" class="p-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/60 border border-red-800/40 text-red-300 transition text-xs">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+        }
+
+        function filterDeliveryZones() {
+            currentZoneSearch = document.getElementById('deliveryZoneSearchInput').value;
+            renderSpecialZonesGrid();
+        }
+
+        async function saveDeliveryGeneralSettings() {
+            const token = getAuthToken();
+            if (!token) return showLoginModal();
+
+            const dayFee = parseFloat(document.getElementById('delivDayFee').value) || 0;
+            const nightToggle = document.getElementById('delivNightToggle').checked;
+            const nightMode = document.getElementById('delivNightMode').value;
+            const nightTime = document.getElementById('delivNightTime').value;
+            const nightFee = parseFloat(document.getElementById('delivNightFee').value) || 0;
+
+            try {
+                const res = await fetch('/api/delivery-settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        urban_daytime_fee: dayFee,
+                        night_surcharge_enabled: nightToggle,
+                        night_surcharge_mode: nightMode,
+                        night_surcharge_time: nightTime,
+                        night_surcharge_fee: nightFee
+                    })
+                });
+
+                if (res.ok) {
+                    showToast('Condiciones de entrega aplicadas en el ecosistema');
+                    await refreshAllData();
+                } else {
+                    showToast('Error al guardar condiciones de entrega', true);
+                }
+            } catch (err) {
+                showToast('Error de conexión', true);
+            }
+        }
+
+        async function toggleNightSurchargeEnabled(checked) {
+            await saveDeliveryGeneralSettings();
+        }
+
+        async function toggleZoneQuick(zoneId, enabled) {
+            const token = getAuthToken();
+            if (!token) return showLoginModal();
+
+            try {
+                const res = await fetch('/api/delivery-settings/zone/toggle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ zone_id: zoneId, enabled: enabled })
+                });
+
+                if (res.ok) {
+                    showToast(enabled ? 'Tarifa especial de zona activada' : 'Tarifa especial de zona pausada');
+                    await refreshAllData();
+                } else {
+                    showToast('Error al modificar zona', true);
+                }
+            } catch (err) {
+                showToast('Error de conexión', true);
+            }
+        }
+
+        function openNewZoneModal() {
+            document.getElementById('zoneForm').reset();
+            document.getElementById('zoneModalId').value = '';
+            document.getElementById('zoneModalTitle').innerText = 'Nueva Localidad de Entrega';
+            document.getElementById('zoneModalEnabled').checked = true;
+            document.getElementById('deliveryZoneModal').classList.remove('hidden');
+        }
+
+        function openEditZoneModal(zone) {
+            document.getElementById('zoneForm').reset();
+            document.getElementById('zoneModalId').value = zone.id || '';
+            document.getElementById('zoneModalTitle').innerText = `Editar Localidad: ${zone.name}`;
+            document.getElementById('zoneModalName').value = zone.name || '';
+            document.getElementById('zoneModalFee').value = zone.fee !== undefined ? zone.fee : 0;
+            document.getElementById('zoneModalAliases').value = (zone.aliases || []).join(', ');
+            document.getElementById('zoneModalNotes').value = zone.notes || '';
+            document.getElementById('zoneModalEnabled').checked = zone.enabled !== false;
+            document.getElementById('deliveryZoneModal').classList.remove('hidden');
+        }
+
+        function closeZoneModal() {
+            document.getElementById('deliveryZoneModal').classList.add('hidden');
+        }
+
+        async function handleZoneSave(e) {
+            e.preventDefault();
+            const token = getAuthToken();
+            if (!token) return showLoginModal();
+
+            const zoneId = document.getElementById('zoneModalId').value;
+            const name = document.getElementById('zoneModalName').value.trim();
+            const fee = parseFloat(document.getElementById('zoneModalFee').value) || 0;
+            const aliases = document.getElementById('zoneModalAliases').value;
+            const notes = document.getElementById('zoneModalNotes').value.trim();
+            const enabled = document.getElementById('zoneModalEnabled').checked;
+
+            try {
+                const res = await fetch('/api/delivery-settings/zone/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        id: zoneId,
+                        name: name,
+                        fee: fee,
+                        aliases: aliases,
+                        notes: notes,
+                        enabled: enabled
+                    })
+                });
+
+                if (res.ok) {
+                    closeZoneModal();
+                    showToast(`Localidad "${name}" guardada con éxito`);
+                    await refreshAllData();
+                } else {
+                    showToast('Error al guardar localidad', true);
+                }
+            } catch (err) {
+                showToast('Error de conexión', true);
+            }
+        }
+
+        async function deleteZoneConfirm(zoneId, zoneName) {
+            if (!confirm(`¿Estás seguro de eliminar la localidad "${zoneName}"? La IA dejará de reconocerla con tarifa especial.`)) {
+                return;
+            }
+            const token = getAuthToken();
+            if (!token) return showLoginModal();
+
+            try {
+                const res = await fetch(`/api/delivery-settings/zone/${zoneId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (res.ok) {
+                    showToast(`Localidad "${zoneName}" eliminada`);
+                    await refreshAllData();
+                } else {
+                    showToast('Error al eliminar localidad', true);
+                }
+            } catch (err) {
+                showToast('Error de conexión', true);
+            }
+        }
+
+        // =====================================================================
         // PROMOCIONES, AVISOS Y PREVIEW
         // =====================================================================
         function setPromoPreset(text) {
@@ -1700,7 +2185,7 @@
                 activeBtn.classList.remove('text-gray-400');
             }
 
-            ['japanese', 'snacks', 'italian', 'ingredients', 'promotions', 'schedules', 'preview'].forEach(k => {
+            ['japanese', 'snacks', 'italian', 'ingredients', 'promotions', 'schedules', 'delivery', 'preview'].forEach(k => {
                 const sec = document.getElementById(`tabContent_${k}`);
                 if (sec) {
                     if (k === tabKey) sec.classList.remove('hidden');

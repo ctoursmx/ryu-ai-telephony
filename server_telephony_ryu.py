@@ -916,6 +916,194 @@ async def api_save_ingredient(request: Request):
     save_restaurant_state(state)
     return {"status": "ok", "ingredient": {"id": ing_id, "name": name, "category": category, "substitute": substitute, "affected_dishes": affected}}
 
+# ======================================================================
+# GESTIÓN DINÁMICA DE CONDICIONES DE ENTREGA Y TARIFAS ESPECIALES
+# ======================================================================
+
+def _ensure_delivery_settings():
+    state = load_restaurant_state()
+    del_settings = state.get("delivery_settings")
+    if not del_settings or not isinstance(del_settings, dict):
+        menu_path = Path(__file__).parent / "menu_ryu.json"
+        raw_zones = []
+        if menu_path.exists():
+            try:
+                with open(menu_path, "r", encoding="utf-8") as f:
+                    mdata = json.load(f)
+                    raw_zones = mdata.get("service_policies", {}).get("delivery_rules", {}).get("special_remote_zones", [])
+            except Exception:
+                pass
+        special_zones = []
+        for z in raw_zones:
+            special_zones.append({
+                "id": z.get("zone_id", f"zon_{len(special_zones)+1:02d}"),
+                "name": z.get("name", ""),
+                "fee": float(z.get("fee", 0.0)),
+                "enabled": True,
+                "aliases": z.get("aliases", []),
+                "notes": "Tarifa especial foránea"
+            })
+        special_zones.sort(key=lambda x: x.get("name", "").lower())
+        del_settings = {
+            "urban_daytime_fee": 0.0,
+            "night_surcharge_enabled": True,
+            "night_surcharge_mode": "auto",
+            "night_surcharge_time": "19:00",
+            "night_surcharge_fee": 15.0,
+            "special_zones": special_zones
+        }
+        state["delivery_settings"] = del_settings
+        save_restaurant_state(state)
+    return del_settings
+
+@app.get("/api/delivery-settings")
+def api_get_delivery_settings():
+    """Retorna las condiciones de entrega, recargo nocturno y catálogo de zonas especiales."""
+    settings = _ensure_delivery_settings()
+    from voice_engine_ryu import get_delivery_conditions_summary
+    summary, is_night_active = get_delivery_conditions_summary(load_restaurant_state())
+    return {
+        "status": "ok",
+        "settings": settings,
+        "current_status": {
+            "is_night_active": is_night_active,
+            "summary_text": summary
+        }
+    }
+
+@app.post("/api/delivery-settings")
+async def api_update_delivery_settings(request: Request):
+    """Actualiza la configuración general de entrega (tarifas, horas y modos)."""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para modificar condiciones de entrega."})
+
+    data = await request.json()
+    state = load_restaurant_state()
+    settings = state.setdefault("delivery_settings", _ensure_delivery_settings())
+
+    if "urban_daytime_fee" in data:
+        try: settings["urban_daytime_fee"] = float(data["urban_daytime_fee"])
+        except (ValueError, TypeError): pass
+    if "night_surcharge_enabled" in data:
+        settings["night_surcharge_enabled"] = bool(data["night_surcharge_enabled"])
+    if "night_surcharge_mode" in data:
+        settings["night_surcharge_mode"] = str(data["night_surcharge_mode"]).strip() # "auto", "forced_on", "forced_off"
+    if "night_surcharge_time" in data:
+        settings["night_surcharge_time"] = str(data["night_surcharge_time"]).strip()
+    if "night_surcharge_fee" in data:
+        try: settings["night_surcharge_fee"] = float(data["night_surcharge_fee"])
+        except (ValueError, TypeError): pass
+    if "special_zones" in data and isinstance(data["special_zones"], list):
+        settings["special_zones"] = data["special_zones"]
+        settings["special_zones"].sort(key=lambda x: x.get("name", "").lower())
+
+    save_restaurant_state(state)
+    return {"status": "ok", "settings": settings}
+
+@app.post("/api/delivery-settings/zone/toggle")
+async def api_toggle_delivery_zone(request: Request):
+    """Activa o desactiva la tarifa especial de una zona en tiempo real."""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado."})
+
+    data = await request.json()
+    zone_id = str(data.get("zone_id", "")).strip()
+    enabled = bool(data.get("enabled", True))
+
+    state = load_restaurant_state()
+    settings = state.setdefault("delivery_settings", _ensure_delivery_settings())
+    found = False
+    for z in settings.get("special_zones", []):
+        if z.get("id") == zone_id:
+            z["enabled"] = enabled
+            found = True
+            break
+
+    if not found:
+        return JSONResponse(status_code=404, content={"error": "Zona no encontrada."})
+
+    save_restaurant_state(state)
+    return {"status": "ok", "zone_id": zone_id, "enabled": enabled}
+
+@app.post("/api/delivery-settings/zone/save")
+async def api_save_delivery_zone(request: Request):
+    """Crea o actualiza una zona especial de entrega con su costo y alias."""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado."})
+
+    data = await request.json()
+    name = str(data.get("name", "")).strip()
+    if not name:
+        return JSONResponse(status_code=400, content={"error": "El nombre de la zona es obligatorio."})
+
+    zone_id = str(data.get("id", "")).strip()
+    if not zone_id:
+        zone_id = f"zon_{int(time.time())}"
+
+    try:
+        fee = float(data.get("fee", 0.0))
+    except (ValueError, TypeError):
+        fee = 0.0
+
+    raw_aliases = data.get("aliases", [])
+    if isinstance(raw_aliases, str):
+        aliases = [a.strip() for a in raw_aliases.split(",") if a.strip()]
+    elif isinstance(raw_aliases, list):
+        aliases = [str(a).strip() for a in raw_aliases if str(a).strip()]
+    else:
+        aliases = []
+
+    notes = str(data.get("notes", "")).strip()
+    enabled = bool(data.get("enabled", True))
+
+    state = load_restaurant_state()
+    settings = state.setdefault("delivery_settings", _ensure_delivery_settings())
+    zones = settings.setdefault("special_zones", [])
+
+    found = False
+    for z in zones:
+        if z.get("id") == zone_id:
+            z["name"] = name
+            z["fee"] = fee
+            z["enabled"] = enabled
+            z["aliases"] = aliases
+            z["notes"] = notes
+            found = True
+            break
+
+    if not found:
+        zones.append({
+            "id": zone_id,
+            "name": name,
+            "fee": fee,
+            "enabled": enabled,
+            "aliases": aliases,
+            "notes": notes
+        })
+
+    zones.sort(key=lambda x: x.get("name", "").lower())
+    save_restaurant_state(state)
+    return {"status": "ok", "zone": {"id": zone_id, "name": name, "fee": fee, "enabled": enabled, "aliases": aliases, "notes": notes}}
+
+@app.delete("/api/delivery-settings/zone/{zone_id}")
+async def api_delete_delivery_zone(zone_id: str, request: Request):
+    """Elimina una zona especial de entrega."""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado."})
+
+    state = load_restaurant_state()
+    settings = state.setdefault("delivery_settings", _ensure_delivery_settings())
+    zones = settings.setdefault("special_zones", [])
+
+    before_len = len(zones)
+    settings["special_zones"] = [z for z in zones if z.get("id") != zone_id]
+
+    if len(settings["special_zones"]) == before_len:
+        return JSONResponse(status_code=404, content={"error": "Zona no encontrada."})
+
+    save_restaurant_state(state)
+    return {"status": "ok", "deleted_zone_id": zone_id}
+
 @app.get("/api/menu-items")
 def get_menu_items():
     """Catálogo aplanado de todos los platillos para el buscador del dashboard"""
