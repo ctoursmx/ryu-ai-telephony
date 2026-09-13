@@ -147,7 +147,14 @@ def build_kitchen_dynamic_prompt() -> str:
             lines.append(f"  • {dish}: Infórmale con amabilidad que por hoy se agotó y sugiérele otra opción similar de la misma categoría.")
 
     # 3. Promociones activas del día
-    active_promos = [p["text"] for p in state.get("daily_promotions", []) if p.get("active")]
+    active_promos = []
+    for p in state.get("daily_promotions", []):
+        if isinstance(p, dict):
+            if p.get("active", True) and p.get("text"):
+                active_promos.append(p["text"])
+        elif isinstance(p, str) and p.strip():
+            active_promos.append(p.strip())
+
     if active_promos:
         lines.append("\n🎉 PROMOCIONES OFICIALES DEL DÍA:")
         for promo in active_promos:
