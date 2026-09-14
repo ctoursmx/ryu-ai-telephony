@@ -1,0 +1,62 @@
+name: CD - Despliegue Continuo & Verificación de Salud en Producción
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  quality-gate:
+    name: Quality Gate (Smoke Tests & Concurrency Stress Test)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Instalar Dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ejecutar Smoke Tests Deterministas
+        run: |
+          python tests/run_smoke_tests.py
+
+      - name: Ejecutar Test de Estrés y Concurrencia (10, 25, 50 llamadas)
+        run: |
+          python tests/stress_test_telephony.py --stages 10,25,50
+
+  deploy-production:
+    name: Despliegue en VPS Producción & Health Check
+    needs: quality-gate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Desplegar en VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            echo "🚀 Iniciando despliegue de Ryu en VPS..."
+            cd /opt/ryu
+            git fetch origin
+            git reset --hard origin/main
+            mkdir -p /opt/ryu/storage/temp /opt/ryu/audio_clips
+            docker restart ryu-telephony-service
+            echo "⏳ Esperando 10 segundos a que el contenedor inicialice..."
+            sleep 10
+            echo "🔍 Verificando Health Check (/health)..."
+            curl -f -s http://localhost:8000/health || (docker logs --tail 30 ryu-telephony-service && exit 1)
+            echo "✅ Despliegue y verificación de salud completados con éxito."

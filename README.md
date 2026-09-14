@@ -92,6 +92,7 @@ Ubicados en [`docs/adr/`](file:///c:/Users/HP/Desktop/Ryu/docs/adr/README.md):
 | [**ADR-0007**](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0007-seguridad-autenticacion-panel-control.md) | Autenticación Criptográfica HMAC-SHA256 y Anti-Fuerza Bruta | `Aceptada` | Tokens con salting, rate limiting por IP y expiración periódica. |
 | [**ADR-0008**](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0008-despliegue-docker-host-networking.md) | Despliegue en Docker con Host Networking Mode | `Aceptada` | Eliminación de NAT SIP traversal y acceso directo a interfaces de red. |
 | [**ADR-0009**](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0009-estrategia-de-fallback-y-latencia-para-el-motor-de-voz.md) | Estrategia de Fallback y Control de Latencia para el Motor de Voz | `Aceptada` | Límite de 800ms para voz clonada, circuit breaker y fallback a frases de espera / Edge-TTS. |
+| [**ADR-0010**](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0010-implementacion-de-circuit-breaker-y-observabilidad-en-tiempo-real-nivel-5.md) | Circuit Breaker y Observabilidad en Tiempo Real (Nivel 5) | `Aceptada` | Patrón Circuit Breaker (CLOSED/OPEN/HALF_OPEN), endpoint /health y Sentry condicional ($0 USD). |
 
 #### Herramienta CLI de Gestión (`tools/adr.py`):
 ```bash

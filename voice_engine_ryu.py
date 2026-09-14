@@ -30,6 +30,7 @@ from proto_service import ProtoService
 from db.graph_db import db_manager
 from security_guard import input_sanitizer
 from order_fsm import OrderStateMachine, OrderState
+from circuit_breaker import voice_circuit_breaker
 
 
 # --- CONFIGURACIÓN CENTRAL ---
@@ -335,9 +336,27 @@ class RyuVoiceAgent:
 
     async def speak(self, text: str, output_audio_path: str = "response.mp3") -> str:
         clean_speech = self.clean_text_for_speech(text)
-        communicate = edge_tts.Communicate(clean_speech, VOICE_NAME, rate="+8%", pitch="+0Hz")
-        await communicate.save(output_audio_path)
-        return output_audio_path
+
+        async def _do_synth():
+            communicate = edge_tts.Communicate(clean_speech, VOICE_NAME, rate="+8%", pitch="+0Hz")
+            await communicate.save(output_audio_path)
+            return output_audio_path
+
+        async def _fallback_synth():
+            # Conmutación automática a voz de respaldo sin colgar la llamada si el circuito se abre o supera 800ms
+            try:
+                if os.path.exists(output_audio_path) and os.path.getsize(output_audio_path) > 0:
+                    return output_audio_path
+                communicate = edge_tts.Communicate(clean_speech, "es-MX-DaliaNeural", rate="+15%", pitch="+0Hz")
+                await communicate.save(output_audio_path)
+                return output_audio_path
+            except Exception:
+                return output_audio_path
+
+        try:
+            return await voice_circuit_breaker.call_async(_do_synth, fallback=_fallback_synth)
+        except Exception:
+            return output_audio_path
 
     async def transcribe(self, audio_file_path: str) -> str:
         if openai_client:

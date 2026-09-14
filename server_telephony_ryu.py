@@ -12,14 +12,37 @@ import hmac
 import hashlib
 import secrets
 import collections
+import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# Observabilidad con Sentry (Condicional: sólo se activa si SENTRY_DSN está definida y no vacía)
+SENTRY_DSN = os.getenv("SENTRY_DSN", "").strip()
+if SENTRY_DSN:
+    try:
+        import sentry_sdk
+        from sentry_sdk.integrations.fastapi import FastApiIntegration
+        sentry_sdk.init(
+            dsn=SENTRY_DSN,
+            integrations=[FastApiIntegration()],
+            traces_sample_rate=0.2,
+            environment=os.getenv("ENVIRONMENT", "production"),
+            release="ryu-ai-telephony@2.2.0"
+        )
+        print("🔭 [Sentry] Observabilidad en tiempo real inicializada exitosamente.")
+    except ImportError:
+        pass
+    except Exception as e:
+        print(f"⚠️ [Sentry] Aviso al inicializar Sentry: {e}")
+
+SERVER_START_TIME = time.time()
+
 from fastapi import FastAPI, Request, UploadFile, File, Form
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse, Response
 import voice_studio_backend
+from circuit_breaker import voice_circuit_breaker
 from voice_engine_ryu import (
     RyuVoiceAgent,
     load_restaurant_state,
@@ -102,6 +125,72 @@ def get_agent_for_session(session_id: str, caller_phone: str = "+52 33 8526 1250
     if session_id not in active_sessions:
         active_sessions[session_id] = RyuVoiceAgent(caller_phone=caller_phone, caller_name=caller_name)
     return active_sessions[session_id]
+
+@app.get(
+    "/health",
+    tags=["Estado Operacional"],
+    summary="Verificación de salud del conmutador e infraestructura",
+    description="Retorna el estado del servicio, telemetría de memoria RAM, conectividad SIP Zadarma y estado del Circuit Breaker para UptimeRobot o BetterStack."
+)
+def health_check():
+    """Endpoint ligero de telemetría y salud para monitorización cada 60s sin costo."""
+    now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    uptime_sec = round(time.time() - SERVER_START_TIME, 1)
+
+    # 1. Telemetría de Memoria RAM
+    memory_data = {"process_used_mb": 0.0, "system_total_mb": 0.0, "percent": 0.0}
+    try:
+        import psutil
+        proc = psutil.Process(os.getpid())
+        mem_info = proc.memory_info()
+        vm = psutil.virtual_memory()
+        memory_data = {
+            "process_used_mb": round(mem_info.rss / 1024 / 1024, 2),
+            "system_total_mb": round(vm.total / 1024 / 1024, 2),
+            "system_available_mb": round(vm.available / 1024 / 1024, 2),
+            "percent": vm.percent
+        }
+    except Exception as e:
+        memory_data["error"] = str(e)
+
+    # 2. Estado del enlace SIP Zadarma
+    telephony_info = {
+        "engine": "pyVoIP / Zadarma SIP v2.0",
+        "status": "STANDALONE_OR_INITIALIZING",
+        "registered": False,
+        "did": "+52 33 8526 1250"
+    }
+    try:
+        import sip_telephony_service
+        if hasattr(sip_telephony_service, "get_telephony_status"):
+            telephony_info = sip_telephony_service.get_telephony_status()
+        elif hasattr(sip_telephony_service, "GLOBAL_PHONE") and sip_telephony_service.GLOBAL_PHONE:
+            st = sip_telephony_service.GLOBAL_PHONE.get_status()
+            telephony_info["status"] = st.name if hasattr(st, "name") else str(st)
+            telephony_info["registered"] = telephony_info["status"] == "REGISTERED"
+    except Exception as e:
+        telephony_info["notice"] = str(e)
+
+    # 3. Estado de Circuit Breaker de voz
+    cb_stats = voice_circuit_breaker.get_stats()
+
+    # 4. Estado de restaurante
+    rest_state = load_restaurant_state()
+
+    is_degraded = memory_data.get("percent", 0.0) > 95.0 or cb_stats.get("state") == "OPEN"
+
+    return {
+        "status": "DEGRADED" if is_degraded else "OK",
+        "service": "ryu-ai-telephony",
+        "version": "2.2.0",
+        "timestamp": now_utc,
+        "uptime_seconds": uptime_sec,
+        "memory": memory_data,
+        "telephony": telephony_info,
+        "circuit_breaker": cb_stats,
+        "active_sessions_count": len(active_sessions),
+        "restaurant_open": rest_state.get("is_open", True)
+    }
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def home():

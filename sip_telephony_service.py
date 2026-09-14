@@ -41,6 +41,7 @@ from audio_codec import (
     calculate_pcm_rms,
     resample_8k_to_16k,
 )
+from circuit_breaker import voice_circuit_breaker
 
 # Configurar encoding de consola
 if hasattr(sys.stdout, 'reconfigure'):
@@ -306,6 +307,34 @@ def get_local_ip():
 LOCAL_IP = get_local_ip()
 GLOBAL_PHONE = None
 
+def get_telephony_status() -> dict:
+    """Retorna el estado en vivo de la troncal SIP Zadarma y datos de telefonía."""
+    global GLOBAL_PHONE
+    try:
+        if GLOBAL_PHONE is not None:
+            st = GLOBAL_PHONE.get_status()
+            status_name = st.name if hasattr(st, "name") else str(st)
+            return {
+                "engine": "pyVoIP / Zadarma SIP v2.0",
+                "status": status_name,
+                "registered": status_name == "REGISTERED",
+                "phone_number": PHONE_NUMBER,
+                "sip_server": SIP_SERVER
+            }
+        return {
+            "engine": "pyVoIP / Zadarma SIP v2.0",
+            "status": "STANDALONE_OR_INITIALIZING",
+            "registered": False,
+            "phone_number": PHONE_NUMBER,
+            "sip_server": SIP_SERVER
+        }
+    except Exception as e:
+        return {
+            "engine": "pyVoIP / Zadarma SIP v2.0",
+            "status": f"UNKNOWN ({e})",
+            "registered": False
+        }
+
 def cleanup():
     global GLOBAL_PHONE
     if sys.platform == "win32":
@@ -351,49 +380,66 @@ async def synthesize_speech_alaw(text: str, agent: Optional[RyuVoiceAgent] = Non
     Sintetiza la voz con Edge-TTS (velocidad natural para telefonia),
     remuestrea con soxr HQ (filtro anti-aliasing puro a 8000Hz),
     normaliza a -1.4 dBFS (0.85) para máxima fidelidad en G.711 A-law sin distorsión ni clipping,
-    y aprovecha el caché en RAM para latencia 0ms en frases comunes.
+    y aprovecha el caché en RAM y Circuit Breaker para latencia estricta (<800ms) sin colgar llamadas.
     """
     clean_text = agent.clean_text_for_speech(text) if agent else text.strip()
     if clean_text in AUDIO_CACHE_RAM:
         return AUDIO_CACHE_RAM[clean_text]
 
-    comm = edge_tts.Communicate(clean_text, "es-MX-DaliaNeural", rate="+3%", pitch="+0Hz")
-    mp3_bytes = b""
+    async def _do_synthesis():
+        comm = edge_tts.Communicate(clean_text, "es-MX-DaliaNeural", rate="+3%", pitch="+0Hz")
+        mp3_bytes = b""
 
-    async for chunk in comm.stream():
-        if chunk["type"] == "audio":
-            mp3_bytes += chunk["data"]
+        async for chunk in comm.stream():
+            if chunk["type"] == "audio":
+                mp3_bytes += chunk["data"]
+                
+        if not mp3_bytes:
+            return b""
             
-    if not mp3_bytes:
+        decoded = miniaudio.decode(
+            mp3_bytes,
+            nchannels=1,
+            sample_rate=24000,
+            output_format=miniaudio.SampleFormat.SIGNED16
+        )
+        
+        pcm24_float = np.frombuffer(decoded.samples, dtype=np.int16).astype(np.float32) / 32768.0
+        
+        # Remuestreo de alta fidelidad soxr HQ de 24kHz a 8kHz puro
+        pcm8_float = soxr.resample(pcm24_float, 24000, 8000, quality="HQ")
+        
+        # Normalización dinámica óptima para telefonía G.711 (-1.4 dBFS)
+        peak = float(np.max(np.abs(pcm8_float)))
+        if peak > 1e-4:
+            pcm8_float = pcm8_float * (0.85 / peak)
+        else:
+            pcm8_float = pcm8_float * 0.85
+            
+        pcm8_int16 = np.clip(pcm8_float * 32767.0, -32768, 32767).astype(np.int16)
+        alaw_bytes = pcm2alaw(pcm8_int16.tobytes())
+        
+        # Guardar en caché RAM si es menor a 25 segundos
+        if len(alaw_bytes) < 200000:
+            AUDIO_CACHE_RAM[clean_text] = alaw_bytes
+            
+        return alaw_bytes
+
+    def _fallback_audio():
+        # Retorna audio precargado en memoria o saludo preexistente para evitar silencio
+        if PRELOADED_GREETING:
+            return PRELOADED_GREETING
+        for v in AUDIO_CACHE_RAM.values():
+            if isinstance(v, bytes) and len(v) > 0:
+                return v
         return b""
-        
-    decoded = miniaudio.decode(
-        mp3_bytes,
-        nchannels=1,
-        sample_rate=24000,
-        output_format=miniaudio.SampleFormat.SIGNED16
-    )
-    
-    pcm24_float = np.frombuffer(decoded.samples, dtype=np.int16).astype(np.float32) / 32768.0
-    
-    # Remuestreo de alta fidelidad soxr HQ de 24kHz a 8kHz puro
-    pcm8_float = soxr.resample(pcm24_float, 24000, 8000, quality="HQ")
-    
-    # Normalización dinámica óptima para telefonía G.711 (-1.4 dBFS)
-    peak = float(np.max(np.abs(pcm8_float)))
-    if peak > 1e-4:
-        pcm8_float = pcm8_float * (0.85 / peak)
-    else:
-        pcm8_float = pcm8_float * 0.85
-        
-    pcm8_int16 = np.clip(pcm8_float * 32767.0, -32768, 32767).astype(np.int16)
-    alaw_bytes = pcm2alaw(pcm8_int16.tobytes())
-    
-    # Guardar en caché RAM si es menor a 25 segundos
-    if len(alaw_bytes) < 200000:
-        AUDIO_CACHE_RAM[clean_text] = alaw_bytes
-        
-    return alaw_bytes
+
+    try:
+        res = await voice_circuit_breaker.call_async(_do_synthesis, fallback=_fallback_audio)
+        return res if res is not None else _fallback_audio()
+    except Exception as e:
+        print(f"Aviso en synthesize_speech_alaw protegido por CircuitBreaker: {e}")
+        return _fallback_audio()
 
 PRELOADED_GREETING = None
 

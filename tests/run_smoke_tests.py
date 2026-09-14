@@ -155,10 +155,26 @@ def run_order_fsm_smoke_test() -> bool:
     return True
 
 
+def run_circuit_breaker_smoke_test() -> bool:
+    """Verifica el funcionamiento del Circuit Breaker (estados CLOSED, OPEN, HALF_OPEN y fallback)."""
+    print("=" * 70)
+    print("3. PRUEBA DE RESILIENCIA Y CIRCUIT BREAKER (VOICE TTS)")
+    print("=" * 70)
+    import unittest
+    suite = unittest.defaultTestLoader.discover(str(PROJECT_ROOT / "tests"), pattern="test_circuit_breaker.py")
+    runner = unittest.TextTestRunner(verbosity=1)
+    result = runner.run(suite)
+    if not result.wasSuccessful():
+        print("Fallaron las pruebas unitarias de Circuit Breaker.")
+        return False
+    print("Circuit Breaker validado: estados, timeouts a 800ms y fallbacks íntegros.\n")
+    return True
+
+
 def run_specs_smoke_test() -> bool:
     """Verifica que los ADRs y especificaciones Open Spec mantengan integridad absoluta."""
     print("=" * 70)
-    print("3. VERIFICACION DE ESPECIFICACIONES (ADR & OPEN SPEC)")
+    print("4. VERIFICACION DE ESPECIFICACIONES (ADR & OPEN SPEC)")
     print("=" * 70)
     import unittest
     suite = unittest.defaultTestLoader.discover(str(PROJECT_ROOT / "tests"), pattern="test_specs.py")
@@ -178,10 +194,11 @@ def main():
 
     step1_ok = run_syntax_check()
     step2_ok = run_order_fsm_smoke_test()
-    step3_ok = run_specs_smoke_test()
+    step3_ok = run_circuit_breaker_smoke_test()
+    step4_ok = run_specs_smoke_test()
 
     print("=" * 70)
-    if step1_ok and step2_ok and step3_ok:
+    if step1_ok and step2_ok and step3_ok and step4_ok:
         print("TODOS LOS SMOKE TESTS PASARON EXITOSAMENTE (SISTEMA SALUDABLE)")
         print("=" * 70 + "\n")
         return 0
