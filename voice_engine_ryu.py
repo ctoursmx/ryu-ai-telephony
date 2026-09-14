@@ -70,12 +70,18 @@ else:
 
 PROMPT_SNAPPY_PATH = Path(__file__).parent / "prompt_voice_telephone_snappy.md"
 PROMPT_FULL_PATH = Path(__file__).parent / "prompt_voice_telephone_ryu.md"
-if PROMPT_SNAPPY_PATH.exists():
-    SYSTEM_PROMPT = PROMPT_SNAPPY_PATH.read_text(encoding="utf-8")
-elif PROMPT_FULL_PATH.exists():
-    SYSTEM_PROMPT = PROMPT_FULL_PATH.read_text(encoding="utf-8")
-else:
-    SYSTEM_PROMPT = "Eres la recepcionista telefónica de Ryu en Tequila. Habla con calidez humana mexicana, sin emojis ni viñetas."
+
+def get_system_prompt() -> str:
+    try:
+        if PROMPT_SNAPPY_PATH.exists():
+            return PROMPT_SNAPPY_PATH.read_text(encoding="utf-8")
+        elif PROMPT_FULL_PATH.exists():
+            return PROMPT_FULL_PATH.read_text(encoding="utf-8")
+    except Exception:
+        pass
+    return "Eres la recepcionista telefónica de Ryu en Tequila. Habla con calidez humana mexicana, sin emojis ni viñetas."
+
+SYSTEM_PROMPT = get_system_prompt()
 
 # --- ESTADO DINÁMICO DE INVENTARIO Y PROMOCIONES ---
 RESTAURANT_STATE_PATH = Path(__file__).parent / "restaurant_state.json"
@@ -156,10 +162,11 @@ def build_kitchen_dynamic_prompt() -> str:
             active_promos.append(p.strip())
 
     if active_promos:
-        lines.append("\n🎉 PROMOCIONES OFICIALES DEL DÍA:")
+        lines.append("\n🎉 PROMOCIONES OFICIALES DEL DÍA (OBLIGATORIO):")
         for promo in active_promos:
             lines.append(f"  • {promo}")
-        lines.append("  - REGLA: Si el cliente pregunta qué promociones hay hoy, o si es la primera interacción y resulta oportuno, menciónale esta promoción con entusiasmo.")
+        lines.append("  - REGLA CRÍTICA DE PROMOCIONES: Si el cliente pregunta qué promociones u ofertas hay hoy (o menciona que vio algo en Facebook o redes), DEBES anunciar TODAS las promociones activas listadas arriba en una sola frase breve y entusiasta (ejemplo: 'Hoy tenemos el Combo Feliz a $160 y la promoción tres por dos en todos los sushis especiales. ¿Cuál de las dos te gustaría probar?'). NUNCA omitas una promoción activa y NUNCA digas que no hay promociones.")
+        lines.append("  - REGLA DE DETALLES: Si el cliente pregunta qué contiene un combo ('¿qué trae?', 'cuéntame más', 'un poco más', 'de qué es'), describe de inmediato sus ingredientes sabrosos en lugar de solo repetir el precio.")
 
     # 4. Avisos especiales de demora o servicio
     service_override = state.get("service_override", "").strip()
@@ -346,10 +353,28 @@ class RyuVoiceAgent:
         state = load_restaurant_state()
         costo_envio_base, is_night_active = get_delivery_conditions_summary(state, now)
         
-        current_prompt = SYSTEM_PROMPT
+        current_prompt = get_system_prompt()
                 
         # 1. Normalización KAG de fonética y alias aprendidos en el grafo
         clean_user_text, replacements = kag_engine.normalize_user_text(sanitized_input)
+
+        # Correcciones fonéticas telefónicas inmediatas
+        clean_user_text = re.sub(r"\b3\s*x\s*12\b|\b3\s+por\s+12\b|\btres\s+por\s+doce\b", "3x2", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\b3\s*x\s*2\b|\b3\s+por\s+2\b|\btres\s+por\s+dos\b", "3x2", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\b2\s*x\s*1\b|\b2\s+por\s+1\b|\bdos\s+por\s+uno\b", "2x1", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bestuprojando\b|\bestoyprojando\b|\bestu\s+preguntando\b|\bes\s+preguntando\b", "estoy preguntando", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bfein\b|\bfeis\b|\bfeisbuc\b|\bfeisbuk\b|\bfeibu\b", "Facebook", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bmirir\b|\bmiri\b", "mir\xe9", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bconguzo\s+liste\w*\b|\bconguzo\b|\bconguce\b|\bcombuso\b", "combo feliz", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bpero\s+es\s+un\s+poco\s+m[a\xe1]s\b|\bcu[e\xe9]ntame\s+un\s+poco\s+m[a\xe1]s\b|\bexpl[i\xed]came\s+un\s+poco\s+m[a\xe1]s\b", "\xbfqu\xe9 m\xe1s contiene el combo?", clean_user_text, flags=re.IGNORECASE)
+
+        # Interceptor de pausas, vacilaciones o espera del cliente ("Bueno.", "A ver...", "Espera", "No me cuelguen")
+        pause_pattern = r"^(?:(?:bueno|a\s+ver|espera|un\s+momento|dame\s+un\s+momento|no\s+me\s+cuelguen?)[,.\s]*)+$"
+        if re.match(pause_pattern, clean_user_text.strip(), re.IGNORECASE):
+            pause_response = "Claro, con calma, t\xf3mate tu tiempo, aqu\xed sigo en la l\xednea."
+            self.conversation_history.append({"role": "user", "content": clean_user_text})
+            self.conversation_history.append({"role": "assistant", "content": pause_response})
+            return pause_response
 
         # 2. Hechos inmutables desde el Grafo de Conocimiento (KAG Ground Truth)
         kag_facts = kag_engine.retrieve_ground_truth_facts(clean_user_text, now)
@@ -583,9 +608,16 @@ class RyuVoiceAgent:
         text = text.replace("*", "")
         text = text.replace("•", "")
         text = text.replace("#", "número ")
-        text = text.replace("1x", "una orden de ")
-        text = text.replace("2x", "dos órdenes de ")
-        text = text.replace("3x", "tres órdenes de ")
+
+        # Pronunciación impecable de promociones (3x2, 2x1, 4x3)
+        text = re.sub(r"\b3\s*[xX*]\s*2\b", "tres por dos", text)
+        text = re.sub(r"\b2\s*[xX*]\s*1\b", "dos por uno", text)
+        text = re.sub(r"\b4\s*[xX*]\s*3\b", "cuatro por tres", text)
+
+        # Cantidades de órdenes (ej: 1x Sushi, 2x Boneless) - solo si va seguido de una letra
+        text = re.sub(r"\b1\s*[xX]\s+(?=[A-Za-z\xc1\xc9\xcd\xd3\xda\xd1\xe1\xe9\xed\xf3\xfa\xf1])", "una orden de ", text)
+        text = re.sub(r"\b2\s*[xX]\s+(?=[A-Za-z\xc1\xc9\xcd\xd3\xda\xd1\xe1\xe9\xed\xf3\xfa\xf1])", "dos órdenes de ", text)
+        text = re.sub(r"\b3\s*[xX]\s+(?=[A-Za-z\xc1\xc9\xcd\xd3\xda\xd1\xe1\xe9\xed\xf3\xfa\xf1])", "tres órdenes de ", text)
         
         # Correcciones fonéticas obligatorias para voz mexicana
         text = re.sub(r"\bRyuBot\b", "Riu Bot", text, flags=re.IGNORECASE)
@@ -597,6 +629,7 @@ class RyuVoiceAgent:
         text = re.sub(r"\bKaraage\b", "Karaague", text, flags=re.IGNORECASE)
         text = re.sub(r"\bYakimeshi\b", "Yaquimeshi", text, flags=re.IGNORECASE)
         text = re.sub(r"\bP[.\s]*[ºo]\s*del Centenario\b", "Paseo del Centenario", text, flags=re.IGNORECASE)
+        text = re.sub(r"\bfacebook\b", "Feisbuk", text, flags=re.IGNORECASE)
         
         text = re.sub(r"\s+", " ", text).strip()
         return text

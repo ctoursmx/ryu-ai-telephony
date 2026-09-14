@@ -365,20 +365,48 @@ class KAGEngine:
         learned_events = []
         customer_updates = {}
 
-        # 1. Extracción de Dirección y Zona en Tequila
-        addr_match = re.search(
-            r"(?:calle\s+)?([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+?\s*#?\s*\d{1,5}(?:\s*(?:interior|int|depto)\s*\w+)?)"
-            r"(?:\s*(?:en\s+|colonia\s+|col\.?\s*)([A-ZÁÉÍÓÚÑa-záéíóúñ\s]+))?",
-            full_user_dialogue,
-            re.IGNORECASE
+        # 1. Extracción segura de Dirección y Zona en Tequila (Blindaje contra falsos positivos)
+        FORBIDDEN_ADDR_WORDS = [
+            "promocion", "promoci\xf3n", "promo", "combo", "sushi", "panini",
+            "boneless", "alitas", "hamburguesa", "ramen", "pizza", "refresco",
+            "coca", "pack", "3x2", "2x1", "3x12", "orden", "ordenar", "pedir",
+            "pedido", "para hoy", "a las", "tarde", "noche", "ma\xf1ana", "pesos",
+            "cuanto", "cuesta", "precio", "buenas", "quiero", "quisiera", "llevar"
+        ]
+        
+        # Patrón 1: Con prefijo de vía o domicilio formal
+        p1 = (
+            r"(?:\b(?:en|vivo\s+en|es\s+en|para)\s+)?"
+            r"(\b(?:calle|av(?:enida)?|privada|andador|circuito|paseo(?:\s+del)?|p\.|carretera|domicilio(?:\s+conocido)?)"
+            r"\s+[\w\s\.\#\-]+?\s*(?:n[u\xfa]mero|num|#)?\s*\d{1,5}(?:\s*(?:interior|int|depto)\s*\w+)?)"
+            r"(?:\s*(?:en\s+|colonia\s+|col\.?\s*)([\w\s]+))?"
         )
+        addr_match = re.search(p1, full_user_dialogue, re.IGNORECASE)
+        
+        # Patrón 2: Calles y localidades emblemáticas de Tequila sin prefijo 'calle'
+        if not addr_match:
+            known_streets = r"(?:girasol|ju[a\xe1]rez|hidalgo|morelos|zaragoza|madero|centenario|obreg[o\xf3]n|independencia|cofrad[i\xed]a|santa\s+ana|medine[\xf1n]o|toma|amatit[a\xe1]n|loma\s+dorada|san\s+pedro)"
+            p2 = (
+                r"(?:\b(?:en|vivo\s+en|es\s+en)\s+)?"
+                rf"(\b{known_streets}\s+[\w\s\.\#\-]*?(?:n[u\xfa]mero|num|#)?\s*\d{{1,5}}(?:\s*(?:interior|int|depto)\s*\w+)?)"
+                r"(?:\s*(?:en\s+|colonia\s+|col\.?\s*)([\w\s]+))?"
+            )
+            addr_match = re.search(p2, full_user_dialogue, re.IGNORECASE)
+            
         if addr_match:
-            detected_addr = addr_match.group(1).strip().title()
-            detected_zone = addr_match.group(2).strip().title() if addr_match.group(2) else ""
-            if len(detected_addr) > 5 and not any(w in detected_addr.lower() for w in ["sushi", "hamburguesa", "boneless", "alitas", "coca"]):
-                customer_updates["address"] = detected_addr
+            detected_addr = addr_match.group(1).strip()
+            detected_zone = addr_match.group(2).strip() if addr_match.group(2) else ""
+            detected_addr = re.sub(r"^(?:(?:a\s+)?domicilio(?:\s+en)?|en|para|es en|vivo en|m[a\xe1]ndame|mandame)\s+", "", detected_addr, flags=re.IGNORECASE).strip()
+            
+            addr_lower = detected_addr.lower()
+            is_valid_addr = len(detected_addr) >= 4 and not any(re.search(rf"\b{re.escape(fw)}\b", addr_lower) for fw in FORBIDDEN_ADDR_WORDS)
+            
+            if is_valid_addr:
+                customer_updates["address"] = detected_addr.title()
                 if detected_zone:
-                    customer_updates["zone"] = detected_zone
+                    detected_zone = re.sub(r"^(?:la|el)\s+", "", detected_zone, flags=re.IGNORECASE).strip()
+                    if not any(re.search(rf"\b{re.escape(fw)}\b", detected_zone.lower()) for fw in FORBIDDEN_ADDR_WORDS):
+                        customer_updates["zone"] = detected_zone.title()
 
         # 2. Extracción de Preferencias / Notas Culinarias
         pref_matches = re.findall(r"\b(sin\s+[a-záéíóúñ]+|con\s+extra\s+[a-záéíóúñ]+|al[eé]rgic[oa]\s+a[l]?\s+[a-záéíóúñ]+)\b", full_user_dialogue, re.IGNORECASE)
