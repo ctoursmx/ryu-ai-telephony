@@ -2887,8 +2887,11 @@
                 formData.append('item_id', item.id);
                 formData.append('audio_file', vsCurrentRecordedBlob, `clip_${item.id}.webm`);
 
+                const token = getAuthToken();
+                const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
                 const res = await fetch('/api/voice-studio/upload', {
                     method: 'POST',
+                    headers: headers,
                     body: formData
                 });
 
@@ -2929,7 +2932,12 @@
             if (!confirm(`¿Deseas eliminar la grabación de "${title}" para volver a grabarla?`)) return;
 
             try {
-                const res = await fetch(`/api/voice-studio/audio/${itemId}`, { method: 'DELETE' });
+                const token = getAuthToken();
+                const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+                const res = await fetch(`/api/voice-studio/audio/${itemId}`, { 
+                    method: 'DELETE',
+                    headers: headers
+                });
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Error al eliminar');
 
