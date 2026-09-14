@@ -98,6 +98,18 @@
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                     <span class="font-medium">Ecosistema en línea</span>
                 </div>
+                <a href="/docs" target="_blank" title="Especificación Swagger UI & OpenAPI 3.1" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-950/40 hover:bg-blue-900/60 border border-blue-800/40 text-blue-300 transition text-xs font-semibold">
+                    <i class="fa-solid fa-code"></i>
+                    <span class="hidden md:inline">Swagger Docs</span>
+                </a>
+                <a href="/redoc" target="_blank" title="Documentación ReDoc" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-950/40 hover:bg-purple-900/60 border border-purple-800/40 text-purple-300 transition text-xs font-semibold">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>ReDoc</span>
+                </a>
+                <a href="/api/openapi.yaml" target="_blank" title="Descargar OpenAPI YAML" class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-950/40 hover:bg-amber-900/60 border border-amber-800/40 text-amber-300 transition text-xs font-semibold">
+                    <i class="fa-solid fa-file-code"></i>
+                    <span>OpenAPI YAML</span>
+                </a>
                 <button onclick="refreshAllData()" title="Sincronizar Datos" class="p-2 rounded-xl bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 transition text-sm">
                     <i class="fa-solid fa-arrows-rotate" id="refreshIcon"></i>
                 </button>

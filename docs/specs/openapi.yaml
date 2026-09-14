@@ -1,0 +1,571 @@
+openapi: 3.1.0
+info:
+  title: Restaurante Ryu - API de Telefonía IA & Gestión de Pedidos
+  summary: Plataforma de voz inteligente, conmutador SIP VoIP y panel de administración
+    en tiempo real.
+  description: "\n# \U0001F363 Ryu AI Voice Telephony & Restaurant Automation API\n\
+    \nEsta API potencia el conmutador telefónico inteligente y el panel administrativo\
+    \ del **Restaurante Ryu** y **Capri Cucina Italiana** en Tequila, Jalisco.\n\n\
+    ### Capacidades Principales:\n* **Telefonía SIP/RTP**: Integración con Zadarma\
+    \ (`+52 33 8526 1250`) con audio G.711 A-law a 8000 Hz.\n* **Transcripción en\
+    \ RAM**: `faster-whisper` (int8) en CPU local sin costo por llamada.\n* **Orquestación\
+    \ LLM**: OpenAI GPT-4o-mini con prompts dinámicos de cocina y auditoría matemática\
+    \ determinística de cuentas.\n* **Voice Studio Web**: Banco de clips pregrabados\
+    \ con acento local y latencia 0 ms en RAM.\n* **Despacho Multicanal**: Envío instantáneo\
+    \ de comandas a Telegram, WhatsApp y comandera POS.\n    "
+  version: 2.1.0
+paths:
+  /api/fast-chat:
+    post:
+      tags:
+      - Audio & Simulador Web
+      summary: Simula una interacción conversacional completa con RyuBot
+      operationId: fast_chat_api_fast_chat_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /audio/{filename}:
+    get:
+      tags:
+      - Audio & Simulador Web
+      summary: Descarga o streaming de clip de audio
+      operationId: get_audio_audio__filename__get
+      parameters:
+      - name: filename
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Filename
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/pos/orders/pending:
+    get:
+      tags:
+      - POS Bridge & Impresión
+      summary: Consulta comandas pendientes para Soft Restaurant
+      description: Retorna las órdenes pendientes para inyección al sistema Soft Restaurant
+        local.
+      operationId: get_pending_pos_orders_api_pos_orders_pending_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/pos/orders/{order_id}/ack:
+    post:
+      tags:
+      - POS Bridge & Impresión
+      summary: Confirma inyección de comanda en el POS local
+      description: Confirma que el pedido ya fue impreso e inyectado en el Soft Restaurant
+        local.
+      operationId: acknowledge_pos_order_api_pos_orders__order_id__ack_post
+      parameters:
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Order Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/auth/login:
+    post:
+      tags:
+      - Autenticación
+      summary: Inicio de sesión administrativo con protección anti-fuerza bruta
+      description: Autenticación de personal del restaurante con protección anti fuerza
+        bruta.
+      operationId: api_auth_login_api_auth_login_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/auth/check:
+    get:
+      tags:
+      - Autenticación
+      summary: Verifica validez del token de sesión
+      description: Verifica si la sesión actual es válida.
+      operationId: api_auth_check_api_auth_check_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/state:
+    get:
+      tags:
+      - Estado Operacional
+      summary: Consulta el estado dinámico actual del restaurante
+      description: Retorna el estado dinámico actual del restaurante
+      operationId: get_state_api_state_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/stock/ingredient:
+    post:
+      tags:
+      - Existencias & Catálogo
+      summary: Conmuta disponibilidad de un ingrediente crítico
+      description: Conmuta la disponibilidad de un ingrediente crítico (ej. pulpo,
+        camarón, etc.)
+      operationId: toggle_ingredient_api_stock_ingredient_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/stock/dish:
+    post:
+      tags:
+      - Existencias & Catálogo
+      summary: Habilita o deshabilita un platillo del menú
+      description: Conmuta la disponibilidad de un platillo específico
+      operationId: toggle_dish_api_stock_dish_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/promotions:
+    post:
+      tags:
+      - Promociones & Horarios
+      summary: Actualiza promociones y reglas especiales
+      description: Actualiza las promociones del día aplicadas en la IA
+      operationId: update_promotions_api_promotions_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/announcement:
+    post:
+      tags:
+      - Estado Operacional
+      summary: Actualiza tiempos estimados y avisos de cocina
+      description: Actualiza avisos de demora, apertura o notas de cocina
+      operationId: update_announcement_api_announcement_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/menu/full:
+    get:
+      tags:
+      - Existencias & Catálogo
+      summary: Catálogo jerárquico completo de platillos y precios
+      description: Retorna la jerarquía completa de los 3 menús con categorías, platillos,
+        precios y horarios.
+      operationId: api_get_full_menu_api_menu_full_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/menu/dish/update:
+    post:
+      tags:
+      - Existencias & Catálogo
+      summary: Edita atributos de un platillo del catálogo
+      description: Actualiza nombre, precio, descripción, horario y disponibilidad
+        de un platillo específico.
+      operationId: api_update_dish_api_menu_dish_update_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/menu/schedules:
+    get:
+      tags:
+      - Promociones & Horarios
+      summary: Consulta horarios de servicio de menús
+      description: Retorna los horarios de los 3 menús.
+      operationId: api_get_schedules_api_menu_schedules_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - Promociones & Horarios
+      summary: Modifica horarios de servicio de menús
+      description: Actualiza los horarios de disponibilidad de los 3 menús.
+      operationId: api_update_schedules_api_menu_schedules_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/ingredients:
+    get:
+      tags:
+      - Existencias & Catálogo
+      summary: Lista de ingredientes con sustitutos y platillos afectados
+      description: Retorna el catálogo de 45+ ingredientes con estado de disponibilidad
+        en tiempo real.
+      operationId: api_get_ingredients_api_ingredients_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/ingredients/save:
+    post:
+      tags:
+      - Existencias & Catálogo
+      summary: Registra o actualiza un ingrediente en catálogo
+      description: Agrega o actualiza un ingrediente en el catálogo oficial.
+      operationId: api_save_ingredient_api_ingredients_save_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/delivery-settings:
+    get:
+      tags:
+      - Condiciones de Entrega
+      summary: Consulta condiciones de entrega y catálogo de zonas especiales
+      description: Retorna las condiciones de entrega, recargo nocturno y catálogo
+        de zonas especiales.
+      operationId: api_get_delivery_settings_api_delivery_settings_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+    post:
+      tags:
+      - Condiciones de Entrega
+      summary: Actualiza configuración general de entregas
+      description: Actualiza la configuración general de entrega (tarifas, horas y
+        modos).
+      operationId: api_update_delivery_settings_api_delivery_settings_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/delivery-settings/zone/toggle:
+    post:
+      tags:
+      - Condiciones de Entrega
+      summary: Activa o desactiva la tarifa de una zona especial
+      description: Activa o desactiva la tarifa especial de una zona en tiempo real.
+      operationId: api_toggle_delivery_zone_api_delivery_settings_zone_toggle_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/delivery-settings/zone/save:
+    post:
+      tags:
+      - Condiciones de Entrega
+      summary: Crea o actualiza una zona especial de entrega
+      description: Crea o actualiza una zona especial de entrega con su costo y alias.
+      operationId: api_save_delivery_zone_api_delivery_settings_zone_save_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/delivery-settings/zone/{zone_id}:
+    delete:
+      tags:
+      - Condiciones de Entrega
+      summary: Elimina una zona especial de entrega
+      description: Elimina una zona especial de entrega.
+      operationId: api_delete_delivery_zone_api_delivery_settings_zone__zone_id__delete
+      parameters:
+      - name: zone_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Zone Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/menu-items:
+    get:
+      tags:
+      - Existencias & Catálogo
+      summary: Catálogo consolidado de platillos para el buscador
+      description: Catálogo aplanado de todos los platillos para el buscador del dashboard
+      operationId: get_menu_items_api_menu_items_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/kitchen-prompt-preview:
+    get:
+      tags:
+      - Monitor IA & Especificaciones
+      summary: Vista previa del prompt dinámico inyectado al LLM
+      description: Vista previa del bloque de prompt dinámico que la IA lee en cada
+        llamada (requiere auth)
+      operationId: get_kitchen_prompt_preview_api_kitchen_prompt_preview_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/voice-studio/manifest:
+    get:
+      tags:
+      - Estudio de Grabación (Voice Studio)
+      summary: Manifiesto del catálogo con estado de grabación
+      description: Retorna el catálogo completo con el estado de grabación de cada
+        ítem
+      operationId: api_voice_studio_manifest_api_voice_studio_manifest_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/voice-studio/upload:
+    post:
+      tags:
+      - Estudio de Grabación (Voice Studio)
+      summary: Sube y transcodifica un clip de voz a G.711 A-law 8kHz
+      description: Recibe la grabación del navegador y la transcodifica a G.711 A-law
+        8000Hz
+      operationId: api_voice_studio_upload_api_voice_studio_upload_post
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_api_voice_studio_upload_api_voice_studio_upload_post'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/voice-studio/audio/{item_id}:
+    get:
+      tags:
+      - Estudio de Grabación (Voice Studio)
+      summary: Reproduce el archivo WAV de alta fidelidad en el navegador
+      description: Reproduce el audio WAV de alta fidelidad en el navegador
+      operationId: api_voice_studio_audio_api_voice_studio_audio__item_id__get
+      parameters:
+      - name: item_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Item Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Estudio de Grabación (Voice Studio)
+      summary: Elimina una grabación para re-grabarla
+      description: Elimina una grabación para re-grabarla
+      operationId: api_voice_studio_delete_api_voice_studio_audio__item_id__delete
+      parameters:
+      - name: item_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Item Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /api/voice-studio/test-preview:
+    post:
+      tags:
+      - Estudio de Grabación (Voice Studio)
+      summary: Concatena clips seleccionados para escuchar la comanda continua
+      description: Concatena clips seleccionados para escuchar la orden completa
+      operationId: api_voice_studio_preview_api_voice_studio_test_preview_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+  /api/openapi.yaml:
+    get:
+      tags:
+      - Monitor IA & Especificaciones
+      summary: Descarga la especificación formal OpenAPI 3.1 en formato YAML
+      description: Retorna la especificación OpenAPI completa en formato YAML estándar
+        para Swagger Editor y CI/CD.
+      operationId: get_openapi_yaml_api_openapi_yaml_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    Body_api_voice_studio_upload_api_voice_studio_upload_post:
+      properties:
+        item_id:
+          type: string
+          title: Item Id
+        audio_file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: Audio File
+      type: object
+      required:
+      - item_id
+      - audio_file
+      title: Body_api_voice_studio_upload_api_voice_studio_upload_post
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+tags:
+- name: Autenticación
+  description: Control de acceso seguro para administradores y cajeros mediante tokens
+    criptográficos HMAC-SHA256 y rate limiting anti-fuerza bruta.
+- name: Estado Operacional
+  description: 'Gestión en tiempo real del estado del restaurante: recepción de pedidos
+    (abierto/cerrado), tiempos estimados y avisos de cocina.'
+- name: Existencias & Catálogo
+  description: Control de ingredientes críticos agotados y disponibilidad de platillos
+    en los menús Japonés, Snacks e Italiano.
+- name: Promociones & Horarios
+  description: Administración de promociones diarias (ej. 3x2, descuentos) y horarios
+    dinámicos de menús de día y noche.
+- name: Condiciones de Entrega
+  description: Tarificación y reglas de zonas foráneas en Tequila (El Medineño, San
+    Martín, Magdalena, Tierra de Agave, etc.).
+- name: Estudio de Grabación (Voice Studio)
+  description: Grabación de voz del dueño, transcodificación a códec G.711 A-law 8kHz
+    y precarga en memoria RAM para latencia 0ms y $0 USD en llamadas.
+- name: POS Bridge & Impresión
+  description: Puente de comunicación bidireccional con terminales de punto de venta
+    (Soft Restaurant) e impresoras térmicas de cocina.
+- name: Monitor IA & Especificaciones
+  description: Inspección del prompt dinámico inyectado al LLM y descarga de especificaciones
+    OpenAPI y arquitectura.
+- name: Audio & Simulador Web
+  description: Simulación interactiva de voz por navegador y transmisión de audios
+    sintetizados o pregrabados.

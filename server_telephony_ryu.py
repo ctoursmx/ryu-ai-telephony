@@ -31,8 +31,69 @@ from security_guard import (
     input_sanitizer,
     cleanup_temp_audio_files
 )
+import schemas_ryu
+import yaml
 
-app = FastAPI(title="Ryu Voice Telephony Server - Ultra Fast", version="2.0.0")
+TAGS_METADATA = [
+    {
+        "name": "Autenticación",
+        "description": "Control de acceso seguro para administradores y cajeros mediante tokens criptográficos HMAC-SHA256 y rate limiting anti-fuerza bruta."
+    },
+    {
+        "name": "Estado Operacional",
+        "description": "Gestión en tiempo real del estado del restaurante: recepción de pedidos (abierto/cerrado), tiempos estimados y avisos de cocina."
+    },
+    {
+        "name": "Existencias & Catálogo",
+        "description": "Control de ingredientes críticos agotados y disponibilidad de platillos en los menús Japonés, Snacks e Italiano."
+    },
+    {
+        "name": "Promociones & Horarios",
+        "description": "Administración de promociones diarias (ej. 3x2, descuentos) y horarios dinámicos de menús de día y noche."
+    },
+    {
+        "name": "Condiciones de Entrega",
+        "description": "Tarificación y reglas de zonas foráneas en Tequila (El Medineño, San Martín, Magdalena, Tierra de Agave, etc.)."
+    },
+    {
+        "name": "Estudio de Grabación (Voice Studio)",
+        "description": "Grabación de voz del dueño, transcodificación a códec G.711 A-law 8kHz y precarga en memoria RAM para latencia 0ms y $0 USD en llamadas."
+    },
+    {
+        "name": "POS Bridge & Impresión",
+        "description": "Puente de comunicación bidireccional con terminales de punto de venta (Soft Restaurant) e impresoras térmicas de cocina."
+    },
+    {
+        "name": "Monitor IA & Especificaciones",
+        "description": "Inspección del prompt dinámico inyectado al LLM y descarga de especificaciones OpenAPI y arquitectura."
+    },
+    {
+        "name": "Audio & Simulador Web",
+        "description": "Simulación interactiva de voz por navegador y transmisión de audios sintetizados o pregrabados."
+    }
+]
+
+app = FastAPI(
+    title="Restaurante Ryu - API de Telefonía IA & Gestión de Pedidos",
+    summary="Plataforma de voz inteligente, conmutador SIP VoIP y panel de administración en tiempo real.",
+    description="""
+# 🍣 Ryu AI Voice Telephony & Restaurant Automation API
+
+Esta API potencia el conmutador telefónico inteligente y el panel administrativo del **Restaurante Ryu** y **Capri Cucina Italiana** en Tequila, Jalisco.
+
+### Capacidades Principales:
+* **Telefonía SIP/RTP**: Integración con Zadarma (`+52 33 8526 1250`) con audio G.711 A-law a 8000 Hz.
+* **Transcripción en RAM**: `faster-whisper` (int8) en CPU local sin costo por llamada.
+* **Orquestación LLM**: OpenAI GPT-4o-mini con prompts dinámicos de cocina y auditoría matemática determinística de cuentas.
+* **Voice Studio Web**: Banco de clips pregrabados con acento local y latencia 0 ms en RAM.
+* **Despacho Multicanal**: Envío instantáneo de comandas a Telegram, WhatsApp y comandera POS.
+    """,
+    version="2.1.0",
+    openapi_tags=TAGS_METADATA,
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
+)
 
 # Gestor de llamadas simultáneas en memoria (soporta 50+ llamadas en paralelo)
 active_sessions: dict[str, RyuVoiceAgent] = {}
@@ -42,7 +103,7 @@ def get_agent_for_session(session_id: str, caller_phone: str = "+52 33 8526 1250
         active_sessions[session_id] = RyuVoiceAgent(caller_phone=caller_phone, caller_name=caller_name)
     return active_sessions[session_id]
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, include_in_schema=False)
 def home():
     """Interfaz web de ultra baja latencia con reconocimiento en tiempo real"""
     return """
@@ -252,7 +313,7 @@ def home():
 </html>
     """
 
-@app.post("/api/fast-chat")
+@app.post("/api/fast-chat", tags=["Audio & Simulador Web"], summary="Simula una interacción conversacional completa con RyuBot")
 async def fast_chat(request: Request):
     t0 = time.time()
     
@@ -302,30 +363,27 @@ async def fast_chat(request: Request):
     }
 
 
-@app.get("/audio/{filename}")
+@app.get("/audio/{filename}", tags=["Audio & Simulador Web"], summary="Descarga o streaming de clip de audio")
 def get_audio(filename: str):
     if os.path.exists(filename):
         return FileResponse(filename, media_type="audio/mpeg")
     return JSONResponse(status_code=404, content={"error": "Audio no encontrado"})
 
-@app.get("/api/pos/orders/pending")
-def api_get_pending_pos_orders(request: Request):
-    """
-    Endpoint para el agente local de Soft Restaurant en el restaurante de Tequila.
-    Retorna la lista de comandas tomadas por la IA que requieren ser inyectadas e impresas.
-    """
+@app.get("/api/pos/orders/pending", tags=["POS Bridge & Impresión"], summary="Consulta comandas pendientes para Soft Restaurant")
+def get_pending_pos_orders(request: Request):
+    """Retorna las órdenes pendientes para inyección al sistema Soft Restaurant local."""
     secret = os.getenv("POS_BRIDGE_SECRET", "ryu_pos_secret_key_2026")
     auth_header = request.headers.get("X-POS-Token")
     if auth_header != secret and request.query_params.get("token") != secret:
         return JSONResponse(status_code=401, content={"error": "No autorizado para POS Bridge"})
 
-    from soft_restaurant_bridge import get_pending_pos_orders
-    orders = get_pending_pos_orders()
-    return {"status": "ok", "count": len(orders), "orders": orders}
+    from soft_restaurant_bridge import get_pending_pos_orders_sync
+    orders = get_pending_pos_orders_sync()
+    return {"status": "ok", "orders": orders}
 
 
-@app.post("/api/pos/orders/{order_id}/ack")
-async def api_ack_pos_order(order_id: str, request: Request):
+@app.post("/api/pos/orders/{order_id}/ack", tags=["POS Bridge & Impresión"], summary="Confirma inyección de comanda en el POS local")
+def acknowledge_pos_order(order_id: str, request: Request):
     """
     Confirma que el pedido ya fue impreso e inyectado en el Soft Restaurant local.
     """
@@ -387,7 +445,7 @@ def verify_admin_auth(request: Request) -> bool:
     return False
 
 
-@app.post("/api/auth/login")
+@app.post("/api/auth/login", tags=["Autenticación"], summary="Inicio de sesión administrativo con protección anti-fuerza bruta")
 async def api_auth_login(request: Request):
     """Autenticación de personal del restaurante con protección anti fuerza bruta."""
     client_ip = request.client.host if request.client else "unknown"
@@ -435,7 +493,7 @@ async def api_auth_login(request: Request):
         )
 
 
-@app.get("/api/auth/check")
+@app.get("/api/auth/check", tags=["Autenticación"], summary="Verifica validez del token de sesión")
 def api_auth_check(request: Request):
     """Verifica si la sesión actual es válida."""
     is_auth = verify_admin_auth(request)
@@ -446,7 +504,7 @@ def api_auth_check(request: Request):
 # RUTAS DE ADMINISTRACIÓN EN TIEMPO REAL (STOCK, PROMOCIONES Y HORARIOS)
 # ======================================================================
 
-@app.get("/admin", response_class=HTMLResponse)
+@app.get("/admin", response_class=HTMLResponse, include_in_schema=False)
 def admin_dashboard():
     """Panel de Control visual para celular y PC"""
     template_path = Path(__file__).parent / "templates" / "admin_dashboard.html"
@@ -454,12 +512,12 @@ def admin_dashboard():
         return HTMLResponse(content=template_path.read_text(encoding="utf-8"))
     return HTMLResponse(content="<h1>Plantilla de administración no encontrada en templates/admin_dashboard.html</h1>", status_code=404)
 
-@app.get("/api/state")
+@app.get("/api/state", tags=["Estado Operacional"], summary="Consulta el estado dinámico actual del restaurante")
 def get_state():
     """Retorna el estado dinámico actual del restaurante"""
     return load_restaurant_state()
 
-@app.post("/api/stock/ingredient")
+@app.post("/api/stock/ingredient", tags=["Existencias & Catálogo"], summary="Conmuta disponibilidad de un ingrediente crítico")
 async def toggle_ingredient(request: Request):
     """Conmuta la disponibilidad de un ingrediente crítico (ej. pulpo, camarón, etc.)"""
     if not verify_admin_auth(request):
@@ -483,7 +541,7 @@ async def toggle_ingredient(request: Request):
     save_restaurant_state(state)
     return state
 
-@app.post("/api/stock/dish")
+@app.post("/api/stock/dish", tags=["Existencias & Catálogo"], summary="Habilita o deshabilita un platillo del menú")
 async def toggle_dish(request: Request):
     """Conmuta la disponibilidad de un platillo específico"""
     if not verify_admin_auth(request):
@@ -507,7 +565,7 @@ async def toggle_dish(request: Request):
     save_restaurant_state(state)
     return state
 
-@app.post("/api/promotions")
+@app.post("/api/promotions", tags=["Promociones & Horarios"], summary="Actualiza promociones y reglas especiales")
 async def update_promotions(request: Request):
     """Actualiza las promociones del día aplicadas en la IA"""
     if not verify_admin_auth(request):
@@ -521,7 +579,7 @@ async def update_promotions(request: Request):
     save_restaurant_state(state)
     return state
 
-@app.post("/api/announcement")
+@app.post("/api/announcement", tags=["Estado Operacional"], summary="Actualiza tiempos estimados y avisos de cocina")
 async def update_announcement(request: Request):
     """Actualiza avisos de demora, apertura o notas de cocina"""
     if not verify_admin_auth(request):
@@ -727,12 +785,12 @@ def get_full_hierarchical_menu():
         "menus": result_menus
     }
 
-@app.get("/api/menu/full")
+@app.get("/api/menu/full", tags=["Existencias & Catálogo"], summary="Catálogo jerárquico completo de platillos y precios")
 def api_get_full_menu():
     """Retorna la jerarquía completa de los 3 menús con categorías, platillos, precios y horarios."""
     return get_full_hierarchical_menu()
 
-@app.post("/api/menu/dish/update")
+@app.post("/api/menu/dish/update", tags=["Existencias & Catálogo"], summary="Edita atributos de un platillo del catálogo")
 async def api_update_dish(request: Request):
     """Actualiza nombre, precio, descripción, horario y disponibilidad de un platillo específico."""
     if not verify_admin_auth(request):
@@ -811,7 +869,7 @@ async def api_update_dish(request: Request):
     save_restaurant_state(state)
     return {"status": "ok", "dish_id": dish_id, "dish": dish_overrides[dish_id]}
 
-@app.get("/api/menu/schedules")
+@app.get("/api/menu/schedules", tags=["Promociones & Horarios"], summary="Consulta horarios de servicio de menús")
 def api_get_schedules():
     """Retorna los horarios de los 3 menús."""
     state = load_restaurant_state()
@@ -827,7 +885,7 @@ def api_get_schedules():
             pass
     return {}
 
-@app.post("/api/menu/schedules")
+@app.post("/api/menu/schedules", tags=["Promociones & Horarios"], summary="Modifica horarios de servicio de menús")
 async def api_update_schedules(request: Request):
     """Actualiza los horarios de disponibilidad de los 3 menús."""
     if not verify_admin_auth(request):
@@ -854,7 +912,7 @@ async def api_update_schedules(request: Request):
     save_restaurant_state(state)
     return {"status": "ok", "schedules": data}
 
-@app.get("/api/ingredients")
+@app.get("/api/ingredients", tags=["Existencias & Catálogo"], summary="Lista de ingredientes con sustitutos y platillos afectados")
 def api_get_ingredients():
     """Retorna el catálogo de 45+ ingredientes con estado de disponibilidad en tiempo real."""
     state = load_restaurant_state()
@@ -876,7 +934,7 @@ def api_get_ingredients():
         "total_count": len(enriched)
     }
 
-@app.post("/api/ingredients/save")
+@app.post("/api/ingredients/save", tags=["Existencias & Catálogo"], summary="Registra o actualiza un ingrediente en catálogo")
 async def api_save_ingredient(request: Request):
     """Agrega o actualiza un ingrediente en el catálogo oficial."""
     if not verify_admin_auth(request):
@@ -957,7 +1015,7 @@ def _ensure_delivery_settings():
         save_restaurant_state(state)
     return del_settings
 
-@app.get("/api/delivery-settings")
+@app.get("/api/delivery-settings", tags=["Condiciones de Entrega"], summary="Consulta condiciones de entrega y catálogo de zonas especiales")
 def api_get_delivery_settings():
     """Retorna las condiciones de entrega, recargo nocturno y catálogo de zonas especiales."""
     settings = _ensure_delivery_settings()
@@ -972,7 +1030,7 @@ def api_get_delivery_settings():
         }
     }
 
-@app.post("/api/delivery-settings")
+@app.post("/api/delivery-settings", tags=["Condiciones de Entrega"], summary="Actualiza configuración general de entregas")
 async def api_update_delivery_settings(request: Request):
     """Actualiza la configuración general de entrega (tarifas, horas y modos)."""
     if not verify_admin_auth(request):
@@ -1001,7 +1059,7 @@ async def api_update_delivery_settings(request: Request):
     save_restaurant_state(state)
     return {"status": "ok", "settings": settings}
 
-@app.post("/api/delivery-settings/zone/toggle")
+@app.post("/api/delivery-settings/zone/toggle", tags=["Condiciones de Entrega"], summary="Activa o desactiva la tarifa de una zona especial")
 async def api_toggle_delivery_zone(request: Request):
     """Activa o desactiva la tarifa especial de una zona en tiempo real."""
     if not verify_admin_auth(request):
@@ -1026,7 +1084,7 @@ async def api_toggle_delivery_zone(request: Request):
     save_restaurant_state(state)
     return {"status": "ok", "zone_id": zone_id, "enabled": enabled}
 
-@app.post("/api/delivery-settings/zone/save")
+@app.post("/api/delivery-settings/zone/save", tags=["Condiciones de Entrega"], summary="Crea o actualiza una zona especial de entrega")
 async def api_save_delivery_zone(request: Request):
     """Crea o actualiza una zona especial de entrega con su costo y alias."""
     if not verify_admin_auth(request):
@@ -1086,7 +1144,7 @@ async def api_save_delivery_zone(request: Request):
     save_restaurant_state(state)
     return {"status": "ok", "zone": {"id": zone_id, "name": name, "fee": fee, "enabled": enabled, "aliases": aliases, "notes": notes}}
 
-@app.delete("/api/delivery-settings/zone/{zone_id}")
+@app.delete("/api/delivery-settings/zone/{zone_id}", tags=["Condiciones de Entrega"], summary="Elimina una zona especial de entrega")
 async def api_delete_delivery_zone(zone_id: str, request: Request):
     """Elimina una zona especial de entrega."""
     if not verify_admin_auth(request):
@@ -1105,7 +1163,7 @@ async def api_delete_delivery_zone(zone_id: str, request: Request):
     save_restaurant_state(state)
     return {"status": "ok", "deleted_zone_id": zone_id}
 
-@app.get("/api/menu-items")
+@app.get("/api/menu-items", tags=["Existencias & Catálogo"], summary="Catálogo consolidado de platillos para el buscador")
 def get_menu_items():
     """Catálogo aplanado de todos los platillos para el buscador del dashboard"""
     full_menu = get_full_hierarchical_menu()
@@ -1122,7 +1180,7 @@ def get_menu_items():
                 })
     return items
 
-@app.get("/api/kitchen-prompt-preview")
+@app.get("/api/kitchen-prompt-preview", tags=["Monitor IA & Especificaciones"], summary="Vista previa del prompt dinámico inyectado al LLM")
 def get_kitchen_prompt_preview(request: Request):
     """Vista previa del bloque de prompt dinámico que la IA lee en cada llamada (requiere auth)"""
     if not verify_admin_auth(request):
@@ -1135,12 +1193,12 @@ def get_kitchen_prompt_preview(request: Request):
 # RUTAS DEL ESTUDIO DE GRABACIÓN DE VOZ (VOICE STUDIO)
 # ======================================================================
 
-@app.get("/api/voice-studio/manifest")
+@app.get("/api/voice-studio/manifest", tags=["Estudio de Grabación (Voice Studio)"], summary="Manifiesto del catálogo con estado de grabación")
 def api_voice_studio_manifest():
     """Retorna el catálogo completo con el estado de grabación de cada ítem"""
     return voice_studio_backend.get_manifest_data()
 
-@app.post("/api/voice-studio/upload")
+@app.post("/api/voice-studio/upload", tags=["Estudio de Grabación (Voice Studio)"], summary="Sube y transcodifica un clip de voz a G.711 A-law 8kHz")
 async def api_voice_studio_upload(
     request: Request,
     item_id: str = Form(...),
@@ -1157,7 +1215,7 @@ async def api_voice_studio_upload(
     except Exception as e:
         return JSONResponse(status_code=400, content={"error": str(e)})
 
-@app.get("/api/voice-studio/audio/{item_id}")
+@app.get("/api/voice-studio/audio/{item_id}", tags=["Estudio de Grabación (Voice Studio)"], summary="Reproduce el archivo WAV de alta fidelidad en el navegador")
 def api_voice_studio_audio(item_id: str):
     """Reproduce el audio WAV de alta fidelidad en el navegador"""
     wav_path = voice_studio_backend.AUDIO_DIR / f"{item_id}.wav"
@@ -1165,14 +1223,14 @@ def api_voice_studio_audio(item_id: str):
         return JSONResponse(status_code=404, content={"error": "Audio no encontrado."})
     return FileResponse(str(wav_path), media_type="audio/wav")
 
-@app.delete("/api/voice-studio/audio/{item_id}")
+@app.delete("/api/voice-studio/audio/{item_id}", tags=["Estudio de Grabación (Voice Studio)"], summary="Elimina una grabación para re-grabarla")
 def api_voice_studio_delete(item_id: str, request: Request):
     """Elimina una grabación para re-grabarla"""
     if not verify_admin_auth(request):
         return JSONResponse(status_code=401, content={"error": "No autorizado para eliminar audios."})
     return voice_studio_backend.delete_item_recording(item_id)
 
-@app.post("/api/voice-studio/test-preview")
+@app.post("/api/voice-studio/test-preview", tags=["Estudio de Grabación (Voice Studio)"], summary="Concatena clips seleccionados para escuchar la comanda continua")
 async def api_voice_studio_preview(request: Request):
     """Concatena clips seleccionados para escuchar la orden completa"""
     data = await request.json()
@@ -1182,6 +1240,19 @@ async def api_voice_studio_preview(request: Request):
         return Response(content=wav_bytes, media_type="audio/wav")
     except Exception as e:
         return JSONResponse(status_code=400, content={"error": str(e)})
+
+
+# ======================================================================
+# EXPORTACIÓN DINÁMICA DE ESPECIFICACIÓN OPENAPI (YAML / JSON)
+# ======================================================================
+
+@app.get("/api/openapi.yaml", tags=["Monitor IA & Especificaciones"], summary="Descarga la especificación formal OpenAPI 3.1 en formato YAML")
+@app.get("/openapi.yaml", include_in_schema=False)
+def get_openapi_yaml():
+    """Retorna la especificación OpenAPI completa en formato YAML estándar para Swagger Editor y CI/CD."""
+    openapi_schema = app.openapi()
+    yaml_spec = yaml.dump(openapi_schema, sort_keys=False, allow_unicode=True)
+    return Response(content=yaml_spec, media_type="application/x-yaml")
 
 
 if __name__ == "__main__":

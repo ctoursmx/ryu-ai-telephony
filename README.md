@@ -34,22 +34,87 @@ flowchart TD
 
 ```text
 .
+├── docs/                                # Documentación de arquitectura y especificaciones formales
+│   ├── adr/                             # Architecture Decision Records (Estándar MADR)
+│   │   ├── README.md                    # Índice maestro de decisiones arquitectónicas
+│   │   ├── template.md                  # Plantilla estándar MADR
+│   │   └── 0001..0008-*.md              # Registros de decisión técnica (VoIP, STT, LLM, etc.)
+│   └── specs/                           # Especificaciones formales Open Spec
+│       ├── openapi.yaml                 # Especificación OpenAPI 3.1.0 (formato YAML)
+│       ├── openapi.json                 # Especificación OpenAPI 3.1.0 (formato JSON)
+│       ├── telephony-spec.yaml          # Open Spec: VoIP SIP/RTP, G.711 A-law y VAD
+│       ├── order-contract-spec.yaml     # Open Spec: Contrato determinístico de comandas
+│       └── README.md                    # Guía de especificaciones y sincronización
+├── tools/                               # Herramientas de automatización y CLI
+│   ├── adr.py                           # CLI gestor de ADRs (list, new, audit)
+│   └── export_openapi.py                # Exportador sincronizado de esquemas OpenAPI
+├── schemas_ryu.py                       # Modelos Pydantic formales para OpenAPI 3.1
+├── test_specs.py                        # Suite de pruebas automatizadas para ADR y Open Spec
+├── server_telephony_ryu.py              # API FastAPI del conmutador, Voice Studio y panel
+├── sip_telephony_service.py             # Servicio de telefonía SIP VoIP en tiempo real
+├── voice_engine_ryu.py                  # Motor conversacional, LLM, VAD y despacho
+├── voice_studio_backend.py              # Backend del estudio de grabación de voz
+├── menu_ryu.json                        # Catálogo y reglas de negocio estructuradas para IA
+├── prompt_voice_telephone_ryu.md        # Personalidad e instrucciones de la recepcionista
 ├── Dockerfile                           # Definición de contenedor optimizado (Python 3.11 Debian)
 ├── docker-compose.yml                   # Orquestación de producción con network_mode: host
 ├── requirements.txt                     # Dependencias de Python verificadas
-├── .env.example                         # Plantilla de variables de entorno seguras
-├── .gitignore                           # Exclusiones de Git (credenciales, audios, logs)
-├── .dockerignore                        # Exclusiones de construcción de imagen Docker
-├── .github/
-│   └── workflows/
-│       └── docker-ci.yml                # CI/CD automatizado en GitHub Actions
-├── sip_telephony_service.py             # Servicio principal de telefonía SIP VoIP en vivo
-├── voice_engine_ryu.py                  # Motor conversacional, LLM, VAD y despacho
-├── menu_ryu.json                        # Catálogo y reglas de negocio estructuradas para IA
-├── prompt_voice_telephone_ryu.md        # Personalidad e instrucciones de la recepcionista
-├── knowledge_base_ryu.md                # Base de conocimiento del restaurante
-├── order_service.py                     # Validador de menús por horario y formateador
-└── README.md                            # Documentación del proyecto
+└── README.md                            # Documentación integral del proyecto
+```
+
+---
+
+## 🏛️ Registros de Decisión Arquitectónica (ADR) & Open Spec
+
+El proyecto implementa el estándar **MADR (Markdown Architectural Decision Records)** y **Open Spec** para garantizar reproducibilidad técnica, trazabilidad de decisiones de ingeniería y contratos de API estrictos.
+
+### 📋 Registros de Decisión (ADR)
+Ubicados en [`docs/adr/`](file:///c:/Users/HP/Desktop/Ryu/docs/adr/README.md):
+
+| ID | Decisión | Estado | Contexto Clave |
+| :--- | :--- | :--- | :--- |
+| **[ADR-0001](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0001-telefonia-sip-rtp-zadarma-pyvoip.md)** | Telefonía SIP/RTP Directa con Zadarma y pyVoIP Parcheado | `Aceptada` | Puerto UDP 5060, temporizador 1ms, Symmetric RTP (RFC 4961). |
+| **[ADR-0002](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0002-pipeline-audio-g711-alaw-soxr-normalizacion.md)** | Pipeline de Audio G.711 A-law 8kHz con Remuestreador soxr HQ | `Aceptada` | 50 pps (160 bytes cada 20 ms), normalización a -1.4 dBFS. |
+| **[ADR-0003](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0003-transcripcion-local-faster-whisper-int8.md)** | Transcripción Local con faster-whisper int8 en CPU/RAM Pool | `Aceptada` | $0 USD/minuto, latencia < 1.4s, acoustic priming de platillos. |
+| **[ADR-0004](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0004-orquestacion-conversacional-llm-gpt4o-mini.md)** | Orquestación Conversacional con OpenAI GPT-4o-mini | `Aceptada` | Inyección dinámica de disponibilidad y blindaje contra prompt attacks. |
+| **[ADR-0005](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0005-auditoria-matematica-deterministica-pedidos.md)** | Auditoría Matemática Determinística de Cuentas y Comandas | `Aceptada` | Prohibición al LLM de hacer aritmética; cálculo determinista en Python. |
+| **[ADR-0006](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0006-estudio-de-voz-web-banco-audio-latencia-cero.md)** | Estudio de Grabación Web (Voice Studio) con Acento Local | `Aceptada` | Banco de 233 audios en RAM; 0ms latencia de síntesis y $0 USD costo. |
+| **[ADR-0007](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0007-seguridad-autenticacion-panel-control.md)** | Autenticación Criptográfica HMAC-SHA256 y Anti-Fuerza Bruta | `Aceptada` | Tokens con salting, rate limiting por IP y expiración periódica. |
+| **[ADR-0008](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0008-despliegue-docker-host-networking.md)** | Despliegue en Docker con Host Networking Mode | `Aceptada` | Eliminación de NAT SIP traversal y acceso directo a interfaces de red. |
+
+#### Herramienta CLI de Gestión (`tools/adr.py`):
+```bash
+# Listar todas las decisiones arquitectónicas
+python tools/adr.py list
+
+# Crear un nuevo registro a partir de la plantilla estándar
+python tools/adr.py new "Migración a PostgreSQL AGE para grafos"
+
+# Auditar consistencia técnica e integridad del índice
+python tools/adr.py audit
+```
+
+---
+
+### 📐 Especificaciones de Contratos Técnicos (Open Spec)
+Ubicadas en [`docs/specs/`](file:///c:/Users/HP/Desktop/Ryu/docs/specs/README.md):
+
+* **OpenAPI 3.1.0:** [`docs/specs/openapi.yaml`](file:///c:/Users/HP/Desktop/Ryu/docs/specs/openapi.yaml) y [`docs/specs/openapi.json`](file:///c:/Users/HP/Desktop/Ryu/docs/specs/openapi.json).
+* **Especificación VoIP / Audio:** [`docs/specs/telephony-spec.yaml`](file:///c:/Users/HP/Desktop/Ryu/docs/specs/telephony-spec.yaml).
+* **Contrato de Comandas:** [`docs/specs/order-contract-spec.yaml`](file:///c:/Users/HP/Desktop/Ryu/docs/specs/order-contract-spec.yaml).
+
+#### Interfaces Vivas en el Servidor:
+* **Swagger UI:** [`http://89.167.43.130:8000/docs`](http://89.167.43.130:8000/docs)
+* **ReDoc:** [`http://89.167.43.130:8000/redoc`](http://89.167.43.130:8000/redoc)
+* **OpenAPI YAML en vivo:** [`http://89.167.43.130:8000/api/openapi.yaml`](http://89.167.43.130:8000/api/openapi.yaml)
+
+#### Comprobación Automatizada de Especificaciones:
+```bash
+# Regenerar OpenAPI sincronizado desde el código fuente
+python tools/export_openapi.py
+
+# Ejecutar suite de pruebas unitarias
+python -m unittest test_specs.py
 ```
 
 ---

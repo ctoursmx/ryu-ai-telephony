@@ -1,0 +1,224 @@
+# ==============================================================================
+# RYU RESTAURANT - ESPECIFICACIÓN DEL CONTRATO DE COMANDAS & PEDIDOS
+# ==============================================================================
+spec_version: "2.1.0"
+standard: "Open Spec - Deterministic Restaurant Order Contract"
+last_updated: "2026-09-13"
+organization: "Restaurante Ryu & Capri Cucina Italiana (Tequila, Jalisco)"
+
+schema_definition:
+  title: "RyuOrderPayload"
+  description: "Estructura canónica de un pedido validado y auditado matemáticamente por el conmutador telefónico o simulador web."
+  type: "object"
+  required:
+    - "order_id"
+    - "created_at"
+    - "channel"
+    - "customer"
+    - "items"
+    - "financials"
+    - "fulfillment"
+    - "status"
+
+  properties:
+    order_id:
+      type: "string"
+      format: "regex"
+      pattern: "^ryu_ord_[0-9]{8}_[0-9]{3,}$"
+      example: "ryu_ord_20260913_042"
+      description: "Identificador unívoco del pedido generado con fecha y correlativo secuencial."
+
+    created_at:
+      type: "string"
+      format: "date-time"
+      example: "2026-09-13T20:30:00-06:00"
+      description: "Marca temporal ISO-8601 con zona horaria de Tequila, Jalisco (America/Mexico_City)."
+
+    channel:
+      type: "string"
+      enum:
+        - "sip_telephony"
+        - "web_simulator"
+        - "pos_manual"
+      example: "sip_telephony"
+      description: "Canal de origen de la comanda."
+
+    customer:
+      type: "object"
+      required:
+        - "phone"
+        - "name"
+      properties:
+        phone:
+          type: "string"
+          pattern: '^\+?[0-9]{10,13}$'
+          example: "+523385261250"
+          description: "Número telefónico del cliente capturado por Caller-ID (SIP FROM)."
+        name:
+          type: "string"
+          minLength: 2
+          example: "Carlos Santana"
+          description: "Nombre o referencia nominal del cliente."
+        delivery_address:
+          type: "string"
+          nullable: true
+          example: "Calle Hidalgo 45, Col. Centro, entre Sixto Gorjón y Ramón Corona"
+          description: "Dirección completa con calles de cruce y referencias."
+        reference_notes:
+          type: "string"
+          nullable: true
+          example: "Casa con zaguán negro y timbre blanco"
+          description: "Puntos de referencia visuales para el repartidor."
+        zone_id:
+          type: "string"
+          example: "tequila_urban"
+          description: "ID de la zona de entrega calculada ('tequila_urban' o zona especial como 'zon_11')."
+
+    items:
+      type: "array"
+      minItems: 1
+      items:
+        type: "object"
+        required:
+          - "dish_id"
+          - "name"
+          - "menu"
+          - "unit_price"
+          - "quantity"
+          - "line_total"
+        properties:
+          dish_id:
+            type: "string"
+            example: "jp_rol_01"
+            description: "Identificador oficial del platillo en menu_ryu.json."
+          name:
+            type: "string"
+            example: "California Especial"
+            description: "Nombre oficial en el catálogo del restaurante."
+          menu:
+            type: "string"
+            enum: ["japanese", "italian", "snacks"]
+            example: "japanese"
+            description: "Menú al que pertenece el platillo."
+          category:
+            type: "string"
+            example: "Rollos Clásicos"
+          unit_price:
+            type: "number"
+            minimum: 0.0
+            example: 120.00
+            description: "Precio unitario oficial en MXN (con IVA incluido)."
+          quantity:
+            type: "integer"
+            minimum: 1
+            example: 2
+            description: "Cantidad solicitada del ítem."
+          line_total:
+            type: "number"
+            minimum: 0.0
+            example: 240.00
+            description: "Multiplicación determinística: unit_price * quantity."
+          customizations:
+            type: "array"
+            items:
+              type: "string"
+            example: ["sin pepino", "aderezo chipotle aparte"]
+            description: "Modificaciones solicitadas por el cliente a la receta estándar."
+          excluded_ingredients:
+            type: "array"
+            items:
+              type: "string"
+            example: ["pepino"]
+            description: "Ingredientes que cocina debe omitir."
+
+    financials:
+      type: "object"
+      required:
+        - "items_subtotal"
+        - "delivery_fee"
+        - "total_amount"
+        - "payment_method"
+      properties:
+        items_subtotal:
+          type: "number"
+          example: 240.00
+          description: "Suma exacta determinística de todos los line_total de items."
+        delivery_fee:
+          type: "number"
+          example: 15.00
+          description: "Tarifa calculada según zona (urbana diurna $0, nocturna $15, foránea $30-$100)."
+        night_surcharge_applied:
+          type: "boolean"
+          example: true
+          description: "True si se aplicó el recargo nocturno de Tequila Centro (después de las 19:00 hrs)."
+        discounts:
+          type: "number"
+          default: 0.00
+          example: 0.00
+          description: "Descuentos aplicados por promociones activas (ej. 3x2 o cupones)."
+        total_amount:
+          type: "number"
+          example: 255.00
+          description: "Fórmula inmutable: items_subtotal + delivery_fee - discounts."
+        currency:
+          type: "string"
+          default: "MXN"
+          example: "MXN"
+        payment_method:
+          type: "string"
+          enum: ["efectivo", "transferencia", "tarjeta_terminal"]
+          example: "efectivo"
+          description: "Método pactado con el cliente durante la llamada."
+        cash_break_amount:
+          type: "number"
+          nullable: true
+          example: 500.00
+          description: "Denominación del billete del cliente para que el repartidor lleve cambio."
+        calculated_change:
+          type: "number"
+          nullable: true
+          example: 245.00
+          description: "Fórmula determinística: cash_break_amount - total_amount."
+
+    fulfillment:
+      type: "object"
+      required:
+        - "service_type"
+      properties:
+        service_type:
+          type: "string"
+          enum: ["domicilio", "recoger_sucursal", "comedor"]
+          example: "domicilio"
+        estimated_prep_minutes:
+          type: "integer"
+          example: 45
+          description: "Tiempo estimado transmitido al cliente (ej. 35 - 50 minutos)."
+        kitchen_notes:
+          type: "string"
+          nullable: true
+          example: "Empacar soya extra y salsa sriracha."
+
+    status:
+      type: "string"
+      enum:
+        - "pending_pos_injection"
+        - "injected_to_pos"
+        - "printed_kitchen"
+        - "dispatched"
+        - "delivered"
+        - "cancelled"
+      example: "pending_pos_injection"
+
+business_invariants:
+  - id: "INV-01"
+    name: "Auditoría Aritmética Determinística en Python"
+    rule: "El LLM tiene prohibido calcular totales, cambios o sumas en texto libre. Toda suma, multiplicación y cálculo de cambio es ejecutada por funciones puras de Python en voice_engine_ryu.py."
+  - id: "INV-02"
+    name: "Precios Oficiales de Catálogo"
+    rule: "Los precios unitarios provienen únicamente de menu_ryu.json y restaurant_state.json. La IA no puede inventar tarifas o descuentos no configurados en el panel."
+  - id: "INV-03"
+    name: "Tarifas de Reparto No Negociables"
+    rule: "Zonas foráneas (El Medineño, San Martín, etc.) tienen tarifas fijas ($30-$100 MXN) que se suman al total sin excepción para envíos a domicilio."
+  - id: "INV-04"
+    name: "Inyección Idempotente en Soft Restaurant"
+    rule: "Toda orden enviada al POS Bridge utiliza order_id como clave de idempotencia. Si la comanda ya fue impresa, se retorna ACK 200 sin duplicar el ticket de cocina."

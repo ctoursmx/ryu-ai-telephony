@@ -1,0 +1,122 @@
+# ==============================================================================
+# RYU RESTAURANT - ESPECIFICACIÓN TÉCNICA DE TELEFONÍA SIP / RTP (VOIP)
+# ==============================================================================
+spec_version: "1.1.0"
+standard: "Open Spec - VoIP & Audio Processing Pipeline"
+last_updated: "2026-09-13"
+organization: "Restaurante Ryu & Capri Cucina Italiana (Tequila, Jalisco)"
+
+trunk_provider:
+  name: "Zadarma"
+  protocol: "SIP v2.0 (RFC 3261)"
+  transport: "UDP"
+  inbound_did: "+52 33 8526 1250"
+  sip_domain: "sip.zadarma.com"
+  sip_port: 5060
+  registration:
+    mode: "SIP REGISTER con digest authentication"
+    refresh_interval_sec: 120
+    status_verification: "SIP 200 OK"
+
+network_topology:
+  container_mode: "host networking (Docker --network host)"
+  nat_traversal: "Symmetric RTP (RFC 4961)"
+  firewall_inbound_ports:
+    sip_signaling: "UDP 5060"
+    rtp_media_range: "UDP 10000 - 20000"
+  latency_target_ms: "< 850 ms (P95 de extremo a extremo)"
+  jitter_tolerance_ms: "40 ms"
+
+audio_pipeline:
+  telephony_codec:
+    name: "G.711 A-law (PCMA)"
+    itu_standard: "ITU-T G.711"
+    sample_rate_hz: 8000
+    channels: 1 # Mono
+    bit_depth: 8
+    bitrate_kbps: 64
+    frame_duration_ms: 20
+    frame_payload_bytes: 160
+    packets_per_second: 50
+    normalization_peak_dbfs: -1.4
+
+  voice_activity_detection:
+    engine: "Energy RMS + WebRTC VAD Mode 2"
+    rms_noise_floor_threshold: 450
+    speech_start_frames: 3 # 60ms acumulados sobre umbral
+    speech_end_silence_sec: 1.2
+    max_turn_duration_sec: 15.0
+    barge_in_enabled: true
+    barge_in_cancellation_delay_ms: 80
+
+  transcription_layer:
+    engine: "faster-whisper (CTranslate2)"
+    model_size: "base"
+    compute_type: "int8"
+    hardware: "CPU local (VPS 89.167.43.130)"
+    execution_context: "In-memory RAM pool"
+    language: "es"
+    beam_size: 1
+    best_of: 1
+    temperature: 0.0
+    acoustic_priming:
+      enabled: true
+      bias_vocabulary:
+        - "Ryu"
+        - "sushi"
+        - "yakimeshi"
+        - "gohan"
+        - "teriyaki"
+        - "tempura"
+        - "kushiages"
+        - "edamames"
+        - "california"
+        - "filadelfia"
+        - "dragon roll"
+        - "boneless"
+        - "hamburguesa"
+        - "papas gajo"
+        - "Medineño"
+        - "San Martín"
+        - "Tequila"
+        - "Capri"
+
+  synthesis_and_playback:
+    hybrid_engine:
+      mode: "Pre-recorded Bank First (Voice Studio), Neural Edge-TTS Fallback"
+      local_voice_bank:
+        storage_format: "Raw G.711 A-law (.alaw) @ 8000Hz"
+        caching: "Pre-loaded in RAM (0ms disk I/O)"
+        clips_count_target: 233
+        playback_latency_ms: 0
+      fallback_neural_tts:
+        service: "Microsoft Edge-TTS"
+        voice_id: "es-MX-DaliaNeural"
+        output_format: "MP3 / transcode a G.711 A-law 8kHz"
+        fallback_latency_ms: 480
+
+call_state_machine:
+  initial_state: "IDLE"
+  states:
+    - name: "IDLE"
+      description: "Esperando señal SIP INVITE del trunk Zadarma"
+    - name: "CALL_INCOMING"
+      description: "Recibido INVITE, enviando SIP 180 Ringing"
+    - name: "CALL_ACCEPTED"
+      description: "Enviado SIP 200 OK con SDP unificado, negociando puerto RTP simétrico"
+    - name: "GREETING"
+      description: "Reproduciendo clip de saludo inicial ('flow_saludo') sin latencia"
+    - name: "LISTENING"
+      description: "Bufferizando paquetes RTP entrantes de 160 bytes cada 20ms con VAD"
+    - name: "TRANSCRIBING"
+      description: "Invocando faster-whisper int8 con el audio capturado"
+    - name: "ORCHESTRATING"
+      description: "GPT-4o-mini procesando intención con catálogo y estado en vivo"
+    - name: "STREAMING_AUDIO"
+      description: "Inyectando paquetes RTP G.711 A-law al socket UDP del cliente"
+    - name: "ORDER_CONFIRMATION"
+      description: "Lectura determinística de cuenta y solicitud de confirmación final"
+    - name: "DISPATCHING"
+      description: "Envío a Telegram, Soft Restaurant y WhatsApp al confirmar comanda"
+    - name: "TERMINATING"
+      description: "Enviado o recibido SIP BYE, limpieza de buffers y liberación de socket"
