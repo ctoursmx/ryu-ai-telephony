@@ -18,6 +18,11 @@ if hasattr(sys.stdout, 'reconfigure'):
         pass
 
 
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
 from proto_service import ProtoService
 import proto.ryu_order_pb2 as order_pb
 import proto.ryu_kag_pb2 as kag_pb

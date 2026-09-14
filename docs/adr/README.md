@@ -18,6 +18,7 @@ Seguimos una versión adaptada del formato **MADR (Markdown Architectural Decisi
 | [**ADR-0006**](0006-estudio-de-voz-web-banco-audio-latencia-cero.md) | Estudio de Grabación Web (Voice Studio) y Banco de Audio Pregrabado en RAM | `Aceptada` | 2026-09-13 | Voz / Optimización |
 | [**ADR-0007**](0007-seguridad-autenticacion-panel-control.md) | Autenticación Híbrida Blindada (HMAC Tokens + Rate Limiting) para /admin | `Aceptada` | 2026-09-11 | Seguridad / Web API |
 | [**ADR-0008**](0008-despliegue-docker-host-networking.md) | Despliegue en Docker con Host Networking para VoIP en Servidor VPS | `Aceptada` | 2026-03-02 | DevOps / Infraestructura |
+| [**ADR-0009**](0009-estrategia-de-fallback-y-latencia-para-el-motor-de-voz.md) | Estrategia de Fallback y Control de Latencia para el Motor de Voz | `Aceptada` | 2026-09-13 | Voz / Resiliencia |
 
 ---
 

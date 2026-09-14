@@ -194,18 +194,24 @@ class InputSanitizer:
                     return True
         return False
 
-def cleanup_temp_audio_files(directory: str = ".", max_age_seconds: int = 600) -> int:
+def cleanup_temp_audio_files(directory: str = "storage/temp", max_age_seconds: int = 600) -> int:
     """
-    Elimina archivos de audio temporales (.mp3) huérfanos generados por TTS
+    Elimina archivos de audio temporales (.mp3, .wav) huérfanos generados por TTS
     con una antigüedad superior a max_age_seconds (10 minutos por defecto).
+    Revisa tanto storage/temp como el directorio especificado.
     """
     deleted_count = 0
     now = time.time()
-    patterns = [
-        os.path.join(directory, "fast_reply_*.mp3"),
-        os.path.join(directory, "response_*.mp3"),
-        os.path.join(directory, "temp_*.wav")
-    ]
+    dirs_to_clean = {directory, "storage/temp", "."}
+    patterns = []
+    for d in dirs_to_clean:
+        if os.path.exists(d):
+            patterns.extend([
+                os.path.join(d, "fast_reply_*.mp3"),
+                os.path.join(d, "response_*.mp3"),
+                os.path.join(d, "temp_*.wav"),
+                os.path.join(d, "temp_*.mp3")
+            ])
     for pattern in patterns:
         for filepath in glob.glob(pattern):
             try:

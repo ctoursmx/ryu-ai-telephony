@@ -39,6 +39,8 @@ ENV/
 *.aac
 *.webm
 *.alaw
+storage/temp/*
+!storage/temp/.gitkeep
 
 # Logs y bases de datos temporales
 *.log

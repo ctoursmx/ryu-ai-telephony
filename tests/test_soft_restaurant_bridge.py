@@ -17,6 +17,11 @@ from datetime import datetime
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
 from soft_restaurant_bridge import (
     generate_ai_priority_ticket,
     generate_station_ticket,
@@ -104,7 +109,7 @@ class TestSoftRestaurantBridge(unittest.TestCase):
         success, msg = bridge.inject_order_and_deduct_inventory(self.sample_order)
 
         # En entorno sin SQL Server activo, success es False y encola en SQLite
-        db_path = os.path.join(os.path.dirname(__file__), "db", "soft_restaurant_offline_queue.db")
+        db_path = os.path.join(PROJECT_ROOT, "db", "soft_restaurant_offline_queue.db")
         self.assertTrue(os.path.exists(db_path))
 
         conn = sqlite3.connect(db_path)
@@ -157,7 +162,7 @@ class TestSoftRestaurantBridge(unittest.TestCase):
 
     def test_05_sql_script_syntax_and_structure(self):
         """Verifica que el archivo T-SQL contenga las tablas, SPs y lógica de descuento de inventario."""
-        sql_path = os.path.join(os.path.dirname(__file__), "db", "soft_restaurant_integration.sql")
+        sql_path = os.path.join(PROJECT_ROOT, "db", "soft_restaurant_integration.sql")
         self.assertTrue(os.path.exists(sql_path))
 
         with open(sql_path, "r", encoding="utf-8") as f:

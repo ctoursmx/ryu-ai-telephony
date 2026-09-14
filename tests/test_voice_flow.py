@@ -4,15 +4,24 @@ import asyncio
 # Fix Windows console UTF-8 output
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+TEMP_DIR = PROJECT_ROOT / "storage" / "temp"
+TEMP_DIR.mkdir(parents=True, exist_ok=True)
+
 from voice_engine_ryu import RyuVoiceAgent
 
 async def main():
     print("--- INICIANDO PRUEBA COMPLETA DEL MOTOR DE VOZ ---")
     agent = RyuVoiceAgent(caller_phone="+52 374 117 2661", caller_name="Cliente Prueba")
     
+    saludo_path = str(TEMP_DIR / "audio_1_saludo.mp3")
     print(f"\nSaludando: {agent.greeting}")
-    await agent.speak(agent.greeting, "audio_1_saludo.mp3")
-    print("Audio generado: audio_1_saludo.mp3")
+    await agent.speak(agent.greeting, saludo_path)
+    print(f"Audio generado: {saludo_path}")
 
     turns = [
         "hola, quiero pedir unas gyosas",
@@ -25,7 +34,7 @@ async def main():
         print(f"\n[Cliente]: {user_text}")
         reply = agent.think_and_respond(user_text)
         print(f"[RyuBot]: {reply}")
-        audio_file = f"audio_{i}_respuesta.mp3"
+        audio_file = str(TEMP_DIR / f"audio_{i}_respuesta.mp3")
         await agent.speak(reply, audio_file)
         print(f"[Audio generado]: {audio_file}")
 

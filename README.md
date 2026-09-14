@@ -38,18 +38,28 @@ flowchart TD
 │   ├── adr/                             # Architecture Decision Records (Estándar MADR)
 │   │   ├── README.md                    # Índice maestro de decisiones arquitectónicas
 │   │   ├── template.md                  # Plantilla estándar MADR
-│   │   └── 0001..0008-*.md              # Registros de decisión técnica (VoIP, STT, LLM, etc.)
+│   │   └── 0001..0009-*.md              # Registros de decisión técnica (VoIP, STT, Fallback, etc.)
 │   └── specs/                           # Especificaciones formales Open Spec
 │       ├── openapi.yaml                 # Especificación OpenAPI 3.1.0 (formato YAML)
 │       ├── openapi.json                 # Especificación OpenAPI 3.1.0 (formato JSON)
 │       ├── telephony-spec.yaml          # Open Spec: VoIP SIP/RTP, G.711 A-law y VAD
 │       ├── order-contract-spec.yaml     # Open Spec: Contrato determinístico de comandas
 │       └── README.md                    # Guía de especificaciones y sincronización
+├── storage/                             # Almacenamiento desacoplado de la raíz
+│   └── temp/                            # Búfer de audios generados en caliente (.gitkeep)
+├── tests/                               # Suite centralizada de pruebas y simulaciones
+│   ├── run_smoke_tests.py               # Smoke test ejecutable (sintaxis, FSM y specs)
+│   ├── test_specs.py                    # Pruebas unitarias de integridad Open Spec / ADR
+│   ├── test_security_guard.py           # Pruebas de rate limit anti-spam y watchdog
+│   ├── test_soft_restaurant_bridge.py   # Pruebas de despacho POS y cola SQLite offline
+│   └── simulate_*.py                    # Simuladores de carga y escenarios conversacionales
 ├── tools/                               # Herramientas de automatización y CLI
 │   ├── adr.py                           # CLI gestor de ADRs (list, new, audit)
 │   └── export_openapi.py                # Exportador sincronizado de esquemas OpenAPI
+├── .github/
+│   └── workflows/
+│       └── ci.yml                       # CI automatizado en GitHub Actions (Smoke tests)
 ├── schemas_ryu.py                       # Modelos Pydantic formales para OpenAPI 3.1
-├── test_specs.py                        # Suite de pruebas automatizadas para ADR y Open Spec
 ├── server_telephony_ryu.py              # API FastAPI del conmutador, Voice Studio y panel
 ├── sip_telephony_service.py             # Servicio de telefonía SIP VoIP en tiempo real
 ├── voice_engine_ryu.py                  # Motor conversacional, LLM, VAD y despacho
@@ -79,8 +89,9 @@ Ubicados en [`docs/adr/`](file:///c:/Users/HP/Desktop/Ryu/docs/adr/README.md):
 | **[ADR-0004](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0004-orquestacion-conversacional-llm-gpt4o-mini.md)** | Orquestación Conversacional con OpenAI GPT-4o-mini | `Aceptada` | Inyección dinámica de disponibilidad y blindaje contra prompt attacks. |
 | **[ADR-0005](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0005-auditoria-matematica-deterministica-pedidos.md)** | Auditoría Matemática Determinística de Cuentas y Comandas | `Aceptada` | Prohibición al LLM de hacer aritmética; cálculo determinista en Python. |
 | **[ADR-0006](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0006-estudio-de-voz-web-banco-audio-latencia-cero.md)** | Estudio de Grabación Web (Voice Studio) con Acento Local | `Aceptada` | Banco de 233 audios en RAM; 0ms latencia de síntesis y $0 USD costo. |
-| **[ADR-0007](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0007-seguridad-autenticacion-panel-control.md)** | Autenticación Criptográfica HMAC-SHA256 y Anti-Fuerza Bruta | `Aceptada` | Tokens con salting, rate limiting por IP y expiración periódica. |
-| **[ADR-0008](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0008-despliegue-docker-host-networking.md)** | Despliegue en Docker con Host Networking Mode | `Aceptada` | Eliminación de NAT SIP traversal y acceso directo a interfaces de red. |
+| [**ADR-0007**](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0007-seguridad-autenticacion-panel-control.md) | Autenticación Criptográfica HMAC-SHA256 y Anti-Fuerza Bruta | `Aceptada` | Tokens con salting, rate limiting por IP y expiración periódica. |
+| [**ADR-0008**](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0008-despliegue-docker-host-networking.md) | Despliegue en Docker con Host Networking Mode | `Aceptada` | Eliminación de NAT SIP traversal y acceso directo a interfaces de red. |
+| [**ADR-0009**](file:///c:/Users/HP/Desktop/Ryu/docs/adr/0009-estrategia-de-fallback-y-latencia-para-el-motor-de-voz.md) | Estrategia de Fallback y Control de Latencia para el Motor de Voz | `Aceptada` | Límite de 800ms para voz clonada, circuit breaker y fallback a frases de espera / Edge-TTS. |
 
 #### Herramienta CLI de Gestión (`tools/adr.py`):
 ```bash

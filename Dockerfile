@@ -37,8 +37,8 @@ RUN python -c "from faster_whisper import WhisperModel; print('Pre-descargando m
 # 6. Copiar el código fuente y archivos de configuración
 COPY . .
 
-# 7. Crear directorio para logs persistentes
-RUN mkdir -p /app/logs
+# 7. Crear directorios para logs y almacenamiento temporal
+RUN mkdir -p /app/logs /app/storage/temp /app/audio_clips
 
 # 8. Exponer puertos estándar de SIP y API
 EXPOSE 5060/udp

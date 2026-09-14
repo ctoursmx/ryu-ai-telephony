@@ -344,12 +344,15 @@ async def fast_chat(request: Request):
     # 3. GPT-4o-mini responde con el menú oficial y reglas de presupuesto
     response_text = agent.think_and_respond(user_text)
     
-    # 4. Síntesis instantánea con Edge-TTS
+    # 4. Síntesis instantánea con Edge-TTS en storage/temp/
     audio_filename = f"fast_reply_{session_id}_{int(time.time() * 1000)}.mp3"
-    await agent.speak(response_text, audio_filename)
+    temp_storage = Path(__file__).parent / "storage" / "temp"
+    temp_storage.mkdir(parents=True, exist_ok=True)
+    audio_filepath = str(temp_storage / audio_filename)
+    await agent.speak(response_text, audio_filepath)
     
     # 5. Mantenimiento automático de disco (elimina audios huérfanos > 5 min)
-    cleanup_temp_audio_files(max_age_seconds=300)
+    cleanup_temp_audio_files(directory=str(temp_storage), max_age_seconds=300)
     
     total_time = round((time.time() - t0) * 1000)
     print(f">>> [Llamada {session_id[:12]}] [Latencia: {total_time} ms] Cliente: '{user_text}' -> RyuBot: '{response_text[:30]}...'")
@@ -365,6 +368,9 @@ async def fast_chat(request: Request):
 
 @app.get("/audio/{filename}", tags=["Audio & Simulador Web"], summary="Descarga o streaming de clip de audio")
 def get_audio(filename: str):
+    temp_file = Path(__file__).parent / "storage" / "temp" / filename
+    if temp_file.exists():
+        return FileResponse(str(temp_file), media_type="audio/mpeg")
     if os.path.exists(filename):
         return FileResponse(filename, media_type="audio/mpeg")
     return JSONResponse(status_code=404, content={"error": "Audio no encontrado"})
