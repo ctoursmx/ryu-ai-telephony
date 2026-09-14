@@ -17,8 +17,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
+from fastapi import FastAPI, Request, UploadFile, File, Form
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse, Response
+import voice_studio_backend
 from voice_engine_ryu import (
     RyuVoiceAgent,
     load_restaurant_state,
@@ -1128,6 +1129,60 @@ def get_kitchen_prompt_preview(request: Request):
         return JSONResponse(status_code=401, content={"error": "No autorizado para ver el prompt interno."})
     prompt = build_kitchen_dynamic_prompt()
     return {"prompt": prompt}
+
+
+# ======================================================================
+# RUTAS DEL ESTUDIO DE GRABACIÓN DE VOZ (VOICE STUDIO)
+# ======================================================================
+
+@app.get("/api/voice-studio/manifest")
+def api_voice_studio_manifest():
+    """Retorna el catálogo completo con el estado de grabación de cada ítem"""
+    return voice_studio_backend.get_manifest_data()
+
+@app.post("/api/voice-studio/upload")
+async def api_voice_studio_upload(
+    request: Request,
+    item_id: str = Form(...),
+    audio_file: UploadFile = File(...)
+):
+    """Recibe la grabación del navegador y la transcodifica a G.711 A-law 8000Hz"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para grabar voz."})
+
+    try:
+        raw_audio = await audio_file.read()
+        result = voice_studio_backend.save_item_recording(item_id, raw_audio)
+        return result
+    except Exception as e:
+        return JSONResponse(status_code=400, content={"error": str(e)})
+
+@app.get("/api/voice-studio/audio/{item_id}")
+def api_voice_studio_audio(item_id: str):
+    """Reproduce el audio WAV de alta fidelidad en el navegador"""
+    wav_path = voice_studio_backend.AUDIO_DIR / f"{item_id}.wav"
+    if not wav_path.exists():
+        return JSONResponse(status_code=404, content={"error": "Audio no encontrado."})
+    return FileResponse(str(wav_path), media_type="audio/wav")
+
+@app.delete("/api/voice-studio/audio/{item_id}")
+def api_voice_studio_delete(item_id: str, request: Request):
+    """Elimina una grabación para re-grabarla"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para eliminar audios."})
+    return voice_studio_backend.delete_item_recording(item_id)
+
+@app.post("/api/voice-studio/test-preview")
+async def api_voice_studio_preview(request: Request):
+    """Concatena clips seleccionados para escuchar la orden completa"""
+    data = await request.json()
+    item_ids = data.get("item_ids", [])
+    try:
+        wav_bytes = voice_studio_backend.concatenate_clips_wav(item_ids)
+        return Response(content=wav_bytes, media_type="audio/wav")
+    except Exception as e:
+        return JSONResponse(status_code=400, content={"error": str(e)})
+
 
 if __name__ == "__main__":
     import uvicorn

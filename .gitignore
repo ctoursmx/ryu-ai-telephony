@@ -38,6 +38,7 @@ ENV/
 *.flac
 *.aac
 *.webm
+*.alaw
 
 # Logs y bases de datos temporales
 *.log

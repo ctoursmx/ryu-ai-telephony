@@ -192,6 +192,13 @@
                     <div id="kpiPromoStatus" class="text-xs font-bold text-emerald-400">Activa</div>
                 </div>
             </div>
+            <div class="glass-card p-3 col-span-2 sm:col-span-1 flex items-center gap-3 cursor-pointer hover:border-gray-600 transition" onclick="switchTab('voice_studio')">
+                <div class="w-10 h-10 rounded-xl bg-indigo-950/40 text-indigo-400 border border-indigo-800/40 flex items-center justify-center text-lg">🎙️</div>
+                <div>
+                    <div class="text-[11px] text-gray-400 font-medium">Estudio de Voz</div>
+                    <div id="kpiVoiceStudio" class="text-xs font-bold text-indigo-400">0 / 233 <span class="text-[10px] text-gray-400 font-normal">(0%)</span></div>
+                </div>
+            </div>
         </div>
 
         <!-- MAIN NAVIGATION TABS (Horizontal Scrollable on Mobile) -->
@@ -228,6 +235,11 @@
                 <span>🛵</span>
                 <span>Condiciones de Entrega</span>
                 <span id="tabCount_delivery" class="text-[11px] px-2 py-0.2 bg-blue-950/60 text-blue-400 border border-blue-800/60 rounded-full font-mono font-semibold">17</span>
+            </button>
+            <button onclick="switchTab('voice_studio')" id="tabBtn_voice_studio" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl border border-transparent whitespace-nowrap transition text-gray-400 hover:text-white">
+                <span>🎙️</span>
+                <span>Estudio de Voz</span>
+                <span id="tabCount_voice_studio" class="text-[11px] px-2 py-0.2 bg-purple-950/60 text-purple-400 border border-purple-800/60 rounded-full font-mono font-semibold">0/233</span>
             </button>
             <button onclick="switchTab('preview')" id="tabBtn_preview" class="nav-tab flex items-center gap-2 px-4 py-2.5 rounded-xl border border-transparent whitespace-nowrap transition text-gray-400 hover:text-white">
                 <span>👁️</span>
@@ -726,6 +738,220 @@
             </div>
         </section>
 
+        <!-- ================================================================= -->
+        <!-- SECCIÓN 9: ESTUDIO DE GRABACIÓN DE VOZ (VOICE STUDIO) -->
+        <!-- ================================================================= -->
+        <section id="tabContent_voice_studio" class="space-y-4 hidden">
+            <!-- Header Card -->
+            <div class="glass-card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-l-4 border-l-purple-500">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl">🎙️</span>
+                        <h3 class="font-bold text-white text-base sm:text-lg">Estudio de Grabación Web (Voz Oficial Ryu)</h3>
+                        <span id="voiceStudioStatusBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono">LATENCIA 0MS</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">Pregraba tu voz para los platillos, el flujo de llamadas y números. El sistema los convertirá en audio G.711 A-law sin costo de API ($0.00 USD) y con latencia instantánea.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="loadVoiceStudioData()" title="Refrescar catálogo" class="p-2.5 rounded-xl bg-[#1e2533] hover:bg-[#2a3447] text-gray-300 transition text-xs flex items-center gap-1.5 font-medium">
+                        <i class="fa-solid fa-arrows-rotate" id="voiceStudioRefreshIcon"></i>
+                        <span class="hidden sm:inline">Actualizar</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resumen de Progreso y Badges por Categoría -->
+            <div class="glass-card p-4 sm:p-5 space-y-3">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="flex items-center gap-3">
+                        <div class="text-2xl font-black text-white font-mono" id="vsTotalProgressText">0 / 233</div>
+                        <span class="text-xs text-gray-400 font-medium">clips de voz grabados</span>
+                        <span id="vsPercentBadge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-mono">0.0%</span>
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        <span id="vsPendingCount" class="font-bold text-amber-400">233</span> frases pendientes por grabar
+                    </div>
+                </div>
+
+                <!-- Barra de Progreso Dinámica -->
+                <div class="w-full bg-[#0c0e12] rounded-full h-3.5 border border-[#232936] overflow-hidden p-0.5">
+                    <div id="vsProgressBar" class="bg-gradient-to-r from-red-600 via-purple-600 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+
+                <!-- Contadores por Categoría -->
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-2 border-t border-[#232936] text-xs">
+                    <div class="bg-[#0e121a] p-2.5 rounded-xl border border-[#222938] flex items-center justify-between cursor-pointer hover:border-purple-500 transition" onclick="filterVoiceStudioCategory('flow')">
+                        <span class="text-gray-300 font-medium flex items-center gap-1.5"><span>📞</span> Flujo</span>
+                        <span id="vsCount_flow" class="font-bold text-white font-mono">0 / 25</span>
+                    </div>
+                    <div class="bg-[#0e121a] p-2.5 rounded-xl border border-[#222938] flex items-center justify-between cursor-pointer hover:border-purple-500 transition" onclick="filterVoiceStudioCategory('japanese')">
+                        <span class="text-gray-300 font-medium flex items-center gap-1.5"><span>🍣</span> Japonés</span>
+                        <span id="vsCount_japanese" class="font-bold text-white font-mono">0 / 100</span>
+                    </div>
+                    <div class="bg-[#0e121a] p-2.5 rounded-xl border border-[#222938] flex items-center justify-between cursor-pointer hover:border-purple-500 transition" onclick="filterVoiceStudioCategory('snacks')">
+                        <span class="text-gray-300 font-medium flex items-center gap-1.5"><span>🍔</span> Snacks</span>
+                        <span id="vsCount_snacks" class="font-bold text-white font-mono">0 / 58</span>
+                    </div>
+                    <div class="bg-[#0e121a] p-2.5 rounded-xl border border-[#222938] flex items-center justify-between cursor-pointer hover:border-purple-500 transition" onclick="filterVoiceStudioCategory('italian')">
+                        <span class="text-gray-300 font-medium flex items-center gap-1.5"><span>🍕</span> Italiano</span>
+                        <span id="vsCount_italian" class="font-bold text-white font-mono">0 / 18</span>
+                    </div>
+                    <div class="bg-[#0e121a] p-2.5 rounded-xl border border-[#222938] flex items-center justify-between cursor-pointer hover:border-purple-500 transition" onclick="filterVoiceStudioCategory('numbers')">
+                        <span class="text-gray-300 font-medium flex items-center gap-1.5"><span>🔢</span> Números</span>
+                        <span id="vsCount_numbers" class="font-bold text-white font-mono">0 / 32</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- MODO TELEPROMPTER / GRABACIÓN RÁPIDA -->
+            <!-- ============================================================= -->
+            <div class="glass-card p-4 sm:p-6 border-2 border-purple-900/60 shadow-2xl relative">
+                <!-- Barra de Navegación del Teleprompter -->
+                <div class="flex items-center justify-between pb-3 border-b border-[#232936] text-xs">
+                    <div class="flex items-center gap-2">
+                        <span id="vsCurrentCatBadge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-950 text-red-300 border border-red-800">
+                            🍣 Menú Japonés
+                        </span>
+                        <span id="vsCurrentItemIndex" class="text-gray-400 font-mono">Ítem 1 de 233</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="navigateStudioItem(-1)" class="p-1.5 px-3 rounded-lg bg-[#1a202c] hover:bg-[#263042] text-gray-300 transition text-xs flex items-center gap-1">
+                            <i class="fa-solid fa-chevron-left"></i> <span class="hidden sm:inline">Anterior</span>
+                        </button>
+                        <button onclick="navigateStudioItem(1)" class="p-1.5 px-3 rounded-lg bg-[#1a202c] hover:bg-[#263042] text-gray-300 transition text-xs flex items-center gap-1">
+                            <span class="hidden sm:inline">Siguiente</span> <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <button onclick="jumpToNextPendingItem()" class="p-1.5 px-3 rounded-lg bg-purple-950/60 hover:bg-purple-900/80 border border-purple-800/60 text-purple-300 transition text-xs flex items-center gap-1 font-semibold">
+                            <i class="fa-solid fa-forward"></i> <span class="hidden sm:inline">Próximo Pendiente</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Caja Gigante de Lectura (Teleprompter) -->
+                <div class="my-4 p-5 sm:p-7 bg-[#0a0d12] rounded-2xl border border-[#1f2633] text-center space-y-2">
+                    <div class="text-xs uppercase tracking-wider text-gray-500 font-semibold" id="vsPromptTitle">Cargando frase...</div>
+                    <div class="text-xl sm:text-3xl font-black text-white tracking-wide leading-relaxed" id="vsPromptText">
+                        Presiona Actualizar para cargar el catálogo
+                    </div>
+                    <div class="text-xs text-amber-400/90 font-medium pt-2 flex items-center justify-center gap-1.5" id="vsPromptTip">
+                        <i class="fa-regular fa-lightbulb"></i> <span>Tono natural, claro y sin prisas.</span>
+                    </div>
+                </div>
+
+                <!-- Controles de Grabación de Audio -->
+                <div class="flex flex-col items-center justify-center space-y-3">
+                    <div class="flex items-center gap-3">
+                        <span id="vsItemStatusBadge" class="text-xs font-semibold px-3 py-1 rounded-full bg-red-950/80 text-red-400 border border-red-800">
+                            🔴 PENDIENTE DE GRABACIÓN
+                        </span>
+                        <span id="vsRecordTimer" class="font-mono text-base font-bold text-red-400 hidden">00:00</span>
+                    </div>
+
+                    <!-- Canvas de Onda de Sonido en Tiempo Real -->
+                    <canvas id="vsWaveCanvas" width="360" height="48" class="w-full max-w-sm h-12 bg-[#0a0d12] rounded-xl border border-[#1f2633] hidden"></canvas>
+
+                    <!-- Botón Gigante de Micrófono -->
+                    <div class="flex items-center gap-4 pt-1">
+                        <button id="vsRecordBtn" onclick="toggleRecording()" class="w-20 h-20 rounded-full bg-red-600 hover:bg-red-500 text-white text-2xl shadow-lg shadow-red-600/40 flex items-center justify-center transition-transform active:scale-95">
+                            <i class="fa-solid fa-microphone" id="vsRecordBtnIcon"></i>
+                        </button>
+                    </div>
+                    <p class="text-[11px] text-gray-500" id="vsRecordHelpText">Toca el micrófono para comenzar a grabar (o presiona Espacio en tu teclado)</p>
+
+                    <!-- Controles de Revisión y Guardado (Aparecen al terminar una toma) -->
+                    <div id="vsReviewControls" class="w-full max-w-md bg-[#0e121a] p-4 rounded-2xl border border-[#232a3b] space-y-3 hidden">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-300 font-semibold flex items-center gap-1.5">
+                                <i class="fa-solid fa-headphones text-purple-400"></i> Escucha tu grabación:
+                            </span>
+                            <span id="vsRecordedDuration" class="text-xs font-mono text-emerald-400">0.0s</span>
+                        </div>
+                        
+                        <audio id="vsAudioPreview" controls class="w-full h-10 rounded-lg outline-none"></audio>
+                        
+                        <div class="flex items-center gap-2 pt-1">
+                            <button onclick="discardCurrentRecording()" class="flex-1 py-2.5 rounded-xl bg-[#1b212d] hover:bg-[#252e3e] text-gray-300 text-xs font-medium transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-arrow-rotate-left"></i> Volver a grabar
+                            </button>
+                            <button onclick="saveAndAdvanceStudio()" id="vsSaveNextBtn" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-600/30">
+                                <i class="fa-solid fa-check"></i> Guardar y Siguiente ➡️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reproductor de Audio Existente (Si el ítem ya fue grabado previamente) -->
+                    <div id="vsExistingPlayerBox" class="w-full max-w-md bg-[#0e121a] p-3.5 rounded-2xl border border-[#232a3b] space-y-2 hidden">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-emerald-400 font-medium flex items-center gap-1.5">
+                                <i class="fa-solid fa-circle-check"></i> Grabación activa en servidor (<span id="vsExistingDuration">0.0s</span>)
+                            </span>
+                            <button onclick="deleteCurrentStudioItem()" class="text-red-400 hover:text-red-300 text-[11px] flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i> Borrar
+                            </button>
+                        </div>
+                        <audio id="vsExistingAudio" controls class="w-full h-9 rounded-lg outline-none"></audio>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================= -->
+            <!-- DIRECTORIO COMPLETO Y BUSCADOR DE ELEMENTOS -->
+            <!-- ============================================================= -->
+            <div class="glass-card p-4 sm:p-5 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h4 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-list text-purple-400"></i> Catálogo Completo de Grabaciones
+                        </h4>
+                        <p class="text-xs text-gray-400">Busca cualquier platillo o frase para escuchar su audio o volverlo a grabar.</p>
+                    </div>
+
+                    <!-- Buscador en tiempo real -->
+                    <div class="relative w-full sm:w-72">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 text-xs">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input type="text" id="vsSearchInput" oninput="renderVoiceStudioDirectory()" placeholder="Buscar platillo o frase..." class="w-full pl-8 pr-4 py-2 bg-[#0a0d12] border border-[#232936] rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500">
+                    </div>
+                </div>
+
+                <!-- Filtros por Categoría y Estado -->
+                <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                    <span class="text-gray-400 font-medium">Categoría:</span>
+                    <button class="px-3 py-1 rounded-lg bg-purple-600 text-white font-semibold transition vs-cat-filter" data-cat="all" onclick="setStudioFilterCategory('all', this)">Todos</button>
+                    <button class="px-3 py-1 rounded-lg bg-[#141820] text-gray-400 border border-[#232936] hover:text-white transition vs-cat-filter" data-cat="flow" onclick="setStudioFilterCategory('flow', this)">📞 Flujo</button>
+                    <button class="px-3 py-1 rounded-lg bg-[#141820] text-gray-400 border border-[#232936] hover:text-white transition vs-cat-filter" data-cat="japanese" onclick="setStudioFilterCategory('japanese', this)">🍣 Japonés</button>
+                    <button class="px-3 py-1 rounded-lg bg-[#141820] text-gray-400 border border-[#232936] hover:text-white transition vs-cat-filter" data-cat="snacks" onclick="setStudioFilterCategory('snacks', this)">🍔 Snacks</button>
+                    <button class="px-3 py-1 rounded-lg bg-[#141820] text-gray-400 border border-[#232936] hover:text-white transition vs-cat-filter" data-cat="italian" onclick="setStudioFilterCategory('italian', this)">🍕 Italiano</button>
+                    <button class="px-3 py-1 rounded-lg bg-[#141820] text-gray-400 border border-[#232936] hover:text-white transition vs-cat-filter" data-cat="numbers" onclick="setStudioFilterCategory('numbers', this)">🔢 Números</button>
+
+                    <span class="text-gray-400 font-medium ml-auto">Estado:</span>
+                    <button class="px-3 py-1 rounded-lg bg-gray-800 text-white font-semibold transition vs-status-filter" data-status="all" onclick="setStudioFilterStatus('all', this)">Todos</button>
+                    <button class="px-3 py-1 rounded-lg bg-[#141820] text-amber-400 border border-[#232936] hover:text-amber-300 transition vs-status-filter" data-status="pending" onclick="setStudioFilterStatus('pending', this)">🔴 Pendientes</button>
+                    <button class="px-3 py-1 rounded-lg bg-[#141820] text-emerald-400 border border-[#232936] hover:text-emerald-300 transition vs-status-filter" data-status="recorded" onclick="setStudioFilterStatus('recorded', this)">🟢 Grabados</button>
+                </div>
+
+                <!-- Tabla de Elementos -->
+                <div class="overflow-x-auto rounded-xl border border-[#232936]">
+                    <table class="w-full text-left text-xs text-gray-300">
+                        <thead class="bg-[#0e121a] text-gray-400 uppercase tracking-wider text-[10px] border-b border-[#232936]">
+                            <tr>
+                                <th class="py-3 px-3">Ítem / Platillo</th>
+                                <th class="py-3 px-3">Texto a Pronunciar</th>
+                                <th class="py-3 px-2 text-center">Estado</th>
+                                <th class="py-3 px-2 text-center">Duración</th>
+                                <th class="py-3 px-3 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vsDirectoryTableBody" class="divide-y divide-[#1c2230]">
+                            <!-- Rellenado dinámicamente con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- ===================================================================== -->
@@ -1126,7 +1352,14 @@
                     console.warn('Error cargando condiciones de entrega:', delivErr);
                 }
 
-                // 6. Monitor IA
+                // 6. Estudio de Voz (Estadísticas y KPI)
+                try {
+                    await loadVoiceStudioData();
+                } catch (vsErr) {
+                    console.warn('Error cargando datos de Voice Studio:', vsErr);
+                }
+
+                // 7. Monitor IA
                 updatePromptPreview();
 
             } catch (err) {
@@ -2170,6 +2403,580 @@
         }
 
         // =====================================================================
+        // CONTROLADOR DEL ESTUDIO DE GRABACIÓN DE VOZ (VOICE STUDIO)
+        // =====================================================================
+        let voiceStudioManifest = null;
+        let vsCurrentIndex = 0;
+        let vsSelectedCategory = 'all';
+        let vsSelectedStatus = 'all';
+        let vsMediaRecorder = null;
+        let vsAudioChunks = [];
+        let vsIsRecording = false;
+        let vsRecordStartTime = 0;
+        let vsRecordTimerInterval = null;
+        let vsCurrentRecordedBlob = null;
+        let vsAudioContext = null;
+        let vsAnalyser = null;
+        let vsAnimFrameId = null;
+        let vsAudioStream = null;
+
+        async function loadVoiceStudioData() {
+            const spin = document.getElementById('voiceStudioRefreshIcon');
+            if (spin) spin.classList.add('fa-spin');
+
+            try {
+                const res = await fetch('/api/voice-studio/manifest');
+                if (!res.ok) throw new Error('Error al obtener manifiesto');
+                voiceStudioManifest = await res.json();
+                
+                renderVoiceStudioStats();
+                renderTeleprompterItem(vsCurrentIndex);
+                renderVoiceStudioDirectory();
+            } catch (err) {
+                console.error('Error cargando voice studio:', err);
+                showToast('Error al conectar con el Estudio de Voz', true);
+            } finally {
+                if (spin) setTimeout(() => spin.classList.remove('fa-spin'), 500);
+            }
+        }
+
+        function renderVoiceStudioStats() {
+            if (!voiceStudioManifest) return;
+            const items = voiceStudioManifest.items || [];
+            const total = items.length;
+            const recorded = items.filter(x => x.status === 'recorded').length;
+            const pending = total - recorded;
+            const pct = total > 0 ? ((recorded / total) * 100).toFixed(1) : 0;
+
+            const totalProgressEl = document.getElementById('vsTotalProgressText');
+            if (totalProgressEl) totalProgressEl.innerText = `${recorded} / ${total}`;
+
+            const percentBadgeEl = document.getElementById('vsPercentBadge');
+            if (percentBadgeEl) percentBadgeEl.innerText = `${pct}%`;
+
+            const pendingCountEl = document.getElementById('vsPendingCount');
+            if (pendingCountEl) pendingCountEl.innerText = pending;
+
+            const progressBarEl = document.getElementById('vsProgressBar');
+            if (progressBarEl) progressBarEl.style.width = `${pct}%`;
+
+            // Top navbar KPI and Tab badge
+            const kpiVoice = document.getElementById('kpiVoiceStudio');
+            if (kpiVoice) kpiVoice.innerHTML = `${recorded} / ${total} <span class="text-[10px] text-gray-400 font-normal">(${pct}%)</span>`;
+
+            const tabCountVoice = document.getElementById('tabCount_voice_studio');
+            if (tabCountVoice) tabCountVoice.innerText = `${recorded}/${total}`;
+
+            // Category counts
+            const cats = ['flow', 'japanese', 'snacks', 'italian', 'numbers'];
+            cats.forEach(c => {
+                const cItems = items.filter(x => x.category === c);
+                const cRec = cItems.filter(x => x.status === 'recorded').length;
+                const el = document.getElementById(`vsCount_${c}`);
+                if (el) el.innerText = `${cRec} / ${cItems.length}`;
+            });
+        }
+
+        function renderTeleprompterItem(index) {
+            if (!voiceStudioManifest || !voiceStudioManifest.items || voiceStudioManifest.items.length === 0) return;
+            const items = voiceStudioManifest.items;
+            
+            if (index < 0) index = 0;
+            if (index >= items.length) index = items.length - 1;
+            vsCurrentIndex = index;
+            const item = items[vsCurrentIndex];
+
+            // Category badge
+            const catBadge = document.getElementById('vsCurrentCatBadge');
+            const catNames = {
+                'flow': '📞 Frase de Flujo Telefónico',
+                'japanese': '🍣 Menú Japonés',
+                'snacks': '🍔 Menú Snacks',
+                'italian': '🍕 Menú Italiano',
+                'numbers': '🔢 Cantidad / Número'
+            };
+            if (catBadge) {
+                catBadge.innerText = catNames[item.category] || item.category;
+                catBadge.className = `px-2.5 py-1 rounded-full text-xs font-semibold ${
+                    item.category === 'flow' ? 'bg-blue-950 text-blue-300 border border-blue-800' :
+                    item.category === 'japanese' ? 'bg-red-950 text-red-300 border border-red-800' :
+                    item.category === 'snacks' ? 'bg-amber-950 text-amber-300 border border-amber-800' :
+                    item.category === 'italian' ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' :
+                    'bg-purple-950 text-purple-300 border border-purple-800'
+                }`;
+            }
+
+            const itemIndexEl = document.getElementById('vsCurrentItemIndex');
+            if (itemIndexEl) itemIndexEl.innerText = `Ítem ${vsCurrentIndex + 1} de ${items.length}`;
+
+            const promptTitleEl = document.getElementById('vsPromptTitle');
+            if (promptTitleEl) promptTitleEl.innerText = item.title;
+
+            const promptTextEl = document.getElementById('vsPromptText');
+            if (promptTextEl) promptTextEl.innerText = item.prompt_text;
+
+            const promptTipEl = document.getElementById('vsPromptTip');
+            if (promptTipEl) {
+                promptTipEl.innerHTML = `<i class="fa-regular fa-lightbulb"></i> <span>${escapeHtml(item.phonetic_tip || 'Pronunciar con tono natural y amable')}</span>`;
+            }
+
+            // Status Badge
+            const statusBadgeEl = document.getElementById('vsItemStatusBadge');
+            const isRecorded = item.status === 'recorded';
+            if (statusBadgeEl) {
+                if (isRecorded) {
+                    statusBadgeEl.className = 'text-xs font-semibold px-3 py-1 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800 flex items-center gap-1.5';
+                    statusBadgeEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> 🟢 GRABADO (${item.duration_sec || 0}s)`;
+                } else {
+                    statusBadgeEl.className = 'text-xs font-semibold px-3 py-1 rounded-full bg-red-950/80 text-red-400 border border-red-800 flex items-center gap-1.5';
+                    statusBadgeEl.innerHTML = `<i class="fa-solid fa-circle-dot"></i> 🔴 PENDIENTE DE GRABACIÓN`;
+                }
+            }
+
+            // Existing player
+            const existingBox = document.getElementById('vsExistingPlayerBox');
+            const existingAudio = document.getElementById('vsExistingAudio');
+            const existingDuration = document.getElementById('vsExistingDuration');
+            if (isRecorded) {
+                if (existingBox) existingBox.classList.remove('hidden');
+                if (existingDuration) existingDuration.innerText = `${item.duration_sec || 0}s`;
+                if (existingAudio) {
+                    existingAudio.src = `/api/voice-studio/audio/${item.id}?t=${Date.now()}`;
+                }
+            } else {
+                if (existingBox) existingBox.classList.add('hidden');
+                if (existingAudio) existingAudio.src = '';
+            }
+
+            // Review controls reset
+            discardCurrentRecording();
+        }
+
+        function navigateStudioItem(delta) {
+            renderTeleprompterItem(vsCurrentIndex + delta);
+        }
+
+        function jumpToNextPendingItem() {
+            if (!voiceStudioManifest || !voiceStudioManifest.items) return;
+            const items = voiceStudioManifest.items;
+            for (let i = vsCurrentIndex + 1; i < items.length; i++) {
+                if (items[i].status !== 'recorded') {
+                    renderTeleprompterItem(i);
+                    return;
+                }
+            }
+            for (let i = 0; i <= vsCurrentIndex; i++) {
+                if (items[i].status !== 'recorded') {
+                    renderTeleprompterItem(i);
+                    return;
+                }
+            }
+            showToast('🎉 ¡Felicidades! Todos los elementos ya han sido grabados.');
+        }
+
+        function filterVoiceStudioCategory(cat) {
+            const btn = document.querySelector(`.vs-cat-filter[data-cat="${cat}"]`);
+            if (btn) setStudioFilterCategory(cat, btn);
+            if (voiceStudioManifest && voiceStudioManifest.items) {
+                const idx = voiceStudioManifest.items.findIndex(x => x.category === cat);
+                if (idx !== -1) renderTeleprompterItem(idx);
+            }
+        }
+
+        function setStudioFilterCategory(cat, btnEl) {
+            vsSelectedCategory = cat;
+            document.querySelectorAll('.vs-cat-filter').forEach(b => {
+                b.className = 'px-3 py-1 rounded-lg bg-[#141820] text-gray-400 border border-[#232936] hover:text-white transition vs-cat-filter';
+            });
+            btnEl.className = 'px-3 py-1 rounded-lg bg-purple-600 text-white font-semibold transition vs-cat-filter';
+            renderVoiceStudioDirectory();
+        }
+
+        function setStudioFilterStatus(status, btnEl) {
+            vsSelectedStatus = status;
+            document.querySelectorAll('.vs-status-filter').forEach(b => {
+                b.className = 'px-3 py-1 rounded-lg bg-[#141820] text-gray-400 border border-[#232936] hover:text-white transition vs-status-filter';
+            });
+            btnEl.className = 'px-3 py-1 rounded-lg bg-gray-800 text-white font-semibold transition vs-status-filter';
+            renderVoiceStudioDirectory();
+        }
+
+        function renderVoiceStudioDirectory() {
+            if (!voiceStudioManifest || !voiceStudioManifest.items) return;
+            const tbody = document.getElementById('vsDirectoryTableBody');
+            if (!tbody) return;
+
+            const searchVal = (document.getElementById('vsSearchInput')?.value || '').toLowerCase().trim();
+            const items = voiceStudioManifest.items;
+
+            const filtered = items.filter(it => {
+                if (vsSelectedCategory !== 'all' && it.category !== vsSelectedCategory) return false;
+                if (vsSelectedStatus !== 'all' && it.status !== vsSelectedStatus) return false;
+                if (searchVal) {
+                    const matchTitle = (it.title || '').toLowerCase().includes(searchVal);
+                    const matchText = (it.prompt_text || '').toLowerCase().includes(searchVal);
+                    const matchId = (it.id || '').toLowerCase().includes(searchVal);
+                    if (!matchTitle && !matchText && !matchId) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-gray-500 text-xs">No se encontraron elementos con los filtros seleccionados.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(it => {
+                const isRec = it.status === 'recorded';
+                const originalIndex = items.findIndex(x => x.id === it.id);
+                const catEmoji = it.category === 'flow' ? '📞' :
+                                it.category === 'japanese' ? '🍣' :
+                                it.category === 'snacks' ? '🍔' :
+                                it.category === 'italian' ? '🍕' : '🔢';
+
+                return `
+                    <tr class="hover:bg-[#121620] transition">
+                        <td class="py-2.5 px-3">
+                            <div class="font-semibold text-white flex items-center gap-1.5">
+                                <span>${catEmoji}</span>
+                                <span>${escapeHtml(it.title)}</span>
+                            </div>
+                            <div class="text-[10px] font-mono text-gray-500">${escapeHtml(it.id)}</div>
+                        </td>
+                        <td class="py-2.5 px-3 max-w-xs text-gray-300">
+                            <div class="line-clamp-2 text-[11px]" title="${escapeHtml(it.prompt_text)}">${escapeHtml(it.prompt_text)}</div>
+                        </td>
+                        <td class="py-2.5 px-2 text-center">
+                            ${isRec ? 
+                                `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">🟢 Grabado</span>` :
+                                `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-950 text-red-400 border border-red-800">🔴 Pendiente</span>`
+                            }
+                        </td>
+                        <td class="py-2.5 px-2 text-center font-mono text-[11px] text-gray-400">
+                            ${isRec ? `${it.duration_sec}s` : '--'}
+                        </td>
+                        <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                            <div class="inline-flex items-center gap-1.5">
+                                <button onclick="selectStudioItemByIndex(${originalIndex})" class="p-1.5 px-2.5 rounded-lg bg-purple-950/60 hover:bg-purple-900 border border-purple-800/60 text-purple-300 text-xs font-medium transition flex items-center gap-1">
+                                    <i class="fa-solid fa-microphone"></i> <span>Grabar</span>
+                                </button>
+                                ${isRec ? `
+                                    <button onclick="playItemAudioInline('${it.id}')" title="Escuchar audio" class="p-1.5 px-2.5 rounded-lg bg-[#1a202c] hover:bg-[#252d3d] text-emerald-400 text-xs transition">
+                                        <i class="fa-solid fa-play"></i>
+                                    </button>
+                                    <button onclick="deleteStudioItemById('${it.id}', '${escapeHtml(it.title)}')" title="Borrar grabación" class="p-1.5 px-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 text-xs transition">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function selectStudioItemByIndex(index) {
+            renderTeleprompterItem(index);
+            document.getElementById('tabContent_voice_studio')?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function playItemAudioInline(itemId) {
+            const audio = new Audio(`/api/voice-studio/audio/${itemId}?t=${Date.now()}`);
+            audio.play().catch(e => console.warn('Error playback inline:', e));
+        }
+
+        // =============================================================
+        // CAPTURA DE AUDIO, MEDIARECORDER Y VISUALIZADOR DE ONDA
+        // =============================================================
+        async function toggleRecording() {
+            if (vsIsRecording) {
+                stopRecording();
+            } else {
+                await startRecording();
+            }
+        }
+
+        async function startRecording() {
+            try {
+                vsAudioChunks = [];
+                vsCurrentRecordedBlob = null;
+
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        channelCount: 1,
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    }
+                });
+                vsAudioStream = stream;
+
+                try {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    vsAudioContext = new AudioCtx();
+                    const source = vsAudioContext.createMediaStreamSource(stream);
+                    vsAnalyser = vsAudioContext.createAnalyser();
+                    vsAnalyser.fftSize = 256;
+                    source.connect(vsAnalyser);
+                    startWaveformVisualizer();
+                } catch (actxErr) {
+                    console.warn('AudioContext visualizer not supported:', actxErr);
+                }
+
+                let options = {};
+                const mimeTypes = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+                for (const m of mimeTypes) {
+                    if (window.MediaRecorder && MediaRecorder.isTypeSupported(m)) {
+                        options = { mimeType: m };
+                        break;
+                    }
+                }
+
+                vsMediaRecorder = new MediaRecorder(stream, options);
+                vsMediaRecorder.ondataavailable = (e) => {
+                    if (e.data && e.data.size > 0) {
+                        vsAudioChunks.push(e.data);
+                    }
+                };
+
+                vsMediaRecorder.onstop = () => {
+                    vsCurrentRecordedBlob = new Blob(vsAudioChunks, { type: vsMediaRecorder.mimeType || 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(vsCurrentRecordedBlob);
+                    const previewEl = document.getElementById('vsAudioPreview');
+                    if (previewEl) previewEl.src = audioUrl;
+
+                    const dur = ((Date.now() - vsRecordStartTime) / 1000).toFixed(1);
+                    const durEl = document.getElementById('vsRecordedDuration');
+                    if (durEl) durEl.innerText = `${dur}s`;
+
+                    const reviewBox = document.getElementById('vsReviewControls');
+                    if (reviewBox) reviewBox.classList.remove('hidden');
+
+                    if (vsAudioStream) {
+                        vsAudioStream.getTracks().forEach(t => t.stop());
+                    }
+                    if (vsAudioContext && vsAudioContext.state !== 'closed') {
+                        vsAudioContext.close();
+                    }
+                };
+
+                vsMediaRecorder.start(100);
+                vsIsRecording = true;
+                vsRecordStartTime = Date.now();
+
+                const btn = document.getElementById('vsRecordBtn');
+                const btnIcon = document.getElementById('vsRecordBtnIcon');
+                const timerEl = document.getElementById('vsRecordTimer');
+                const helpText = document.getElementById('vsRecordHelpText');
+                const canvasEl = document.getElementById('vsWaveCanvas');
+
+                if (btn) btn.className = 'w-20 h-20 rounded-full bg-red-600 hover:bg-red-700 text-white text-2xl shadow-xl shadow-red-600/60 flex items-center justify-center animate-pulse transition-transform';
+                if (btnIcon) btnIcon.className = 'fa-solid fa-stop';
+                if (timerEl) {
+                    timerEl.classList.remove('hidden');
+                    timerEl.innerText = '00:00';
+                }
+                if (helpText) helpText.innerText = '🔴 Grabando... Habla claro y presiona Detener al terminar';
+                if (canvasEl) canvasEl.classList.remove('hidden');
+
+                clearInterval(vsRecordTimerInterval);
+                vsRecordTimerInterval = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - vsRecordStartTime) / 1000);
+                    const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+                    const s = String(elapsed % 60).padStart(2, '0');
+                    if (timerEl) timerEl.innerText = `${m}:${s}`;
+                }, 200);
+
+            } catch (err) {
+                console.error('Error al acceder al micrófono:', err);
+                showToast('Error: Permiso de micrófono denegado o no disponible.', true);
+            }
+        }
+
+        function stopRecording() {
+            if (!vsIsRecording) return;
+            vsIsRecording = false;
+            clearInterval(vsRecordTimerInterval);
+            cancelAnimationFrame(vsAnimFrameId);
+
+            if (vsMediaRecorder && vsMediaRecorder.state !== 'inactive') {
+                vsMediaRecorder.stop();
+            }
+
+            const btn = document.getElementById('vsRecordBtn');
+            const btnIcon = document.getElementById('vsRecordBtnIcon');
+            const timerEl = document.getElementById('vsRecordTimer');
+            const helpText = document.getElementById('vsRecordHelpText');
+            const canvasEl = document.getElementById('vsWaveCanvas');
+
+            if (btn) btn.className = 'w-20 h-20 rounded-full bg-red-600 hover:bg-red-500 text-white text-2xl shadow-lg shadow-red-600/40 flex items-center justify-center transition-transform active:scale-95';
+            if (btnIcon) btnIcon.className = 'fa-solid fa-microphone';
+            if (timerEl) timerEl.classList.add('hidden');
+            if (helpText) helpText.innerText = 'Revisa tu grabación abajo y presiona Guardar';
+            if (canvasEl) canvasEl.classList.add('hidden');
+        }
+
+        function startWaveformVisualizer() {
+            const canvas = document.getElementById('vsWaveCanvas');
+            if (!canvas || !vsAnalyser) return;
+            const ctx = canvas.getContext('2d');
+            const bufferLength = vsAnalyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            function draw() {
+                if (!vsIsRecording) return;
+                vsAnimFrameId = requestAnimationFrame(draw);
+                vsAnalyser.getByteTimeDomainData(dataArray);
+
+                ctx.fillStyle = '#0a0d12';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.lineWidth = 2.5;
+                ctx.strokeStyle = '#a855f7';
+                ctx.beginPath();
+
+                const sliceWidth = canvas.width * 1.0 / bufferLength;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    const v = dataArray[i] / 128.0;
+                    const y = v * canvas.height / 2;
+
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+
+                    x += sliceWidth;
+                }
+
+                ctx.lineTo(canvas.width, canvas.height / 2);
+                ctx.stroke();
+            }
+
+            draw();
+        }
+
+        function discardCurrentRecording() {
+            vsCurrentRecordedBlob = null;
+            vsAudioChunks = [];
+            const reviewBox = document.getElementById('vsReviewControls');
+            if (reviewBox) reviewBox.classList.add('hidden');
+            const previewEl = document.getElementById('vsAudioPreview');
+            if (previewEl) previewEl.src = '';
+            const helpText = document.getElementById('vsRecordHelpText');
+            if (helpText) helpText.innerText = 'Toca el micrófono para comenzar a grabar (o presiona Espacio en tu teclado)';
+        }
+
+        async function saveAndAdvanceStudio() {
+            if (!vsCurrentRecordedBlob) {
+                showToast('No hay ninguna grabación activa para guardar', true);
+                return;
+            }
+            if (!voiceStudioManifest || !voiceStudioManifest.items) return;
+            const item = voiceStudioManifest.items[vsCurrentIndex];
+            if (!item) return;
+
+            const saveBtn = document.getElementById('vsSaveNextBtn');
+            const origHtml = saveBtn ? saveBtn.innerHTML : '';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('item_id', item.id);
+                formData.append('audio_file', vsCurrentRecordedBlob, `clip_${item.id}.webm`);
+
+                const res = await fetch('/api/voice-studio/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Error subiendo audio');
+
+                showToast(`✅ Audio guardado: "${item.title}"`);
+
+                item.status = 'recorded';
+                item.duration_sec = data.duration_sec;
+                item.audio_alaw = `/audio_clips/${item.id}.alaw`;
+                item.audio_wav = `/api/voice-studio/audio/${item.id}`;
+
+                renderVoiceStudioStats();
+                renderVoiceStudioDirectory();
+
+                jumpToNextPendingItem();
+            } catch (err) {
+                console.error('Error al guardar audio:', err);
+                showToast(err.message || 'Error al guardar audio en el servidor', true);
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = origHtml;
+                }
+            }
+        }
+
+        async function deleteCurrentStudioItem() {
+            if (!voiceStudioManifest || !voiceStudioManifest.items) return;
+            const item = voiceStudioManifest.items[vsCurrentIndex];
+            if (!item) return;
+
+            deleteStudioItemById(item.id, item.title);
+        }
+
+        async function deleteStudioItemById(itemId, title) {
+            if (!confirm(`¿Deseas eliminar la grabación de "${title}" para volver a grabarla?`)) return;
+
+            try {
+                const res = await fetch(`/api/voice-studio/audio/${itemId}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Error al eliminar');
+
+                showToast(`Audio de "${title}" eliminado. Ítem restablecido.`);
+                
+                if (voiceStudioManifest && voiceStudioManifest.items) {
+                    const it = voiceStudioManifest.items.find(x => x.id === itemId);
+                    if (it) {
+                        it.status = 'pending';
+                        it.duration_sec = 0;
+                        it.audio_alaw = null;
+                        it.audio_wav = null;
+                    }
+                }
+
+                renderVoiceStudioStats();
+                renderTeleprompterItem(vsCurrentIndex);
+                renderVoiceStudioDirectory();
+            } catch (err) {
+                console.error('Error eliminando audio:', err);
+                showToast(err.message || 'Error al eliminar', true);
+            }
+        }
+
+        // Keyboard shortcuts
+        window.addEventListener('keydown', (e) => {
+            if (activeTab !== 'voice_studio') return;
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
+            if (e.code === 'Space') {
+                e.preventDefault();
+                toggleRecording();
+            } else if (e.code === 'Enter') {
+                if (vsCurrentRecordedBlob && !vsIsRecording) {
+                    e.preventDefault();
+                    saveAndAdvanceStudio();
+                }
+            } else if (e.code === 'ArrowRight' && !vsIsRecording) {
+                e.preventDefault();
+                navigateStudioItem(1);
+            } else if (e.code === 'ArrowLeft' && !vsIsRecording) {
+                e.preventDefault();
+                navigateStudioItem(-1);
+            }
+        });
+
+        // =====================================================================
         // TAB SWITCHER & UTILS
         // =====================================================================
         function switchTab(tabKey) {
@@ -2185,13 +2992,17 @@
                 activeBtn.classList.remove('text-gray-400');
             }
 
-            ['japanese', 'snacks', 'italian', 'ingredients', 'promotions', 'schedules', 'delivery', 'preview'].forEach(k => {
+            ['japanese', 'snacks', 'italian', 'ingredients', 'promotions', 'schedules', 'delivery', 'voice_studio', 'preview'].forEach(k => {
                 const sec = document.getElementById(`tabContent_${k}`);
                 if (sec) {
                     if (k === tabKey) sec.classList.remove('hidden');
                     else sec.classList.add('hidden');
                 }
             });
+
+            if (tabKey === 'voice_studio') {
+                loadVoiceStudioData();
+            }
         }
 
         function showToast(msg, isError = false) {

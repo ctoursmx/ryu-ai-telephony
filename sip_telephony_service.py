@@ -397,15 +397,67 @@ async def synthesize_speech_alaw(text: str, agent: Optional[RyuVoiceAgent] = Non
 
 PRELOADED_GREETING = None
 
+def load_voice_studio_clips() -> int:
+    """
+    Carga todos los audios pregrabados del Estudio de Grabación (audio_clips/*.alaw)
+    directamente a AUDIO_CACHE_RAM para latencia 0ms en llamadas reales.
+    """
+    global PRELOADED_GREETING
+    manifest_path = Path(__file__).parent / "voice_studio_manifest.json"
+    audio_dir = Path(__file__).parent / "audio_clips"
+    if not manifest_path.exists() or not audio_dir.exists():
+        return 0
+
+    loaded = 0
+    try:
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        temp_agent = RyuVoiceAgent(caller_phone="0000000000", caller_name="Cliente")
+
+        for it in data.get("items", []):
+            i_id = it.get("id")
+            alaw_file = audio_dir / f"{i_id}.alaw"
+            if alaw_file.exists() and alaw_file.stat().st_size > 0:
+                alaw_bytes = alaw_file.read_bytes()
+                prompt_text = it.get("prompt_text", "")
+                if prompt_text:
+                    clean_text = temp_agent.clean_text_for_speech(prompt_text)
+                    AUDIO_CACHE_RAM[clean_text] = alaw_bytes
+                    AUDIO_CACHE_RAM[prompt_text.strip()] = alaw_bytes
+
+                AUDIO_CACHE_RAM[f"clip:{i_id}"] = alaw_bytes
+
+                if i_id == "flow_saludo":
+                    PRELOADED_GREETING = alaw_bytes
+                    clean_greeting = temp_agent.clean_text_for_speech(temp_agent.greeting)
+                    AUDIO_CACHE_RAM[clean_greeting] = alaw_bytes
+                    AUDIO_CACHE_RAM[temp_agent.greeting.strip()] = alaw_bytes
+
+                loaded += 1
+
+        if loaded > 0:
+            print(f"🎙️ [Voice Studio] {loaded} audios pregrabados de voz cargados en RAM (0ms latencia).")
+    except Exception as e:
+        print(f"Aviso cargando audios de Voice Studio: {e}")
+    return loaded
+
 def preload_greeting():
     global PRELOADED_GREETING
     print("Pre-sintetizando saludo y banco de audio en RAM con soxr HQ...")
     try:
         temp_agent = RyuVoiceAgent(caller_phone="0000000000", caller_name="Cliente")
-        PRELOADED_GREETING = asyncio.run(synthesize_speech_alaw(temp_agent.greeting, temp_agent))
-        print(f"Saludo precargado exitosamente ({len(PRELOADED_GREETING)} bytes, {len(PRELOADED_GREETING)/8000:.1f}s).")
-        
-        # Pre-cargar frases comunes para latencia 0ms TTS
+        # 1. Cargar cualquier clip pregrabado por el usuario
+        load_voice_studio_clips()
+
+        # 2. Si no hay saludo grabado por el usuario, sintetizar con Edge-TTS
+        if not PRELOADED_GREETING:
+            PRELOADED_GREETING = asyncio.run(synthesize_speech_alaw(temp_agent.greeting, temp_agent))
+            print(f"Saludo neural precargado ({len(PRELOADED_GREETING)} bytes, {len(PRELOADED_GREETING)/8000:.1f}s).")
+        else:
+            print(f"🎙️ Saludo oficial pregrabado por el usuario activo ({len(PRELOADED_GREETING)/8000:.1f}s).")
+
+        # 3. Pre-cargar frases comunes para latencia 0ms TTS si no están en caché
         common_phrases = [
             "¿Sería para entrega a domicilio o pasar a recoger a sucursal?",
             "¿A qué dirección y colonia te lo enviamos?",
@@ -418,7 +470,9 @@ def preload_greeting():
             "¡Muchas gracias por llamar a Ryu, que disfrutes tu comida! ¡Hasta luego!"
         ]
         for p in common_phrases:
-            asyncio.run(synthesize_speech_alaw(p, temp_agent))
+            clean_p = temp_agent.clean_text_for_speech(p)
+            if clean_p not in AUDIO_CACHE_RAM:
+                asyncio.run(synthesize_speech_alaw(p, temp_agent))
         print(f"Banco de audio en RAM: {len(AUDIO_CACHE_RAM)} frases precargadas (Latencia 0ms).")
     except Exception as e:
         print(f"Aviso precargando banco de audio: {e}")
