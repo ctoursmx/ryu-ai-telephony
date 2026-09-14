@@ -757,14 +757,21 @@
             <!-- Header Card -->
             <div class="glass-card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-l-4 border-l-purple-500">
                 <div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
                         <span class="text-2xl">🎙️</span>
                         <h3 class="font-bold text-white text-base sm:text-lg">Estudio de Grabación Web (Voz Oficial Ryu)</h3>
                         <span id="voiceStudioStatusBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-mono">LATENCIA 0MS</span>
+                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono flex items-center gap-1" title="Todas las grabaciones son calibradas automáticamente a volumen homogéneo">
+                            <i class="fa-solid fa-sliders text-emerald-400"></i> NIVELADO: -17 dBFS
+                        </span>
                     </div>
-                    <p class="text-xs text-gray-400 mt-1">Pregraba tu voz para los platillos, el flujo de llamadas y números. El sistema los convertirá en audio G.711 A-law sin costo de API ($0.00 USD) y con latencia instantánea.</p>
+                    <p class="text-xs text-gray-400 mt-1">Pregraba tu voz para los platillos, el flujo de llamadas y números. El sistema los nivelará a volumen homogéneo (-17 dBFS RMS) y convertirá en audio G.711 A-law sin costo de API y con latencia instantánea.</p>
                 </div>
                 <div class="flex items-center gap-2">
+                    <button type="button" id="vsBatchNormalizeBtn" onclick="batchNormalizeCatalog()" title="Nivela retrospectivamente todos los audios ya grabados al mismo volumen homogéneo (-17 dBFS)" class="p-2.5 px-3 rounded-xl bg-purple-950/70 hover:bg-purple-900 border border-purple-700/60 text-purple-200 transition text-xs flex items-center gap-1.5 font-medium shadow">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-400" id="vsBatchNormalizeIcon"></i>
+                        <span class="hidden sm:inline">Nivelar Todo el Catálogo</span>
+                    </button>
                     <button onclick="loadVoiceStudioData()" title="Refrescar catálogo" class="p-2.5 rounded-xl bg-[#1e2533] hover:bg-[#2a3447] text-gray-300 transition text-xs flex items-center gap-1.5 font-medium">
                         <i class="fa-solid fa-arrows-rotate" id="voiceStudioRefreshIcon"></i>
                         <span class="hidden sm:inline">Actualizar</span>
@@ -3701,6 +3708,44 @@
                 if (saveBtn) {
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = origHtml;
+                }
+            }
+        }
+
+        async function batchNormalizeCatalog() {
+            if (!confirm("¿Deseas nivelar automáticamente todos los audios ya grabados en el catálogo al estándar de -17.0 dBFS RMS homogéneo?")) return;
+
+            const btn = document.getElementById('vsBatchNormalizeBtn');
+            const origHtml = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-purple-400"></i> Nivelando...';
+            }
+
+            try {
+                const token = getAuthToken();
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+                };
+                const res = await fetch('/api/voice-studio/normalize-all', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({ target_dbfs: -17.0 })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Error al nivelar catálogo');
+
+                showToast(`🔊 ${data.normalized_count} grabaciones niveladas a -17 dBFS homogéneo`);
+                await loadVoiceStudioData();
+            } catch (err) {
+                console.error('Error en nivelación masiva:', err);
+                showToast(err.message || 'Error al nivelar catálogo', true);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
                 }
             }
         }

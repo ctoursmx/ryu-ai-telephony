@@ -1351,6 +1351,24 @@ async def api_voice_studio_trim(request: Request):
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": f"Error recortando audio: {str(e)}"})
 
+@app.post("/api/voice-studio/normalize-all", tags=["Estudio de Grabación (Voice Studio)"], summary="Nivela retrospectivamente todo el catálogo de audios al estándar RMS (-17 dBFS)")
+async def api_voice_studio_normalize_all(request: Request):
+    """Nivela retrospectivamente todos los archivos de audio existentes en el servidor al estándar homogéneo (-17 dBFS RMS)"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para nivelar audios."})
+
+    try:
+        data = {}
+        try:
+            data = await request.json()
+        except Exception:
+            pass
+        target_dbfs = float(data.get("target_dbfs", -17.0)) if isinstance(data, dict) else -17.0
+        result = voice_studio_backend.batch_normalize_all_recordings(target_dbfs=target_dbfs)
+        return result
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": f"Error nivelando catálogo de audios: {str(e)}"})
+
 @app.get("/api/voice-studio/audio/{item_id}", tags=["Estudio de Grabación (Voice Studio)"], summary="Reproduce el archivo WAV de alta fidelidad en el navegador")
 def api_voice_studio_audio(item_id: str):
     """Reproduce el audio WAV de alta fidelidad en el navegador"""

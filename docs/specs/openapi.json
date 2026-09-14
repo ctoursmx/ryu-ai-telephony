@@ -644,6 +644,26 @@
         }
       }
     },
+    "/api/voice-studio/normalize-all": {
+      "post": {
+        "tags": [
+          "Estudio de Grabación (Voice Studio)"
+        ],
+        "summary": "Nivela retrospectivamente todo el catálogo de audios al estándar RMS (-17 dBFS)",
+        "description": "Nivela retrospectivamente todos los archivos de audio existentes en el servidor al estándar homogéneo (-17 dBFS RMS)",
+        "operationId": "api_voice_studio_normalize_all_api_voice_studio_normalize_all_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/voice-studio/audio/{item_id}": {
       "get": {
         "tags": [

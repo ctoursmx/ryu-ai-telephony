@@ -29,6 +29,60 @@ AUDIO_DIR = ROOT_DIR / "audio_clips"
 AUDIO_DIR.mkdir(parents=True, exist_ok=True)
 
 
+def normalize_speech_rms(
+    samples: np.ndarray,
+    target_dbfs: float = -17.0,
+    max_gain_db: float = 18.0,
+    sample_rate: int = 16000
+) -> np.ndarray:
+    """
+    Nivela el volumen del habla a un nivel RMS perceptual constante (-17.0 dBFS),
+    descartando silencios ambientales por debajo de -45 dBFS (Voice Activity Gating)
+    y aplicando un limitador suave analógico (tanh) para evitar saturación o 'clipping'
+    en consonantes explosivas o golpes de aire.
+    """
+    if len(samples) == 0:
+        return samples
+
+    # Longitud de ventana para calcular energía (~50 ms)
+    frame_len = max(64, int(sample_rate * 0.05))
+    num_frames = len(samples) // frame_len
+    if num_frames == 0:
+        frames = [samples]
+    else:
+        frames = [samples[i * frame_len:(i + 1) * frame_len] for i in range(num_frames)]
+
+    frame_rms = [np.sqrt(np.mean(f.astype(np.float32) ** 2) + 1e-9) for f in frames]
+    frame_db = [20.0 * np.log10(r) for r in frame_rms]
+
+    # Puerta de voz: discriminar silencios/pausas por debajo de -45 dBFS
+    speech_frames = [f for f, db in zip(frames, frame_db) if db > -45.0]
+    if speech_frames:
+        speech_concat = np.concatenate(speech_frames).astype(np.float32)
+        active_rms = np.sqrt(np.mean(speech_concat ** 2) + 1e-9)
+    else:
+        active_rms = np.sqrt(np.mean(samples.astype(np.float32) ** 2) + 1e-9)
+
+    target_rms = 10.0 ** (target_dbfs / 20.0)
+    desired_gain = target_rms / max(active_rms, 1e-5)
+    max_gain = 10.0 ** (max_gain_db / 20.0)
+    gain = min(desired_gain, max_gain)
+
+    scaled = samples.astype(np.float32) * gain
+
+    # Limitador suave analógico (tanh) para picos que superen 0.85 (-1.4 dBFS)
+    threshold = 0.85
+    overshoot = np.abs(scaled) > threshold
+    if np.any(overshoot):
+        s = scaled[overshoot]
+        sgn = np.sign(s)
+        abs_s = np.abs(s)
+        limited = sgn * (threshold + (1.0 - threshold) * np.tanh((abs_s - threshold) / (1.0 - threshold))) * 0.95
+        scaled[overshoot] = limited
+
+    return np.clip(scaled, -0.99, 0.99)
+
+
 def transcode_browser_audio(
     raw_audio_bytes: bytes,
     start_sec: Optional[float] = None,
@@ -94,25 +148,25 @@ def transcode_browser_audio(
     if not pcm8_raw:
         raise ValueError("El rango de recorte seleccionado no contiene muestras de audio.")
 
-    # Normalización dinámica a -1.4 dBFS (0.85 de pico)
-    samples8 = np.frombuffer(pcm8_raw, dtype=np.int16).astype(np.float32) / 32768.0
-    peak = float(np.max(np.abs(samples8)))
-    if peak > 1e-4:
-        samples8 = samples8 * (0.85 / peak)
-    else:
-        samples8 = samples8 * 0.85
+    # 1. Nivelación perceptual RMS del audio a 16kHz para el navegador y alta fidelidad (-17 dBFS)
+    s16_arr = np.frombuffer(pcm16_raw, dtype=np.int16).astype(np.float32) / 32768.0
+    s16_norm = normalize_speech_rms(s16_arr, target_dbfs=-17.0, sample_rate=16000)
+    s16_int16 = np.clip(s16_norm * 32767.0, -32768, 32767).astype(np.int16)
 
-    s8_int16 = np.clip(samples8 * 32767.0, -32768, 32767).astype(np.int16)
-    alaw_bytes = pcm2alaw(s8_int16.tobytes())
-
-    # Generar WAV 16kHz para el navegador
+    # Generar WAV 16kHz nivelado para el navegador
     wav_out_io = io.BytesIO()
     with wave.open(wav_out_io, "wb") as wf:
         wf.setnchannels(1)
         wf.setsampwidth(2)
         wf.setframerate(16000)
-        wf.writeframes(pcm16_raw)
+        wf.writeframes(s16_int16.tobytes())
     wav_bytes = wav_out_io.getvalue()
+
+    # 2. Resamplear a 8000 Hz HQ y generar versión telefónica G.711 A-law (-17 dBFS)
+    s8_float = soxr.resample(s16_norm, 16000, 8000, quality="HQ")
+    s8_norm = normalize_speech_rms(s8_float, target_dbfs=-17.0, sample_rate=8000)
+    s8_int16 = np.clip(s8_norm * 32767.0, -32768, 32767).astype(np.int16)
+    alaw_bytes = pcm2alaw(s8_int16.tobytes())
 
     duration_sec = round(len(alaw_bytes) / 8000.0, 2)
     return alaw_bytes, wav_bytes, duration_sec
@@ -246,24 +300,21 @@ def trim_item_recording(item_id: str, start_sec: float, end_sec: float) -> dict:
     if not trimmed_pcm16:
         raise ValueError("El rango de recorte no produjo muestras de audio válidas.")
 
-    # Guardar nuevo archivo WAV 16kHz recortado para el navegador
+    # Guardar nuevo archivo WAV 16kHz recortado y nivelado (-17 dBFS)
+    s16_arr = np.frombuffer(trimmed_pcm16, dtype=np.int16).astype(np.float32) / 32768.0
+    s16_norm = normalize_speech_rms(s16_arr, target_dbfs=-17.0, sample_rate=framerate)
+    s16_int16 = np.clip(s16_norm * 32767.0, -32768, 32767).astype(np.int16)
+
     with wave.open(str(wav_path), "wb") as wf:
         wf.setnchannels(nchannels)
         wf.setsampwidth(sampwidth)
         wf.setframerate(framerate)
-        wf.writeframes(trimmed_pcm16)
+        wf.writeframes(s16_int16.tobytes())
 
-    # Generar y normalizar versión telefónica G.711 A-law a 8000Hz (-1.4 dBFS)
-    s16_arr = np.frombuffer(trimmed_pcm16, dtype=np.int16).astype(np.float32) / 32768.0
-    s8_float = soxr.resample(s16_arr, framerate, 8000, quality="HQ")
-
-    peak = float(np.max(np.abs(s8_float)))
-    if peak > 1e-4:
-        s8_float = s8_float * (0.85 / peak)
-    else:
-        s8_float = s8_float * 0.85
-
-    s8_int16 = np.clip(s8_float * 32767.0, -32768, 32767).astype(np.int16)
+    # Generar y normalizar versión telefónica G.711 A-law a 8000Hz (-17 dBFS)
+    s8_float = soxr.resample(s16_norm, framerate, 8000, quality="HQ")
+    s8_norm = normalize_speech_rms(s8_float, target_dbfs=-17.0, sample_rate=8000)
+    s8_int16 = np.clip(s8_norm * 32767.0, -32768, 32767).astype(np.int16)
     alaw_bytes = pcm2alaw(s8_int16.tobytes())
     alaw_path.write_bytes(alaw_bytes)
 
@@ -361,3 +412,80 @@ def concatenate_clips_wav(item_ids: list[str]) -> bytes:
         out_wf.writeframes(b"".join(all_frames))
 
     return out_io.getvalue()
+
+
+def batch_normalize_all_recordings(target_dbfs: float = -17.0) -> dict:
+    """
+    Nivela retrospectivamente todas las grabaciones existentes en audio_clips/
+    al estándar internacional de telefonía VoIP (-17.0 dBFS RMS), actualizando
+    tanto los archivos WAV de alta fidelidad como los G.711 A-law telefónicos,
+    y sincronizando la memoria RAM del conmutador en tiempo real.
+    """
+    manifest = get_manifest_data()
+    items_by_id = {it["id"]: it for it in manifest.get("items", [])}
+    normalized_count = 0
+    errors = []
+
+    for wav_path in sorted(AUDIO_DIR.glob("*.wav")):
+        item_id = wav_path.stem
+        alaw_path = AUDIO_DIR / f"{item_id}.alaw"
+
+        try:
+            with wave.open(str(wav_path), "rb") as wf:
+                nchannels = wf.getnchannels()
+                sampwidth = wf.getsampwidth()
+                framerate = wf.getframerate()
+                nframes = wf.getnframes()
+                raw_pcm = wf.readframes(nframes)
+
+            if not raw_pcm:
+                continue
+
+            s_arr = np.frombuffer(raw_pcm, dtype=np.int16).astype(np.float32) / 32768.0
+            s_norm = normalize_speech_rms(s_arr, target_dbfs=target_dbfs, sample_rate=framerate)
+            s_int16 = np.clip(s_norm * 32767.0, -32768, 32767).astype(np.int16)
+
+            # Re-escribir WAV 16kHz nivelado
+            with wave.open(str(wav_path), "wb") as wf:
+                wf.setnchannels(nchannels)
+                wf.setsampwidth(sampwidth)
+                wf.setframerate(framerate)
+                wf.writeframes(s_int16.tobytes())
+
+            # Resamplear y re-escribir G.711 A-law 8000Hz nivelado
+            s8_float = soxr.resample(s_norm, framerate, 8000, quality="HQ")
+            s8_norm = normalize_speech_rms(s8_float, target_dbfs=target_dbfs, sample_rate=8000)
+            s8_int16 = np.clip(s8_norm * 32767.0, -32768, 32767).astype(np.int16)
+            alaw_bytes = pcm2alaw(s8_int16.tobytes())
+            alaw_path.write_bytes(alaw_bytes)
+
+            new_duration_sec = round(len(alaw_bytes) / 8000.0, 2)
+            if item_id in items_by_id:
+                it = items_by_id[item_id]
+                it["duration_sec"] = new_duration_sec
+                it["status"] = "recorded"
+                it["audio_alaw"] = f"/audio_clips/{item_id}.alaw"
+                it["audio_wav"] = f"/api/voice-studio/audio/{item_id}"
+                it["updated_at"] = datetime.now().isoformat()
+            normalized_count += 1
+        except Exception as e:
+            errors.append(f"{item_id}: {str(e)}")
+
+    if normalized_count > 0:
+        with open(MANIFEST_FILE, "w", encoding="utf-8") as f:
+            json.dump(manifest, f, ensure_ascii=False, indent=2)
+
+        try:
+            import sip_telephony_service
+            if hasattr(sip_telephony_service, "load_voice_studio_clips"):
+                sip_telephony_service.load_voice_studio_clips()
+        except Exception as e:
+            print(f"Aviso actualizando RAM SIP tras nivelación masiva: {e}")
+
+    return {
+        "status": "ok",
+        "normalized_count": normalized_count,
+        "target_dbfs": target_dbfs,
+        "errors": errors
+    }
+
