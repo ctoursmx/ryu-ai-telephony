@@ -170,6 +170,8 @@ def build_kitchen_dynamic_prompt() -> str:
     if prep_override:
         lines.append(f"⏱️ TIEMPO DE ENTREGA ACTUALIZADO: {prep_override} (en lugar de los 40-55 min habituales).")
         
+    return "\n".join(lines) if lines else ""
+
 def get_delivery_conditions_summary(state: dict = None, now: datetime.datetime = None) -> tuple[str, bool]:
     """Calcula la tarifa base y si el recargo nocturno está activo según la configuración dinámica."""
     if state is None:
@@ -411,6 +413,7 @@ class RyuVoiceAgent:
         clean_user_text = re.sub(r"\bproguesa\b", "hamburguesa", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bd[ií]lan\s*porque\s*esa\b", "di la hamburguesa", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bmatador\s+del\s+interito\b", "adentro", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\b(?:te\s+)?a?probamosiones\b|\baprobaciones\b|\bpromoci[oó]n\s+es\b", "promociones", clean_user_text, flags=re.IGNORECASE)
         
         # Fonética de Menú Italiano (Lasaña, Sodas Italianas, Pitas, Paninis)
         clean_user_text = re.sub(r"\b(?:la\s+)?soñada\b", "la lasaña", clean_user_text, flags=re.IGNORECASE)

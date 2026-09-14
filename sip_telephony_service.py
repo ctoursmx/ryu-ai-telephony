@@ -642,6 +642,10 @@ def clean_colloquial_speech(text: str) -> str:
         (r'\bqueso\s*con\s*chorizo\b', 'queso fundido con chorizo'),
         (r'\btabla\s*de\s*30\s*(?:bocadillos|piezas)?\b|\btabla\s*30\s*(?:bocadillos|piezas)?\b|\b30\s*(?:bocadillos|piezas)\s*(?:de\s*sushi)?\b', 'Tabla de Sushi Mixta'),
         (r'\bsalsa\s*siracha\b|\bsiracha\b', 'salsa sriracha'),
+        (r'\bqu[eé]\s+promoci[oó]n\s+es\s+tiene[sn]?\b', 'qué promociones tienen'),
+        (r'\b(?:te\s+)?a?probamosiones\b', 'promociones'),
+        (r'\bpromoci[oó]n\s+es\b', 'promociones'),
+        (r'\baprobaciones\b', 'promociones'),
     ]
     for pattern, replacement in corrections:
         t = re.sub(pattern, replacement, t, flags=re.IGNORECASE)

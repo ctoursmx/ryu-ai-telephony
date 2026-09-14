@@ -124,14 +124,20 @@ class KAGEngine:
                 if dish not in matched_dishes:
                     matched_dishes.append(dish)
 
-        # Cargar configuración dinámica de entregas desde restaurant_state.json
+        # Cargar configuración dinámica de entregas y promociones desde restaurant_state.json
         state_path = Path(__file__).parent / "restaurant_state.json"
         del_settings = {}
+        active_promos = []
         if state_path.exists():
             try:
                 with open(state_path, "r", encoding="utf-8") as f:
                     st = json.load(f)
                     del_settings = st.get("delivery_settings", {})
+                    for p in st.get("daily_promotions", []):
+                        if isinstance(p, dict) and p.get("active", True) and p.get("text"):
+                            active_promos.append(p["text"].strip())
+                        elif isinstance(p, str) and p.strip():
+                            active_promos.append(p.strip())
             except Exception:
                 pass
 
@@ -205,7 +211,8 @@ class KAGEngine:
             "matched_zone": matched_zone,
             "shipping_fee": shipping_fee,
             "zone_description": zone_desc,
-            "is_night_fee": is_night_fee_active
+            "is_night_fee": is_night_fee_active,
+            "active_promotions": active_promos
         }
 
     def generate_kag_context_prompt(self, facts: Dict[str, Any], customer_profile: Optional[Dict[str, Any]] = None) -> str:
@@ -224,6 +231,12 @@ class KAGEngine:
                 lines.append(f"  Notas previas: {customer_profile.get('notes')}")
 
         lines.append(f"• TARIFA DE ENVÍO VERIFICADA: {facts['zone_description']} -> Costo: ${int(facts['shipping_fee'])} MXN")
+
+        if facts.get("active_promotions"):
+            lines.append("• 🎉 PROMOCIÓN ACTIVA OFICIAL DEL DÍA (OBLIGATORIO):")
+            for pr in facts["active_promotions"]:
+                lines.append(f"  {pr}")
+            lines.append("  - INSTRUCCIÓN ESTRICTA: Si el cliente pregunta qué promociones hay, qué tienen en promo hoy, ofertas o paquetes especiales, infórmale con claridad y entusiasmo esta promoción activa. NUNCA digas que no hay promociones.")
 
         if facts["matched_dishes"]:
             lines.append("• PRECIOS OFICIALES DE LOS PLATILLOS CONSULTADOS:")
