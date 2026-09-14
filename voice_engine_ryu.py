@@ -218,6 +218,19 @@ def get_delivery_conditions_summary(state: dict = None, now: datetime.datetime =
 
     return summary, is_night_active
 
+def get_special_zones_coverage_summary(state: dict = None) -> str:
+    if state is None:
+        state = load_restaurant_state()
+    del_settings = state.get("delivery_settings", {})
+    zones = del_settings.get("special_zones", [])
+    if not zones:
+        return ""
+    active_zones = [z for z in zones if z.get("enabled", True)]
+    if not active_zones:
+        return ""
+    items = [f"{z['name']} (${int(z.get('fee', 0))} pesos)" for z in active_zones]
+    return "• Cobertura foránea y tarifas especiales: SÍ entregamos a " + ", ".join(items) + "."
+
 openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
 class RyuVoiceAgent:
     def __init__(self, caller_phone="Desconocido", caller_name="Cliente"):
@@ -333,7 +346,7 @@ class RyuVoiceAgent:
                     model="whisper-1",
                     file=file,
                     language="es",
-                    prompt="Restaurante Ryu en Tequila Jalisco. Pedidos de comida, sushi, hamburguesas, bebidas, paquetes."
+                    prompt="Restaurante Ryu en Tequila Jalisco. Pedidos de comida, sushi, hamburguesas, bebidas, paquetes. Zonas de entrega: San Martín, Magdalena, Medineño, El Barreño, Tierra de Agave, Tierra Azul, La Toma, Santa Ana, San Pedro, Amatitán."
                 )
                 return transcription.text
         return ""
@@ -352,6 +365,7 @@ class RyuVoiceAgent:
         now = datetime.datetime.now()
         state = load_restaurant_state()
         costo_envio_base, is_night_active = get_delivery_conditions_summary(state, now)
+        special_zones_summary = get_special_zones_coverage_summary(state)
         
         current_prompt = get_system_prompt()
                 
@@ -367,6 +381,16 @@ class RyuVoiceAgent:
         clean_user_text = re.sub(r"\bmirir\b|\bmiri\b", "mir\xe9", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bconguzo\s+liste\w*\b|\bconguzo\b|\bconguce\b|\bcombuso\b", "combo feliz", clean_user_text, flags=re.IGNORECASE)
         clean_user_text = re.sub(r"\bpero\s+es\s+un\s+poco\s+m[a\xe1]s\b|\bcu[e\xe9]ntame\s+un\s+poco\s+m[a\xe1]s\b|\bexpl[i\xed]came\s+un\s+poco\s+m[a\xe1]s\b", "\xbfqu\xe9 m\xe1s contiene el combo?", clean_user_text, flags=re.IGNORECASE)
+
+        # Poblados y preguntas de entrega a domicilio (San Martín, Magdalena, Medineño, etc.)
+        clean_user_text = re.sub(r"¿?\s*(?:[sc]entregan|sintr[e\xe9]gan|si\s+el\s+tragan|se\s+entregan)\b", "¿entregan", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bpasas\s+mart[i\xed]n\b|\bs[a\xe1]bado\s+mart[i\xed]n\b|\b(?:para\s+la|pa\s+la)\s+mart[i\xed]n\b|\bpasa\s+mart[i\xed]n\b", "para San Martín", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\b(?:el\s+)?parrereno\b|\b(?:el\s+)?barreno\b|\bcarpar\s+barrenyo\b|\bbarrenyo\b", "El Medineño", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bm[a\xe1]s\s+galena\b|\bmasgalena\b|\bm[a\xe1]s\s+gallena\b|\binvasible\s+elena\b", "Magdalena", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bti[e\xe9]rrezules\b|\bque\s+res[u\xfa]les\b|\bpatierra\s+azul\b|\bpara\s+tierra\s+azul\b|\btierra\s+azul\b", "Tierra de Agave", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bun\s+primo\b", "un pedido", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"\bquiero\s+encargarme\b", "quiero ordenar", clean_user_text, flags=re.IGNORECASE)
+        clean_user_text = re.sub(r"¿\s*¿+", "¿", clean_user_text)
 
         # Interceptor de pausas, vacilaciones o espera del cliente ("Bueno.", "A ver...", "Espera", "No me cuelguen")
         pause_pattern = r"^(?:(?:bueno|a\s+ver|espera|un\s+momento|dame\s+un\s+momento|no\s+me\s+cuelguen?)[,.\s]*)+$"
@@ -389,6 +413,7 @@ class RyuVoiceAgent:
             f"• Día actual: {dia}\n"
             f"• Hora actual: {hora}\n"
             f"• Tarifa de envío estándar actual: {costo_envio_base}\n"
+            f"{special_zones_summary}\n"
             f"• Estado del local: {estado}\n"
             f"• Menú disponible en este momento: {menu_activo}\n"
             f"--------------------------------------------------\n"

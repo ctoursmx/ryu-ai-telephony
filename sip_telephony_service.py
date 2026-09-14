@@ -650,6 +650,14 @@ def clean_colloquial_speech(text: str) -> str:
         (r'\bmirir\b|\bmiri\b', 'miré'),
         (r'\bconguzo\s+liste\w*\b|\bconguzo\b|\bconguce\b|\bcombuso\b', 'combo feliz'),
         (r'\bpero\s+es\s+un\s+poco\s+m[aá]s\b|\bcu[eé]ntame\s+un\s+poco\s+m[aá]s\b|\bexpl[ií]came\s+un\s+poco\s+m[aá]s\b', '¿qué más contiene el combo?'),
+        (r'¿?\s*(?:[sc]entregan|sintr[eé]gan|si\s+el\s+tragan|se\s+entregan)\b', '¿entregan'),
+        (r'\bpasas\s+mart[ií]n\b|\bs[aá]bado\s+mart[ií]n\b|\b(?:para\s+la|pa\s+la)\s+mart[ií]n\b|\bpasa\s+mart[ií]n\b', 'para San Martín'),
+        (r'\b(?:el\s+)?parrereno\b|\b(?:el\s+)?barreno\b|\bcarpar\s+barrenyo\b|\bbarrenyo\b', 'El Medineño'),
+        (r'\bm[aá]s\s+galena\b|\bmasgalena\b|\bm[aá]s\s+gallena\b|\binvasible\s+elena\b', 'Magdalena'),
+        (r'\bti[eé]rrezules\b|\bque\s+res[uú]les\b|\bpatierra\s+azul\b|\bpara\s+tierra\s+azul\b|\btierra\s+azul\b', 'Tierra de Agave'),
+        (r'\bun\s+primo\b', 'un pedido'),
+        (r'\bquiero\s+encargarme\b', 'quiero ordenar'),
+        (r'¿\s*¿+', '¿'),
         (r'\bqu[eé]\s+promoci[oó]n\s+es\s+tiene[sn]?\b', 'qué promociones tienen'),
         (r'\b(?:te\s+)?a?probamosiones\b', 'promociones'),
         (r'\bpromoci[oó]n\s+es\b', 'promociones'),
@@ -690,7 +698,7 @@ def transcribe_pcm_memory(agent: RyuVoiceAgent, pcm_bytes: bytes) -> str:
         
         prompt = (
             "Restaurante Ryu en Tequila, Jalisco. Calles y colonias: Calle Girasol, Colonia Cofradía, Paseo del Centenario, Zaragoza, Juárez. "
-            "Zonas de envío: Aguacatillo, Caseta, Penal, Toma, Fundición, Mirador, Parador Turístico, San Pedro, Santa Ana, Tierra de Agave, Medineño, Cantaritos El Güero, Amatitán, Puerta de En Medio, San Martín, Magdalena, Santa Teresa. "
+            "Zonas de envío y cobertura: ¿Entregan en San Martín? ¿Tienen servicio a Magdalena? ¿Hacen envíos al Medineño o al Barreño? ¿Entregan en Tierra Azul o Tierra de Agave? ¿Cuánto cobran de envío a San Martín? ¿Entregan en La Toma, Amatitán o Santa Ana? Poblados: Aguacatillo, Caseta, Penal, Toma, Fundición, Mirador, Parador Turístico, San Pedro, Santa Ana, Tierra de Agave, Tierra Azul, Medineño, El Barreño, Cantaritos El Güero, Amatitán, Puerta de En Medio, San Martín de las Cañas, Magdalena, Santa Teresa. "
             "Menú y preguntas: lasaña tradicional en capas, lasagna de carne y queso mozzarella, pastas italianas, boloñesa, fettuccine alfredo, "
             "paninis crujientes y pitas suaves con papas a la francesa, sodas italianas de fresa, piña, mora azul con boba, qué sabores de sodas italianas tienes, cuánto cuestan las pitas y los paninis, qué la acompaña, con qué viene, "
             "hamburguesa Big Ryu, Ranchera Especial, Carolina Especial, Cielo Mar y Tierra, alitas, boneless, calpico, cerveza Corona, ramen, "

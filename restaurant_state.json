@@ -415,7 +415,10 @@
         "enabled": true,
         "aliases": [
           "magdalena",
-          "municipio magdalena"
+          "municipio magdalena",
+          "mas galena",
+          "más galena",
+          "masgalena"
         ],
         "notes": "Tarifa especial foránea"
       },
@@ -427,7 +430,12 @@
         "aliases": [
           "el medineño",
           "medineno",
-          "medineño"
+          "medineño",
+          "el barreño",
+          "barreño",
+          "barreno",
+          "el barreno",
+          "parrereno"
         ],
         "notes": "Tarifa especial foránea"
       },
@@ -485,7 +493,12 @@
         "enabled": true,
         "aliases": [
           "san martin",
-          "san martín"
+          "san martín",
+          "san martín de las cañas",
+          "san martin de las cañas",
+          "pasas martín",
+          "pasas martin",
+          "pasa martín"
         ],
         "notes": "Tarifa especial foránea"
       },
@@ -529,7 +542,10 @@
         "enabled": true,
         "aliases": [
           "tierra de agave",
-          "fraccionamiento tierra de agave"
+          "fraccionamiento tierra de agave",
+          "tierra azul",
+          "tierras azules",
+          "patierra azul"
         ],
         "notes": "Tarifa especial foránea"
       },

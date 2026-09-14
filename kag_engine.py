@@ -206,13 +206,20 @@ class KAGEngine:
         else:
             zone_desc = f"{matched_zone['name']} (${int(shipping_fee)} MXN tarifa especial de entrega a esta localidad)"
 
+        available_special_zones = []
+        if special_zones and isinstance(special_zones, list):
+            for z in special_zones:
+                if z.get("enabled", True):
+                    available_special_zones.append(f"{z['name']} (${int(z.get('fee', 0))} MXN)")
+
         return {
             "matched_dishes": matched_dishes,
             "matched_zone": matched_zone,
             "shipping_fee": shipping_fee,
             "zone_description": zone_desc,
             "is_night_fee": is_night_fee_active,
-            "active_promotions": active_promos
+            "active_promotions": active_promos,
+            "available_special_zones": available_special_zones
         }
 
     def generate_kag_context_prompt(self, facts: Dict[str, Any], customer_profile: Optional[Dict[str, Any]] = None) -> str:
@@ -231,6 +238,11 @@ class KAGEngine:
                 lines.append(f"  Notas previas: {customer_profile.get('notes')}")
 
         lines.append(f"• TARIFA DE ENVÍO VERIFICADA: {facts['zone_description']} -> Costo: ${int(facts['shipping_fee'])} MXN")
+
+        if facts.get("available_special_zones"):
+            lines.append("• COBERTURA Y TARIFAS DE ENVÍO A POBLADOS FORÁNEOS (SÍ TENEMOS SERVICIO):")
+            lines.append("  Poblados y tarifas oficiales: " + ", ".join(facts["available_special_zones"]) + ".")
+            lines.append("  - INSTRUCCIÓN DE COBERTURA: Si el cliente pregunta si entregan a algún poblado (ej. San Martín, Magdalena, El Medineño, La Toma, Tierra de Agave, etc.) o cuánto cuesta el envío, confirma de inmediato que SÍ ENTREGAMOS y menciona la tarifa exacta (ejemplo: 'Sí, claro, sí entregamos en San Martín. El envío especial para allá es de cien pesos. ¿Qué te gustaría pedir?'). NUNCA digas que no entregamos o que no conoces el lugar.")
 
         if facts.get("active_promotions"):
             lines.append("• 🎉 PROMOCIÓN ACTIVA OFICIAL DEL DÍA (OBLIGATORIO):")
