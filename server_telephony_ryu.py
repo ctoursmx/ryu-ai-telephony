@@ -158,16 +158,25 @@ def health_check():
         "engine": "pyVoIP / Zadarma SIP v2.0",
         "status": "STANDALONE_OR_INITIALIZING",
         "registered": False,
-        "did": "+52 33 8526 1250"
+        "phone_number": "+52 33 8526 1250",
+        "sip_server": "sip1.zadarma.com"
     }
     try:
-        import sip_telephony_service
-        if hasattr(sip_telephony_service, "get_telephony_status"):
-            telephony_info = sip_telephony_service.get_telephony_status()
-        elif hasattr(sip_telephony_service, "GLOBAL_PHONE") and sip_telephony_service.GLOBAL_PHONE:
-            st = sip_telephony_service.GLOBAL_PHONE.get_status()
-            telephony_info["status"] = st.name if hasattr(st, "name") else str(st)
-            telephony_info["registered"] = telephony_info["status"] == "REGISTERED"
+        import sys
+        phone = None
+        main_mod = sys.modules.get("__main__")
+        if main_mod and hasattr(main_mod, "GLOBAL_PHONE") and main_mod.GLOBAL_PHONE:
+            phone = main_mod.GLOBAL_PHONE
+        if not phone:
+            sip_mod = sys.modules.get("sip_telephony_service")
+            if sip_mod and hasattr(sip_mod, "GLOBAL_PHONE") and sip_mod.GLOBAL_PHONE:
+                phone = sip_mod.GLOBAL_PHONE
+
+        if phone is not None:
+            st = phone.get_status()
+            status_name = st.name if hasattr(st, "name") else str(st)
+            telephony_info["status"] = status_name
+            telephony_info["registered"] = (status_name == "REGISTERED")
     except Exception as e:
         telephony_info["notice"] = str(e)
 
