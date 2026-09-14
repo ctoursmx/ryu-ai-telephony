@@ -662,8 +662,7 @@ class RyuVoiceAgent:
         # 3. Síntesis con modelo inyectando catálogo de precios oficial de Ryu
         try:
             now_dt = datetime.datetime.now()
-            is_after_730 = (now_dt.hour * 60 + now_dt.minute) >= 1170
-            envio_info = "$15 MXN (Tarifa nocturna activa por ser después de las 7:30 PM)" if is_after_730 else "$0 MXN (Envío gratis antes de 7:30 PM en Tequila urbano)"
+            envio_info, _ = get_delivery_conditions_summary(now=now_dt)
             extract_prompt = [
                 {
                     "role": "system",

@@ -23,6 +23,8 @@ import queue
 import collections
 import threading
 import random
+import json
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 from dotenv import load_dotenv
@@ -890,16 +892,19 @@ def handle_incoming_call(call):
             tts_time = round((time.time() - t2) * 1000)
             print(f"⚡ [Latencias]: STT={stt_time}ms | LLM={llm_time}ms | TTS={tts_time}ms | Total={stt_time+llm_time+tts_time}ms")
             
-            call_turns.append({
-                "turn": len(call_turns) + 1,
-                "timestamp": datetime.now().isoformat(),
-                "user_raw": user_text,
-                "bot_response": reply_text,
-                "stt_ms": stt_time,
-                "llm_ms": llm_time,
-                "tts_ms": tts_time,
-                "total_ms": stt_time + llm_time + tts_time
-            })
+            try:
+                call_turns.append({
+                    "turn": len(call_turns) + 1,
+                    "timestamp": datetime.now().isoformat(),
+                    "user_raw": user_text,
+                    "bot_response": reply_text,
+                    "stt_ms": stt_time,
+                    "llm_ms": llm_time,
+                    "tts_ms": tts_time,
+                    "total_ms": stt_time + llm_time + tts_time
+                })
+            except Exception as e_log:
+                print(f"Aviso guardando telemetría de turno: {e_log}")
             
             play_audio_to_call(call, reply_audio)
             
@@ -936,16 +941,19 @@ def handle_incoming_call(call):
                         reply_text = agent.think_and_respond(post_text)
                         print(f">>> [RyuBot]: \"{reply_text}\"")
                         reply_audio = asyncio.run(synthesize_speech_alaw(reply_text, agent))
-                        call_turns.append({
-                            "turn": len(call_turns) + 1,
-                            "timestamp": datetime.now().isoformat(),
-                            "user_raw": post_text,
-                            "bot_response": reply_text,
-                            "stt_ms": 0,
-                            "llm_ms": 0,
-                            "tts_ms": 0,
-                            "total_ms": 0
-                        })
+                        try:
+                            call_turns.append({
+                                "turn": len(call_turns) + 1,
+                                "timestamp": datetime.now().isoformat(),
+                                "user_raw": post_text,
+                                "bot_response": reply_text,
+                                "stt_ms": 0,
+                                "llm_ms": 0,
+                                "tts_ms": 0,
+                                "total_ms": 0
+                            })
+                        except Exception as e_plog:
+                            print(f"Aviso guardando telemetría post-turno: {e_plog}")
                         play_audio_to_call(call, reply_audio)
                 
         time.sleep(1)
