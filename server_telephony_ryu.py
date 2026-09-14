@@ -13,6 +13,7 @@ import hashlib
 import secrets
 import collections
 import datetime
+from typing import Optional, List, Dict, Any, Tuple
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -1306,18 +1307,49 @@ def api_voice_studio_manifest():
 async def api_voice_studio_upload(
     request: Request,
     item_id: str = Form(...),
-    audio_file: UploadFile = File(...)
+    audio_file: UploadFile = File(...),
+    start_sec: Optional[float] = Form(None),
+    end_sec: Optional[float] = Form(None)
 ):
-    """Recibe la grabación del navegador y la transcodifica a G.711 A-law 8000Hz"""
+    """Recibe la grabación del navegador, aplica recorte opcional y la transcodifica a G.711 A-law 8000Hz"""
     if not verify_admin_auth(request):
         return JSONResponse(status_code=401, content={"error": "No autorizado para grabar voz."})
 
     try:
         raw_audio = await audio_file.read()
-        result = voice_studio_backend.save_item_recording(item_id, raw_audio)
+        result = voice_studio_backend.save_item_recording(
+            item_id,
+            raw_audio,
+            start_sec=start_sec,
+            end_sec=end_sec
+        )
         return result
     except Exception as e:
         return JSONResponse(status_code=400, content={"error": str(e)})
+
+@app.post("/api/voice-studio/trim", tags=["Estudio de Grabación (Voice Studio)"], summary="Recorta el inicio o fin de un clip de voz existente para eliminar clics de ratón o silencios")
+async def api_voice_studio_trim(request: Request):
+    """Recorta el audio de un ítem ya existente en el catálogo especificando start_sec y end_sec"""
+    if not verify_admin_auth(request):
+        return JSONResponse(status_code=401, content={"error": "No autorizado para recortar audios."})
+
+    try:
+        data = await request.json()
+        item_id = str(data.get("item_id", "")).strip()
+        start_sec = float(data.get("start_sec", 0.0))
+        end_sec = float(data.get("end_sec", 0.0))
+
+        if not item_id:
+            return JSONResponse(status_code=400, content={"error": "El campo 'item_id' es obligatorio."})
+
+        result = voice_studio_backend.trim_item_recording(item_id, start_sec, end_sec)
+        return result
+    except ValueError as ve:
+        return JSONResponse(status_code=400, content={"error": str(ve)})
+    except FileNotFoundError as fe:
+        return JSONResponse(status_code=404, content={"error": str(fe)})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": f"Error recortando audio: {str(e)}"})
 
 @app.get("/api/voice-studio/audio/{item_id}", tags=["Estudio de Grabación (Voice Studio)"], summary="Reproduce el archivo WAV de alta fidelidad en el navegador")
 def api_voice_studio_audio(item_id: str):

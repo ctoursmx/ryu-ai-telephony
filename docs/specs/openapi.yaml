@@ -15,6 +15,20 @@ info:
     \ de comandas a Telegram, WhatsApp y comandera POS.\n    "
   version: 2.1.0
 paths:
+  /health:
+    get:
+      tags:
+      - Estado Operacional
+      summary: Verificación de salud del conmutador e infraestructura
+      description: Retorna el estado del servicio, telemetría de memoria RAM, conectividad
+        SIP Zadarma y estado del Circuit Breaker para UptimeRobot o BetterStack.
+      operationId: health_check_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
   /api/fast-chat:
     post:
       tags:
@@ -391,8 +405,8 @@ paths:
       tags:
       - Estudio de Grabación (Voice Studio)
       summary: Sube y transcodifica un clip de voz a G.711 A-law 8kHz
-      description: Recibe la grabación del navegador y la transcodifica a G.711 A-law
-        8000Hz
+      description: Recibe la grabación del navegador, aplica recorte opcional y la
+        transcodifica a G.711 A-law 8000Hz
       operationId: api_voice_studio_upload_api_voice_studio_upload_post
       requestBody:
         content:
@@ -412,6 +426,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
+  /api/voice-studio/trim:
+    post:
+      tags:
+      - Estudio de Grabación (Voice Studio)
+      summary: Recorta el inicio o fin de un clip de voz existente para eliminar clics
+        de ratón o silencios
+      description: Recorta el audio de un ítem ya existente en el catálogo especificando
+        start_sec y end_sec
+      operationId: api_voice_studio_trim_api_voice_studio_trim_post
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
   /api/voice-studio/audio/{item_id}:
     get:
       tags:
@@ -501,6 +530,16 @@ components:
           type: string
           contentMediaType: application/octet-stream
           title: Audio File
+        start_sec:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: Start Sec
+        end_sec:
+          anyOf:
+          - type: number
+          - type: 'null'
+          title: End Sec
       type: object
       required:
       - item_id

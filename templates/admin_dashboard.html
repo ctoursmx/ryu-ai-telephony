@@ -882,6 +882,56 @@
                         
                         <audio id="vsAudioPreview" controls class="w-full h-10 rounded-lg outline-none"></audio>
                         
+                        <!-- SECCIÓN RECORTADOR DE AUDIO (Para quitar el clic del mouse o silencios) -->
+                        <div class="p-3 bg-[#080a0f] rounded-xl border border-purple-900/40 space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-purple-300 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-scissors text-purple-400"></i> Editor / Recortador de Audio
+                                </span>
+                                <span id="vsTrimStatusLabel" class="text-[10px] text-gray-400 font-mono">Sin recorte</span>
+                            </div>
+
+                            <!-- Canvas de Forma de Onda Interactiva -->
+                            <div class="relative w-full h-12 bg-[#0d1017] rounded-lg border border-[#1f2633] overflow-hidden">
+                                <canvas id="vsTrimCanvas" class="w-full h-full"></canvas>
+                                <div id="vsTrimPlayhead" class="absolute top-0 bottom-0 w-0.5 bg-yellow-400 hidden pointer-events-none"></div>
+                            </div>
+
+                            <!-- Deslizadores de Inicio y Fin -->
+                            <div class="grid grid-cols-2 gap-2 text-[11px]">
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-gray-400">
+                                        <span>Inicio:</span>
+                                        <span id="vsTrimStartVal" class="text-purple-300 font-mono">0.00s</span>
+                                    </div>
+                                    <input type="range" id="vsTrimStartRange" min="0" max="10" step="0.05" value="0" oninput="onTrimSliderChange('start')" class="w-full accent-purple-500 h-1.5 bg-[#1f2633] rounded-lg cursor-pointer">
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-gray-400">
+                                        <span>Fin:</span>
+                                        <span id="vsTrimEndVal" class="text-purple-300 font-mono">0.00s</span>
+                                    </div>
+                                    <input type="range" id="vsTrimEndRange" min="0" max="10" step="0.05" value="0" oninput="onTrimSliderChange('end')" class="w-full accent-purple-500 h-1.5 bg-[#1f2633] rounded-lg cursor-pointer">
+                                </div>
+                            </div>
+
+                            <!-- Botones Rápidos de Recorte -->
+                            <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                                <button type="button" onclick="quickTrimPreset('remove_mouse_click')" class="px-2 py-1 bg-purple-950/70 hover:bg-purple-900 border border-purple-700/60 rounded text-[10px] text-purple-200 font-medium transition flex items-center gap-1 shadow-sm" title="Corta automáticamente 0.3 segundos del final para eliminar el ruido del clic">
+                                    <i class="fa-solid fa-arrow-left"></i> 🖱️ Quitar clic final (-0.3s)
+                                </button>
+                                <button type="button" onclick="quickTrimPreset('remove_start_silence')" class="px-2 py-1 bg-[#141820] hover:bg-[#1d2330] border border-[#232936] rounded text-[10px] text-gray-300 transition flex items-center gap-1">
+                                    <i class="fa-solid fa-arrow-right"></i> Quitar inicio (-0.2s)
+                                </button>
+                                <button type="button" onclick="quickTrimPreset('reset')" class="px-2 py-1 bg-[#141820] hover:bg-[#1d2330] border border-[#232936] rounded text-[10px] text-gray-400 transition" title="Restaurar toda la duración">
+                                    <i class="fa-solid fa-rotate-left"></i> Reset
+                                </button>
+                                <button type="button" id="vsTrimPlayBtn" onclick="toggleTrimPreview()" class="ml-auto px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded text-[10px] font-bold transition flex items-center gap-1 shadow">
+                                    <i class="fa-solid fa-play" id="vsTrimPlayBtnIcon"></i> Probar recorte
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="flex items-center gap-2 pt-1">
                             <button onclick="discardCurrentRecording()" class="flex-1 py-2.5 rounded-xl bg-[#1b212d] hover:bg-[#252e3e] text-gray-300 text-xs font-medium transition flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-arrow-rotate-left"></i> Volver a grabar
@@ -898,9 +948,14 @@
                             <span class="text-emerald-400 font-medium flex items-center gap-1.5">
                                 <i class="fa-solid fa-circle-check"></i> Grabación activa en servidor (<span id="vsExistingDuration">0.0s</span>)
                             </span>
-                            <button onclick="deleteCurrentStudioItem()" class="text-red-400 hover:text-red-300 text-[11px] flex items-center gap-1">
-                                <i class="fa-solid fa-trash-can"></i> Borrar
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <button onclick="openTrimModalForCurrentItem()" class="text-purple-400 hover:text-purple-300 text-[11px] font-semibold flex items-center gap-1 bg-purple-950/50 hover:bg-purple-900/60 px-2 py-0.5 rounded border border-purple-800/60 transition" title="Recortar clic o silencios">
+                                    <i class="fa-solid fa-scissors"></i> Recortar
+                                </button>
+                                <button onclick="deleteCurrentStudioItem()" class="text-red-400 hover:text-red-300 text-[11px] flex items-center gap-1">
+                                    <i class="fa-solid fa-trash-can"></i> Borrar
+                                </button>
+                            </div>
                         </div>
                         <audio id="vsExistingAudio" controls class="w-full h-9 rounded-lg outline-none"></audio>
                     </div>
@@ -1178,6 +1233,90 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal Editor y Recortador de Audio (Voice Studio) -->
+    <div id="vsTrimModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#121620] border border-purple-900/50 rounded-2xl w-full max-w-lg shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-[#232936] pb-3">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-purple-950/80 border border-purple-800 flex items-center justify-center text-purple-400">
+                        <i class="fa-solid fa-scissors text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-white">Recortar Audio del Catálogo</h3>
+                        <p id="vsModalTrimTitle" class="text-[11px] text-purple-300 font-medium">Elemento seleccionado</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeTrimModal()" class="text-gray-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="bg-[#0a0d13] p-3 rounded-xl border border-[#1f2633] space-y-1">
+                <div class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider">Texto de la frase:</div>
+                <div id="vsModalTrimPromptText" class="text-xs text-gray-200 italic">"..."</div>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-gray-300">Forma de Onda y Recorte</span>
+                    <span id="vsModalTrimStatusLabel" class="text-[11px] text-purple-300 font-mono">0.00s - 0.00s</span>
+                </div>
+
+                <!-- Canvas de Forma de Onda -->
+                <div class="relative w-full h-16 bg-[#080a0f] rounded-xl border border-[#1f2633] overflow-hidden">
+                    <canvas id="vsModalTrimCanvas" class="w-full h-full"></canvas>
+                    <div id="vsModalTrimPlayhead" class="absolute top-0 bottom-0 w-0.5 bg-yellow-400 hidden pointer-events-none"></div>
+                    <div id="vsModalTrimLoading" class="absolute inset-0 bg-black/60 flex items-center justify-center text-xs text-purple-300 hidden">
+                        <i class="fa-solid fa-spinner fa-spin mr-2"></i> Decodificando audio...
+                    </div>
+                </div>
+
+                <!-- Sliders Inicio y Fin -->
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-gray-400">
+                            <span>Recortar Inicio:</span>
+                            <span id="vsModalTrimStartVal" class="text-purple-300 font-mono font-bold">0.00s</span>
+                        </div>
+                        <input type="range" id="vsModalTrimStartRange" min="0" max="10" step="0.05" value="0" oninput="onModalTrimSliderChange('start')" class="w-full accent-purple-500 h-1.5 bg-[#1f2633] rounded-lg cursor-pointer">
+                    </div>
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between text-gray-400">
+                            <span>Recortar Fin:</span>
+                            <span id="vsModalTrimEndVal" class="text-purple-300 font-mono font-bold">0.00s</span>
+                        </div>
+                        <input type="range" id="vsModalTrimEndRange" min="0" max="10" step="0.05" value="0" oninput="onModalTrimSliderChange('end')" class="w-full accent-purple-500 h-1.5 bg-[#1f2633] rounded-lg cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Botones Rápidos de Recorte -->
+                <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                    <button type="button" onclick="quickModalTrimPreset('remove_mouse_click')" class="px-2.5 py-1.5 bg-purple-950/80 hover:bg-purple-900 border border-purple-700/60 rounded-lg text-[11px] text-purple-200 font-semibold transition flex items-center gap-1.5 shadow-sm" title="Quita 0.3 segundos del final para eliminar el sonido del mouse">
+                        <i class="fa-solid fa-arrow-left"></i> 🖱️ Quitar clic final (-0.3s)
+                    </button>
+                    <button type="button" onclick="quickModalTrimPreset('remove_start_silence')" class="px-2.5 py-1.5 bg-[#1a202c] hover:bg-[#252d3d] border border-[#2d3748] rounded-lg text-[11px] text-gray-300 transition flex items-center gap-1">
+                        <i class="fa-solid fa-arrow-right"></i> Quitar inicio (-0.2s)
+                    </button>
+                    <button type="button" onclick="quickModalTrimPreset('reset')" class="px-2.5 py-1.5 bg-[#1a202c] hover:bg-[#252d3d] border border-[#2d3748] rounded-lg text-[11px] text-gray-400 transition">
+                        <i class="fa-solid fa-rotate-left"></i> Reset
+                    </button>
+                    <button type="button" id="vsModalTrimPlayBtn" onclick="toggleModalTrimPreview()" class="ml-auto px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-play" id="vsModalTrimPlayBtnIcon"></i> Probar recorte
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-2 pt-3 border-t border-[#232936]">
+                <button type="button" onclick="closeTrimModal()" class="px-4 py-2 bg-[#1a202c] hover:bg-[#252d3d] text-gray-300 rounded-xl text-xs font-medium transition">
+                    Cancelar
+                </button>
+                <button type="button" id="vsModalTrimSaveBtn" onclick="saveModalTrimmedAudio()" class="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg shadow-purple-600/20">
+                    <i class="fa-solid fa-scissors"></i> Guardar Recorte
+                </button>
+            </div>
         </div>
     </div>
 
@@ -2676,6 +2815,9 @@
                                     <button onclick="playItemAudioInline('${it.id}')" title="Escuchar audio" class="p-1.5 px-2.5 rounded-lg bg-[#1a202c] hover:bg-[#252d3d] text-emerald-400 text-xs transition">
                                         <i class="fa-solid fa-play"></i>
                                     </button>
+                                    <button onclick="openTrimModalForItem('${it.id}')" title="Recortar clic o silencios" class="p-1.5 px-2 rounded-lg bg-purple-950/60 hover:bg-purple-900 border border-purple-800/60 text-purple-300 text-xs transition">
+                                        <i class="fa-solid fa-scissors"></i>
+                                    </button>
                                     <button onclick="deleteStudioItemById('${it.id}', '${escapeHtml(it.title)}')" title="Borrar grabación" class="p-1.5 px-2 rounded-lg bg-red-950/40 hover:bg-red-900/60 text-red-400 text-xs transition">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
@@ -2770,6 +2912,9 @@
                     if (vsAudioContext && vsAudioContext.state !== 'closed') {
                         vsAudioContext.close();
                     }
+
+                    // Inicializar el editor / recortador inline para eliminar clics o silencios
+                    initInlineTrimEditor(vsCurrentRecordedBlob);
                 };
 
                 vsMediaRecorder.start(100);
@@ -2870,6 +3015,7 @@
         function discardCurrentRecording() {
             vsCurrentRecordedBlob = null;
             vsAudioChunks = [];
+            resetInlineTrimEditor();
             const reviewBox = document.getElementById('vsReviewControls');
             if (reviewBox) reviewBox.classList.add('hidden');
             const previewEl = document.getElementById('vsAudioPreview');
@@ -2898,6 +3044,14 @@
                 const formData = new FormData();
                 formData.append('item_id', item.id);
                 formData.append('audio_file', vsCurrentRecordedBlob, `clip_${item.id}.webm`);
+
+                // Enviar parámetros de recorte si fueron ajustados (para quitar clic del ratón o silencios)
+                if (vsTrimTotalDur > 0) {
+                    if (vsTrimStartSec > 0.02 || vsTrimEndSec < vsTrimTotalDur - 0.02) {
+                        formData.append('start_sec', vsTrimStartSec.toFixed(3));
+                        formData.append('end_sec', vsTrimEndSec.toFixed(3));
+                    }
+                }
 
                 const token = getAuthToken();
                 const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
@@ -2971,6 +3125,583 @@
             } catch (err) {
                 console.error('Error eliminando audio:', err);
                 showToast(err.message || 'Error al eliminar', true);
+            }
+        }
+
+        // =====================================================================
+        // EDITOR Y RECORTADOR DE AUDIO (VOICE STUDIO TRIMMER)
+        // Permite eliminar clics de ratón al final y silencios al inicio
+        // =====================================================================
+        let vsTrimAudioBuffer = null;
+        let vsTrimStartSec = 0.0;
+        let vsTrimEndSec = 0.0;
+        let vsTrimTotalDur = 0.0;
+        let vsTrimPreviewAudioCtx = null;
+        let vsTrimPreviewSource = null;
+        let vsTrimIsPlaying = false;
+        let vsTrimPlayheadAnim = null;
+
+        let vsModalTrimAudioBuffer = null;
+        let vsModalTrimStartSec = 0.0;
+        let vsModalTrimEndSec = 0.0;
+        let vsModalTrimTotalDur = 0.0;
+        let vsModalTrimPreviewAudioCtx = null;
+        let vsModalTrimPreviewSource = null;
+        let vsModalTrimIsPlaying = false;
+        let vsModalTrimPlayheadAnim = null;
+        let vsModalCurrentItem = null;
+
+        function drawTrimWaveform(canvasId, audioBuffer, startSec, endSec, playheadSec = null) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas || !audioBuffer) return;
+            const ctx = canvas.getContext('2d');
+
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                if (canvas.width !== Math.floor(rect.width) || canvas.height !== Math.floor(rect.height)) {
+                    canvas.width = Math.floor(rect.width);
+                    canvas.height = Math.floor(rect.height);
+                }
+            }
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Fondo oscuro
+            ctx.fillStyle = '#080a0f';
+            ctx.fillRect(0, 0, width, height);
+
+            const channelData = audioBuffer.getChannelData(0);
+            const totalDur = audioBuffer.duration || 1.0;
+            const barWidth = 3;
+            const barGap = 1.5;
+            const totalBars = Math.floor(width / (barWidth + barGap));
+            const step = Math.floor(channelData.length / totalBars) || 1;
+
+            for (let i = 0; i < totalBars; i++) {
+                let maxVal = 0;
+                const startSample = i * step;
+                const endSample = Math.min(startSample + step, channelData.length);
+                for (let s = startSample; s < endSample; s += 4) {
+                    const v = Math.abs(channelData[s]);
+                    if (v > maxVal) maxVal = v;
+                }
+
+                const barHeight = Math.max(3, maxVal * (height * 0.85));
+                const x = i * (barWidth + barGap);
+                const y = (height - barHeight) / 2;
+
+                const barTime = (i / totalBars) * totalDur;
+                const isSelected = (barTime >= startSec && barTime <= endSec);
+
+                ctx.fillStyle = isSelected ? '#a855f7' : '#1e293b';
+
+                ctx.beginPath();
+                if (ctx.roundRect) {
+                    ctx.roundRect(x, y, barWidth, barHeight, 1.5);
+                } else {
+                    ctx.rect(x, y, barWidth, barHeight);
+                }
+                ctx.fill();
+            }
+
+            // Sombras de áreas recortadas
+            const startX = (startSec / totalDur) * width;
+            const endX = (endSec / totalDur) * width;
+
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            if (startX > 0) ctx.fillRect(0, 0, startX, height);
+            if (endX < width) ctx.fillRect(endX, 0, width - endX, height);
+
+            // Líneas de límite
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#c084fc';
+            ctx.beginPath();
+            ctx.moveTo(startX, 0); ctx.lineTo(startX, height);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#f43f5e';
+            ctx.beginPath();
+            ctx.moveTo(endX, 0); ctx.lineTo(endX, height);
+            ctx.stroke();
+
+            // Cursor de reproducción (playhead)
+            if (playheadSec !== null && playheadSec >= 0) {
+                const phX = (playheadSec / totalDur) * width;
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#facc15';
+                ctx.beginPath();
+                ctx.moveTo(phX, 0); ctx.lineTo(phX, height);
+                ctx.stroke();
+            }
+        }
+
+        // --- MÉTODOS DEL RECORTADOR INLINE (POST-GRABACIÓN) ---
+        async function initInlineTrimEditor(blob) {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioCtx();
+                const arrayBuf = await blob.arrayBuffer();
+                vsTrimAudioBuffer = await ctx.decodeAudioData(arrayBuf);
+                vsTrimTotalDur = vsTrimAudioBuffer.duration;
+                vsTrimStartSec = 0.0;
+                vsTrimEndSec = vsTrimTotalDur;
+
+                const startRange = document.getElementById('vsTrimStartRange');
+                const endRange = document.getElementById('vsTrimEndRange');
+                const startVal = document.getElementById('vsTrimStartVal');
+                const endVal = document.getElementById('vsTrimEndVal');
+                const statusLabel = document.getElementById('vsTrimStatusLabel');
+
+                if (startRange) {
+                    startRange.min = '0';
+                    startRange.max = vsTrimTotalDur.toFixed(2);
+                    startRange.value = '0';
+                }
+                if (endRange) {
+                    endRange.min = '0';
+                    endRange.max = vsTrimTotalDur.toFixed(2);
+                    endRange.value = vsTrimTotalDur.toFixed(2);
+                }
+                if (startVal) startVal.innerText = '0.00s';
+                if (endVal) endVal.innerText = vsTrimTotalDur.toFixed(2) + 's';
+                if (statusLabel) statusLabel.innerText = `Original: ${vsTrimTotalDur.toFixed(2)}s (Sin recorte)`;
+
+                drawTrimWaveform('vsTrimCanvas', vsTrimAudioBuffer, vsTrimStartSec, vsTrimEndSec);
+            } catch (e) {
+                console.warn('Aviso decodificando audio para recortador:', e);
+            }
+        }
+
+        function resetInlineTrimEditor() {
+            stopTrimPreview();
+            vsTrimAudioBuffer = null;
+            vsTrimStartSec = 0.0;
+            vsTrimEndSec = 0.0;
+            vsTrimTotalDur = 0.0;
+            const canvas = document.getElementById('vsTrimCanvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            const statusLabel = document.getElementById('vsTrimStatusLabel');
+            if (statusLabel) statusLabel.innerText = 'Sin recorte';
+        }
+
+        function onTrimSliderChange(type) {
+            if (!vsTrimAudioBuffer) return;
+            const startRange = document.getElementById('vsTrimStartRange');
+            const endRange = document.getElementById('vsTrimEndRange');
+            const startVal = document.getElementById('vsTrimStartVal');
+            const endVal = document.getElementById('vsTrimEndVal');
+            const statusLabel = document.getElementById('vsTrimStatusLabel');
+
+            let s = parseFloat(startRange.value) || 0;
+            let e = parseFloat(endRange.value) || vsTrimTotalDur;
+
+            if (type === 'start') {
+                if (s >= e - 0.1) {
+                    s = Math.max(0, e - 0.1);
+                    startRange.value = s.toFixed(2);
+                }
+            } else if (type === 'end') {
+                if (e <= s + 0.1) {
+                    e = Math.min(vsTrimTotalDur, s + 0.1);
+                    endRange.value = e.toFixed(2);
+                }
+            }
+
+            vsTrimStartSec = s;
+            vsTrimEndSec = e;
+
+            if (startVal) startVal.innerText = s.toFixed(2) + 's';
+            if (endVal) endVal.innerText = e.toFixed(2) + 's';
+            const trimmedDur = (e - s).toFixed(2);
+            if (statusLabel) {
+                const diff = vsTrimTotalDur - (e - s);
+                statusLabel.innerText = diff > 0.05 ? `Recorte: ${trimmedDur}s (-${diff.toFixed(2)}s)` : `Sin recorte (${trimmedDur}s)`;
+            }
+
+            drawTrimWaveform('vsTrimCanvas', vsTrimAudioBuffer, vsTrimStartSec, vsTrimEndSec);
+        }
+
+        function quickTrimPreset(preset) {
+            if (!vsTrimAudioBuffer) return;
+            const startRange = document.getElementById('vsTrimStartRange');
+            const endRange = document.getElementById('vsTrimEndRange');
+
+            if (preset === 'remove_mouse_click') {
+                vsTrimEndSec = Math.max(vsTrimStartSec + 0.2, +(vsTrimTotalDur - 0.30).toFixed(2));
+                if (endRange) endRange.value = vsTrimEndSec.toFixed(2);
+                showToast('🖱️ Clic final recortado (-0.3s). Presiona "Probar recorte".');
+            } else if (preset === 'remove_start_silence') {
+                vsTrimStartSec = Math.min(vsTrimEndSec - 0.2, +(vsTrimStartSec + 0.20).toFixed(2));
+                if (startRange) startRange.value = vsTrimStartSec.toFixed(2);
+                showToast('Silencio de inicio recortado (-0.2s).');
+            } else if (preset === 'reset') {
+                vsTrimStartSec = 0.0;
+                vsTrimEndSec = vsTrimTotalDur;
+                if (startRange) startRange.value = '0';
+                if (endRange) endRange.value = vsTrimTotalDur.toFixed(2);
+                showToast('Recorte restablecido a duración completa.');
+            }
+
+            const startVal = document.getElementById('vsTrimStartVal');
+            const endVal = document.getElementById('vsTrimEndVal');
+            const statusLabel = document.getElementById('vsTrimStatusLabel');
+
+            if (startVal) startVal.innerText = vsTrimStartSec.toFixed(2) + 's';
+            if (endVal) endVal.innerText = vsTrimEndSec.toFixed(2) + 's';
+            const trimmedDur = (vsTrimEndSec - vsTrimStartSec).toFixed(2);
+            if (statusLabel) {
+                const diff = vsTrimTotalDur - (vsTrimEndSec - vsTrimStartSec);
+                statusLabel.innerText = diff > 0.05 ? `Recorte: ${trimmedDur}s (-${diff.toFixed(2)}s)` : `Sin recorte (${trimmedDur}s)`;
+            }
+
+            drawTrimWaveform('vsTrimCanvas', vsTrimAudioBuffer, vsTrimStartSec, vsTrimEndSec);
+        }
+
+        function stopTrimPreview() {
+            if (vsTrimPreviewSource) {
+                try { vsTrimPreviewSource.stop(); } catch(e){}
+                vsTrimPreviewSource = null;
+            }
+            if (vsTrimPlayheadAnim) {
+                cancelAnimationFrame(vsTrimPlayheadAnim);
+                vsTrimPlayheadAnim = null;
+            }
+            vsTrimIsPlaying = false;
+            const btn = document.getElementById('vsTrimPlayBtn');
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-play" id="vsTrimPlayBtnIcon"></i> Probar recorte';
+                btn.className = 'ml-auto px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded text-[10px] font-bold transition flex items-center gap-1 shadow';
+            }
+            if (vsTrimAudioBuffer) {
+                drawTrimWaveform('vsTrimCanvas', vsTrimAudioBuffer, vsTrimStartSec, vsTrimEndSec);
+            }
+        }
+
+        function toggleTrimPreview() {
+            if (!vsTrimAudioBuffer) return;
+            if (vsTrimIsPlaying) {
+                stopTrimPreview();
+                return;
+            }
+
+            const dur = vsTrimEndSec - vsTrimStartSec;
+            if (dur <= 0.05) {
+                showToast('El recorte es demasiado corto para reproducirse', true);
+                return;
+            }
+
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                vsTrimPreviewAudioCtx = new AudioCtx();
+                vsTrimPreviewSource = vsTrimPreviewAudioCtx.createBufferSource();
+                vsTrimPreviewSource.buffer = vsTrimAudioBuffer;
+                vsTrimPreviewSource.connect(vsTrimPreviewAudioCtx.destination);
+
+                const startOffset = vsTrimStartSec;
+                vsTrimPreviewSource.start(0, startOffset, dur);
+                vsTrimIsPlaying = true;
+
+                const btn = document.getElementById('vsTrimPlayBtn');
+                if (btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-stop"></i> Detener';
+                    btn.className = 'ml-auto px-2.5 py-1 bg-red-600 hover:bg-red-500 text-white rounded text-[10px] font-bold transition flex items-center gap-1 shadow';
+                }
+
+                const playStartTime = vsTrimPreviewAudioCtx.currentTime;
+                function updatePlayhead() {
+                    if (!vsTrimIsPlaying || !vsTrimPreviewAudioCtx) return;
+                    const elapsed = vsTrimPreviewAudioCtx.currentTime - playStartTime;
+                    if (elapsed >= dur) {
+                        stopTrimPreview();
+                        return;
+                    }
+                    drawTrimWaveform('vsTrimCanvas', vsTrimAudioBuffer, vsTrimStartSec, vsTrimEndSec, vsTrimStartSec + elapsed);
+                    vsTrimPlayheadAnim = requestAnimationFrame(updatePlayhead);
+                }
+                vsTrimPlayheadAnim = requestAnimationFrame(updatePlayhead);
+
+                vsTrimPreviewSource.onended = () => {
+                    stopTrimPreview();
+                };
+            } catch (e) {
+                console.error('Error en prueba de recorte:', e);
+                stopTrimPreview();
+            }
+        }
+
+        // --- MÉTODOS DEL MODAL DE RECORTE PARA AUDIOS EXISTENTES ---
+        function openTrimModalForCurrentItem() {
+            if (!voiceStudioManifest || !voiceStudioManifest.items) return;
+            const item = voiceStudioManifest.items[vsCurrentIndex];
+            if (!item) return;
+            openTrimModalForItem(item.id, item.title, item.prompt_text);
+        }
+
+        async function openTrimModalForItem(itemId, customTitle = null, customPrompt = null) {
+            if (!voiceStudioManifest || !voiceStudioManifest.items) return;
+            const item = voiceStudioManifest.items.find(x => x.id === itemId);
+            if (!item) return;
+
+            vsModalCurrentItem = item;
+            const modal = document.getElementById('vsTrimModal');
+            const titleEl = document.getElementById('vsModalTrimTitle');
+            const promptEl = document.getElementById('vsModalTrimPromptText');
+            const loader = document.getElementById('vsModalTrimLoading');
+
+            if (titleEl) titleEl.innerText = `${customTitle || item.title} (${item.id})`;
+            if (promptEl) promptEl.innerText = `"${customPrompt || item.prompt_text}"`;
+            if (modal) modal.classList.remove('hidden');
+            if (loader) loader.classList.remove('hidden');
+
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioCtx();
+                const res = await fetch(`/api/voice-studio/audio/${item.id}?t=${Date.now()}`);
+                if (!res.ok) throw new Error('No se pudo descargar el archivo de audio del servidor.');
+                const arrayBuf = await res.arrayBuffer();
+                vsModalTrimAudioBuffer = await ctx.decodeAudioData(arrayBuf);
+                vsModalTrimTotalDur = vsModalTrimAudioBuffer.duration;
+                vsModalTrimStartSec = 0.0;
+                vsModalTrimEndSec = vsModalTrimTotalDur;
+
+                const startRange = document.getElementById('vsModalTrimStartRange');
+                const endRange = document.getElementById('vsModalTrimEndRange');
+                const startVal = document.getElementById('vsModalTrimStartVal');
+                const endVal = document.getElementById('vsModalTrimEndVal');
+                const statusLabel = document.getElementById('vsModalTrimStatusLabel');
+
+                if (startRange) {
+                    startRange.min = '0';
+                    startRange.max = vsModalTrimTotalDur.toFixed(2);
+                    startRange.value = '0';
+                }
+                if (endRange) {
+                    endRange.min = '0';
+                    endRange.max = vsModalTrimTotalDur.toFixed(2);
+                    endRange.value = vsModalTrimTotalDur.toFixed(2);
+                }
+                if (startVal) startVal.innerText = '0.00s';
+                if (endVal) endVal.innerText = vsModalTrimTotalDur.toFixed(2) + 's';
+                if (statusLabel) statusLabel.innerText = `Duración: ${vsModalTrimTotalDur.toFixed(2)}s`;
+
+                if (loader) loader.classList.add('hidden');
+                drawTrimWaveform('vsModalTrimCanvas', vsModalTrimAudioBuffer, vsModalTrimStartSec, vsModalTrimEndSec);
+            } catch (err) {
+                console.error('Error cargando audio para modal de recorte:', err);
+                if (loader) loader.classList.add('hidden');
+                showToast(err.message || 'Error cargando audio', true);
+                closeTrimModal();
+            }
+        }
+
+        function closeTrimModal() {
+            stopModalTrimPreview();
+            const modal = document.getElementById('vsTrimModal');
+            if (modal) modal.classList.add('hidden');
+            vsModalTrimAudioBuffer = null;
+            vsModalCurrentItem = null;
+        }
+
+        function onModalTrimSliderChange(type) {
+            if (!vsModalTrimAudioBuffer) return;
+            const startRange = document.getElementById('vsModalTrimStartRange');
+            const endRange = document.getElementById('vsModalTrimEndRange');
+            const startVal = document.getElementById('vsModalTrimStartVal');
+            const endVal = document.getElementById('vsModalTrimEndVal');
+            const statusLabel = document.getElementById('vsModalTrimStatusLabel');
+
+            let s = parseFloat(startRange.value) || 0;
+            let e = parseFloat(endRange.value) || vsModalTrimTotalDur;
+
+            if (type === 'start') {
+                if (s >= e - 0.1) {
+                    s = Math.max(0, e - 0.1);
+                    startRange.value = s.toFixed(2);
+                }
+            } else if (type === 'end') {
+                if (e <= s + 0.1) {
+                    e = Math.min(vsModalTrimTotalDur, s + 0.1);
+                    endRange.value = e.toFixed(2);
+                }
+            }
+
+            vsModalTrimStartSec = s;
+            vsModalTrimEndSec = e;
+
+            if (startVal) startVal.innerText = s.toFixed(2) + 's';
+            if (endVal) endVal.innerText = e.toFixed(2) + 's';
+            const trimmedDur = (e - s).toFixed(2);
+            if (statusLabel) {
+                const diff = vsModalTrimTotalDur - (e - s);
+                statusLabel.innerText = diff > 0.05 ? `Recorte: ${trimmedDur}s (-${diff.toFixed(2)}s)` : `Original: ${trimmedDur}s`;
+            }
+
+            drawTrimWaveform('vsModalTrimCanvas', vsModalTrimAudioBuffer, vsModalTrimStartSec, vsModalTrimEndSec);
+        }
+
+        function quickModalTrimPreset(preset) {
+            if (!vsModalTrimAudioBuffer) return;
+            const startRange = document.getElementById('vsModalTrimStartRange');
+            const endRange = document.getElementById('vsModalTrimEndRange');
+
+            if (preset === 'remove_mouse_click') {
+                vsModalTrimEndSec = Math.max(vsModalTrimStartSec + 0.2, +(vsModalTrimTotalDur - 0.30).toFixed(2));
+                if (endRange) endRange.value = vsModalTrimEndSec.toFixed(2);
+                showToast('🖱️ Clic final recortado (-0.3s). Presiona "Probar recorte".');
+            } else if (preset === 'remove_start_silence') {
+                vsModalTrimStartSec = Math.min(vsModalTrimEndSec - 0.2, +(vsModalTrimStartSec + 0.20).toFixed(2));
+                if (startRange) startRange.value = vsModalTrimStartSec.toFixed(2);
+                showToast('Silencio de inicio recortado (-0.2s).');
+            } else if (preset === 'reset') {
+                vsModalTrimStartSec = 0.0;
+                vsModalTrimEndSec = vsModalTrimTotalDur;
+                if (startRange) startRange.value = '0';
+                if (endRange) endRange.value = vsModalTrimTotalDur.toFixed(2);
+                showToast('Recorte restablecido.');
+            }
+
+            const startVal = document.getElementById('vsModalTrimStartVal');
+            const endVal = document.getElementById('vsModalTrimEndVal');
+            const statusLabel = document.getElementById('vsModalTrimStatusLabel');
+
+            if (startVal) startVal.innerText = vsModalTrimStartSec.toFixed(2) + 's';
+            if (endVal) endVal.innerText = vsModalTrimEndSec.toFixed(2) + 's';
+            const trimmedDur = (vsModalTrimEndSec - vsModalTrimStartSec).toFixed(2);
+            if (statusLabel) {
+                const diff = vsModalTrimTotalDur - (vsModalTrimEndSec - vsModalTrimStartSec);
+                statusLabel.innerText = diff > 0.05 ? `Recorte: ${trimmedDur}s (-${diff.toFixed(2)}s)` : `Original: ${trimmedDur}s`;
+            }
+
+            drawTrimWaveform('vsModalTrimCanvas', vsModalTrimAudioBuffer, vsModalTrimStartSec, vsModalTrimEndSec);
+        }
+
+        function stopModalTrimPreview() {
+            if (vsModalTrimPreviewSource) {
+                try { vsModalTrimPreviewSource.stop(); } catch(e){}
+                vsModalTrimPreviewSource = null;
+            }
+            if (vsModalTrimPlayheadAnim) {
+                cancelAnimationFrame(vsModalTrimPlayheadAnim);
+                vsModalTrimPlayheadAnim = null;
+            }
+            vsModalTrimIsPlaying = false;
+            const btn = document.getElementById('vsModalTrimPlayBtn');
+            if (btn) {
+                btn.innerHTML = '<i class="fa-solid fa-play" id="vsModalTrimPlayBtnIcon"></i> Probar recorte';
+                btn.className = 'ml-auto px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 shadow';
+            }
+            if (vsModalTrimAudioBuffer) {
+                drawTrimWaveform('vsModalTrimCanvas', vsModalTrimAudioBuffer, vsModalTrimStartSec, vsModalTrimEndSec);
+            }
+        }
+
+        function toggleModalTrimPreview() {
+            if (!vsModalTrimAudioBuffer) return;
+            if (vsModalTrimIsPlaying) {
+                stopModalTrimPreview();
+                return;
+            }
+
+            const dur = vsModalTrimEndSec - vsModalTrimStartSec;
+            if (dur <= 0.05) {
+                showToast('El recorte es demasiado corto', true);
+                return;
+            }
+
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                vsModalTrimPreviewAudioCtx = new AudioCtx();
+                vsModalTrimPreviewSource = vsModalTrimPreviewAudioCtx.createBufferSource();
+                vsModalTrimPreviewSource.buffer = vsModalTrimAudioBuffer;
+                vsModalTrimPreviewSource.connect(vsModalTrimPreviewAudioCtx.destination);
+
+                const startOffset = vsModalTrimStartSec;
+                vsModalTrimPreviewSource.start(0, startOffset, dur);
+                vsModalTrimIsPlaying = true;
+
+                const btn = document.getElementById('vsModalTrimPlayBtn');
+                if (btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-stop"></i> Detener';
+                    btn.className = 'ml-auto px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-[11px] font-bold transition flex items-center gap-1.5 shadow';
+                }
+
+                const playStartTime = vsModalTrimPreviewAudioCtx.currentTime;
+                function updateModalPlayhead() {
+                    if (!vsModalTrimIsPlaying || !vsModalTrimPreviewAudioCtx) return;
+                    const elapsed = vsModalTrimPreviewAudioCtx.currentTime - playStartTime;
+                    if (elapsed >= dur) {
+                        stopModalTrimPreview();
+                        return;
+                    }
+                    drawTrimWaveform('vsModalTrimCanvas', vsModalTrimAudioBuffer, vsModalTrimStartSec, vsModalTrimEndSec, vsModalTrimStartSec + elapsed);
+                    vsModalTrimPlayheadAnim = requestAnimationFrame(updateModalPlayhead);
+                }
+                vsModalTrimPlayheadAnim = requestAnimationFrame(updateModalPlayhead);
+
+                vsModalTrimPreviewSource.onended = () => {
+                    stopModalTrimPreview();
+                };
+            } catch (e) {
+                console.error('Error en prueba de recorte modal:', e);
+                stopModalTrimPreview();
+            }
+        }
+
+        async function saveModalTrimmedAudio() {
+            if (!vsModalCurrentItem) return;
+            const saveBtn = document.getElementById('vsModalTrimSaveBtn');
+            const origHtml = saveBtn ? saveBtn.innerHTML : '';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Recortando...';
+            }
+
+            try {
+                const token = getAuthToken();
+                const headers = {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+                };
+                const res = await fetch('/api/voice-studio/trim', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        item_id: vsModalCurrentItem.id,
+                        start_sec: vsModalTrimStartSec,
+                        end_sec: vsModalTrimEndSec
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Error recortando audio');
+
+                showToast(`✂️ Recorte aplicado con éxito (${data.duration_sec}s)`);
+
+                // Actualizar item en memoria
+                vsModalCurrentItem.duration_sec = data.duration_sec;
+                renderVoiceStudioStats();
+                renderVoiceStudioDirectory();
+
+                // Si es el ítem actualmente activo en el teleprompter, refrescar reproductor
+                if (voiceStudioManifest && voiceStudioManifest.items && voiceStudioManifest.items[vsCurrentIndex]?.id === vsModalCurrentItem.id) {
+                    const existingDuration = document.getElementById('vsExistingDuration');
+                    const existingAudio = document.getElementById('vsExistingAudio');
+                    if (existingDuration) existingDuration.innerText = `${data.duration_sec}s`;
+                    if (existingAudio) existingAudio.src = `/api/voice-studio/audio/${vsModalCurrentItem.id}?t=${Date.now()}`;
+                }
+
+                closeTrimModal();
+            } catch (err) {
+                console.error('Error al guardar recorte:', err);
+                showToast(err.message || 'Error al procesar el recorte en el servidor', true);
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = origHtml;
+                }
             }
         }
 
