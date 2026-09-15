@@ -2,9 +2,9 @@
   "_version": "1.0.0",
   "generated_at": "2026-09-13T20:17:14.352988",
   "total_items": 233,
-  "recorded_items": 0,
-  "pending_items": 233,
-  "completion_percent": 0.0,
+  "recorded_items": 233,
+  "pending_items": 0,
+  "completion_percent": 100.0,
   "items": [
     {
       "id": "flow_saludo",
@@ -13,11 +13,11 @@
       "title": "Saludo Inicial de Bienvenida",
       "prompt_text": "¡Buenas tardes! Bienvenido a Restaurante Ryu, comida japonesa, snacks y comida italiana. ¿Qué se te antoja ordenar hoy?",
       "phonetic_tip": "Tono cálido y amable de bienvenida, con ritmo natural y alegre.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 6.7,
+      "audio_alaw": "/audio_clips/flow_saludo.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_saludo",
+      "updated_at": "2026-09-14T19:02:09.479542"
     },
     {
       "id": "flow_pregunta_servicio",
@@ -26,11 +26,11 @@
       "title": "Pregunta de Servicio (Domicilio / Recoger)",
       "prompt_text": "¿Tu pedido sería para entrega a domicilio o pasarías a recogerlo a la sucursal?",
       "phonetic_tip": "Entonación de pregunta clara y comprensible.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.95,
+      "audio_alaw": "/audio_clips/flow_pregunta_servicio.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_pregunta_servicio",
+      "updated_at": "2026-09-14T19:02:09.410615"
     },
     {
       "id": "flow_pregunta_direccion",
@@ -39,11 +39,11 @@
       "title": "Pregunta de Dirección y Colonia",
       "prompt_text": "¿A qué dirección y colonia te lo enviamos?",
       "phonetic_tip": "Tono atento y claro para que el cliente dicte su domicilio.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.15,
+      "audio_alaw": "/audio_clips/flow_pregunta_direccion.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_pregunta_direccion",
+      "updated_at": "2026-09-14T19:02:09.400164"
     },
     {
       "id": "flow_pregunta_pago",
@@ -52,11 +52,11 @@
       "title": "Pregunta de Método de Pago",
       "prompt_text": "¿Tu pago sería en efectivo o con tarjeta?",
       "phonetic_tip": "Pausa breve entre 'efectivo' y 'tarjeta'.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.85,
+      "audio_alaw": "/audio_clips/flow_pregunta_pago.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_pregunta_pago",
+      "updated_at": "2026-09-14T19:02:09.405380"
     },
     {
       "id": "flow_pregunta_billete",
@@ -65,11 +65,11 @@
       "title": "Pregunta de Denominación para Cambio",
       "prompt_text": "¿Con qué billete pagarías para enviarte tu cambio?",
       "phonetic_tip": "Tono servicial y paciente.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 4.3,
+      "audio_alaw": "/audio_clips/flow_pregunta_billete.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_pregunta_billete",
+      "updated_at": "2026-09-14T19:02:09.395371"
     },
     {
       "id": "flow_pregunta_algo_mas",
@@ -78,11 +78,11 @@
       "title": "Pregunta si Desea Agregar Algo Más",
       "prompt_text": "¿Te gustaría agregar algo más a tu orden, alguna bebida, postre o rollo?",
       "phonetic_tip": "Tono de sugerencia amable sin sonar insistente.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 4.2,
+      "audio_alaw": "/audio_clips/flow_pregunta_algo_mas.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_pregunta_algo_mas",
+      "updated_at": "2026-09-14T19:02:09.387368"
     },
     {
       "id": "flow_espera_calma",
@@ -91,11 +91,11 @@
       "title": "Recordatorio de Paciencia",
       "prompt_text": "Aquí sigo en la línea, tómate tu tiempo con calma.",
       "phonetic_tip": "Tono tranquilizador y paciente.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 4.2,
+      "audio_alaw": "/audio_clips/flow_espera_calma.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_espera_calma",
+      "updated_at": "2026-09-14T19:02:09.376298"
     },
     {
       "id": "flow_espera_corto",
@@ -104,11 +104,11 @@
       "title": "Intercepción Corta de Presencia",
       "prompt_text": "Bueno, aquí sigo en la línea a tus órdenes.",
       "phonetic_tip": "Rápido y atento, en caso de silencios breves del cliente.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.85,
+      "audio_alaw": "/audio_clips/flow_espera_corto.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_espera_corto",
+      "updated_at": "2026-09-14T19:02:09.380905"
     },
     {
       "id": "flow_confirmacion_intro",
@@ -117,11 +117,11 @@
       "title": "Introducción de Confirmación",
       "prompt_text": "Excelente, déjame confirmarte tu orden:",
       "phonetic_tip": "Tono seguro y claro antes de enumerar los platillos.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.25,
+      "audio_alaw": "/audio_clips/flow_confirmacion_intro.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_confirmacion_intro",
+      "updated_at": "2026-09-14T19:02:09.346012"
     },
     {
       "id": "flow_confirmacion_cierre",
@@ -130,11 +130,11 @@
       "title": "Pregunta de Validación de Orden",
       "prompt_text": "¿Todo correcto con tu pedido?",
       "phonetic_tip": "Entonación de confirmación final clara.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.55,
+      "audio_alaw": "/audio_clips/flow_confirmacion_cierre.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_confirmacion_cierre",
+      "updated_at": "2026-09-14T19:02:09.337923"
     },
     {
       "id": "flow_despedida_general",
@@ -143,11 +143,11 @@
       "title": "Despedida y Agradecimiento",
       "prompt_text": "¡Muchas gracias por ordenar en Ryu! Enseguida lo pasamos a cocina para preparártelo. ¡Que disfrutes tu comida!",
       "phonetic_tip": "Entonación sonriente, agradecida y energética.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 5.75,
+      "audio_alaw": "/audio_clips/flow_despedida_general.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_despedida_general",
+      "updated_at": "2026-09-14T19:02:09.357427"
     },
     {
       "id": "flow_recoger_listo",
@@ -156,11 +156,11 @@
       "title": "Instrucciones de Recoger en Sucursal",
       "prompt_text": "Tu pedido estará listo en aproximadamente 25 a 30 minutos aquí en sucursal en Paseo del Centenario 27, colonia Cofradía. ¡Te esperamos!",
       "phonetic_tip": "Pronunciar claramente la dirección 'Paseo del Centenario 27'.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 10.0,
+      "audio_alaw": "/audio_clips/flow_recoger_listo.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_recoger_listo",
+      "updated_at": "2026-09-14T19:02:09.468960"
     },
     {
       "id": "flow_domicilio_tiempo",
@@ -169,11 +169,11 @@
       "title": "Tiempo Estimado para Domicilio",
       "prompt_text": "Tu pedido ya está en camino a cocina, el repartidor llegará a tu domicilio en aproximadamente 40 a 55 minutos.",
       "phonetic_tip": "Tono confiable y profesional.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 7.35,
+      "audio_alaw": "/audio_clips/flow_domicilio_tiempo.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_domicilio_tiempo",
+      "updated_at": "2026-09-14T19:02:09.367463"
     },
     {
       "id": "flow_cocina_cerrada",
@@ -182,11 +182,11 @@
       "title": "Aviso de Cocina Cerrada",
       "prompt_text": "Hola, muchas gracias por llamar a Restaurante Ryu. En este momento nuestra cocina se encuentra cerrada. Nuestro horario de servicio comienza a las dos de la tarde. ¡Esperamos tu llamada más tarde!",
       "phonetic_tip": "Tono muy cortés, empático y claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 10.55,
+      "audio_alaw": "/audio_clips/flow_cocina_cerrada.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_cocina_cerrada",
+      "updated_at": "2026-09-14T19:02:09.333545"
     },
     {
       "id": "flow_zona_foranea_aviso",
@@ -195,11 +195,11 @@
       "title": "Aviso General de Zona Foránea",
       "prompt_text": "Te comento que para tu zona el envío tiene un costo adicional que se sumará al total de tu cuenta.",
       "phonetic_tip": "Informativo y transparente.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 6.45,
+      "audio_alaw": "/audio_clips/flow_zona_foranea_aviso.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_zona_foranea_aviso",
+      "updated_at": "2026-09-14T19:02:09.492669"
     },
     {
       "id": "flow_zona_medineno",
@@ -208,11 +208,11 @@
       "title": "Tarifa de Envío El Medineño",
       "prompt_text": "Para El Medineño el costo de envío es de 100 pesos.",
       "phonetic_tip": "Claro y conciso.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.45,
+      "audio_alaw": "/audio_clips/flow_zona_medineno.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_zona_medineno",
+      "updated_at": "2026-09-14T19:02:09.501532"
     },
     {
       "id": "flow_zona_san_martin",
@@ -221,11 +221,11 @@
       "title": "Tarifa de Envío San Martín de Cañas",
       "prompt_text": "Para San Martín de Cañas el costo de envío es de 100 pesos.",
       "phonetic_tip": "Claro y conciso.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 4.05,
+      "audio_alaw": "/audio_clips/flow_zona_san_martin.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_zona_san_martin",
+      "updated_at": "2026-09-14T19:02:09.506255"
     },
     {
       "id": "flow_zona_magdalena",
@@ -234,11 +234,11 @@
       "title": "Tarifa de Envío Magdalena",
       "prompt_text": "Para Magdalena el costo de envío es de 100 pesos.",
       "phonetic_tip": "Claro y conciso.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.8,
+      "audio_alaw": "/audio_clips/flow_zona_magdalena.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_zona_magdalena",
+      "updated_at": "2026-09-14T19:02:09.497308"
     },
     {
       "id": "flow_zona_tierra_agave",
@@ -247,11 +247,11 @@
       "title": "Tarifa de Envío Fraccionamiento Tierra de Agave",
       "prompt_text": "Para Fraccionamiento Tierra de Agave el costo de envío es de 80 pesos.",
       "phonetic_tip": "Claro y conciso.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.95,
+      "audio_alaw": "/audio_clips/flow_zona_tierra_agave.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_zona_tierra_agave",
+      "updated_at": "2026-09-14T19:02:09.510833"
     },
     {
       "id": "flow_zona_aguacatillo",
@@ -260,11 +260,11 @@
       "title": "Tarifa de Envío El Aguacatillo",
       "prompt_text": "Para El Aguacatillo el costo de envío es de 30 pesos.",
       "phonetic_tip": "Claro y conciso.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.85,
+      "audio_alaw": "/audio_clips/flow_zona_aguacatillo.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_zona_aguacatillo",
+      "updated_at": "2026-09-14T19:02:09.484597"
     },
     {
       "id": "flow_promocion_intro",
@@ -273,11 +273,11 @@
       "title": "Introducción a Promoción del Día",
       "prompt_text": "Hoy tenemos una excelente promoción activa:",
       "phonetic_tip": "Entonación atractiva y animada.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.45,
+      "audio_alaw": "/audio_clips/flow_promocion_intro.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_promocion_intro",
+      "updated_at": "2026-09-14T19:02:09.450328"
     },
     {
       "id": "flow_promo_3x2",
@@ -286,11 +286,11 @@
       "title": "Promoción 3x2 en Sushi",
       "prompt_text": "Hoy tenemos promoción 3 por 2 en rollos de sushi tradicionales. ¡Compras dos rollos y el tercero va por nuestra cuenta!",
       "phonetic_tip": "Entonación entusiasta, destacando 'tres por dos'.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 9.25,
+      "audio_alaw": "/audio_clips/flow_promo_3x2.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_promo_3x2",
+      "updated_at": "2026-09-14T19:02:09.421733"
     },
     {
       "id": "flow_promo_boneless",
@@ -299,11 +299,11 @@
       "title": "Promoción Boneless Medio Kilo",
       "prompt_text": "Hoy tenemos los Boneless de medio kilo en promoción especial a solo 120 pesos.",
       "phonetic_tip": "Entonación animada.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 6.6,
+      "audio_alaw": "/audio_clips/flow_promo_boneless.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_promo_boneless",
+      "updated_at": "2026-09-14T19:02:09.430059"
     },
     {
       "id": "flow_promo_hamburguesas",
@@ -312,11 +312,11 @@
       "title": "Promoción Hamburguesas",
       "prompt_text": "Hoy tenemos todas las hamburguesas sencillas con papas a solo 85 pesos.",
       "phonetic_tip": "Entonación animada.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 7.0,
+      "audio_alaw": "/audio_clips/flow_promo_hamburguesas.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_promo_hamburguesas",
+      "updated_at": "2026-09-14T19:02:09.441506"
     },
     {
       "id": "flow_promo_yakimeshi",
@@ -325,11 +325,11 @@
       "title": "Promoción Yakimeshi Mixto",
       "prompt_text": "Hoy el Yakimeshi mixto tiene 20% de descuento.",
       "phonetic_tip": "Entonación animada.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.8,
+      "audio_alaw": "/audio_clips/flow_promo_yakimeshi.alaw",
+      "audio_wav": "/api/voice-studio/audio/flow_promo_yakimeshi",
+      "updated_at": "2026-09-14T19:02:09.446019"
     },
     {
       "id": "dish_jp_ent_01",
@@ -338,11 +338,11 @@
       "title": "Tataki (Ceviche) ($165 MXN)",
       "prompt_text": "Tataki (Ceviche)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Tataki (Ceviche)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.9,
+      "audio_alaw": "/audio_clips/dish_jp_ent_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_ent_01",
+      "updated_at": "2026-09-14T19:02:08.911562"
     },
     {
       "id": "dish_jp_ent_02",
@@ -351,11 +351,11 @@
       "title": "Aguachile ($170 MXN)",
       "prompt_text": "Aguachile",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Aguachile",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.85,
+      "audio_alaw": "/audio_clips/dish_jp_ent_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_ent_02",
+      "updated_at": "2026-09-14T19:02:08.913444"
     },
     {
       "id": "dish_jp_ent_03",
@@ -364,11 +364,11 @@
       "title": "Rollo Primavera ($100 MXN)",
       "prompt_text": "Rollo Primavera",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Rollo Primavera",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_jp_ent_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_ent_03",
+      "updated_at": "2026-09-14T19:02:08.915643"
     },
     {
       "id": "dish_jp_ent_04",
@@ -377,11 +377,11 @@
       "title": "Gyosas ($110 MXN)",
       "prompt_text": "Gyosas",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Gyosas",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.75,
+      "audio_alaw": "/audio_clips/dish_jp_ent_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_ent_04",
+      "updated_at": "2026-09-14T19:02:08.917653"
     },
     {
       "id": "dish_jp_kush_01",
@@ -390,11 +390,11 @@
       "title": "Kushiage de Res ($105 MXN)",
       "prompt_text": "Kushiage de Res",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Kushiage de Res",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.15,
+      "audio_alaw": "/audio_clips/dish_jp_kush_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_kush_01",
+      "updated_at": "2026-09-14T19:02:08.919428"
     },
     {
       "id": "dish_jp_kush_02",
@@ -403,11 +403,11 @@
       "title": "Kushiage de Camarón ($110 MXN)",
       "prompt_text": "Kushiage de Camarón",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Kushiage de Camarón",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_jp_kush_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_kush_02",
+      "updated_at": "2026-09-14T19:02:08.921595"
     },
     {
       "id": "dish_jp_kush_03",
@@ -416,11 +416,11 @@
       "title": "Kushiage de Pollo ($105 MXN)",
       "prompt_text": "Kushiage de Pollo",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Kushiage de Pollo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.46,
+      "audio_alaw": "/audio_clips/dish_jp_kush_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_kush_03",
+      "updated_at": "2026-09-14T19:02:08.924395"
     },
     {
       "id": "dish_jp_ens_01",
@@ -429,11 +429,11 @@
       "title": "Ensalada de Pollo ($95 MXN)",
       "prompt_text": "Ensalada de Pollo",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Ensalada de Pollo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_jp_ens_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_ens_01",
+      "updated_at": "2026-09-14T19:02:08.899256"
     },
     {
       "id": "dish_jp_ens_02",
@@ -442,11 +442,11 @@
       "title": "Ensalada de Res ($95 MXN)",
       "prompt_text": "Ensalada de Res",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Ensalada de Res",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.39,
+      "audio_alaw": "/audio_clips/dish_jp_ens_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_ens_02",
+      "updated_at": "2026-09-14T19:02:08.901525"
     },
     {
       "id": "dish_jp_ens_03",
@@ -455,11 +455,11 @@
       "title": "Ensalada de Mariscos ($160 MXN)",
       "prompt_text": "Ensalada de Mariscos",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Ensalada de Mariscos",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.55,
+      "audio_alaw": "/audio_clips/dish_jp_ens_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_ens_03",
+      "updated_at": "2026-09-14T19:02:08.904675"
     },
     {
       "id": "dish_jp_ens_04",
@@ -468,11 +468,11 @@
       "title": "Ensalada Verde ($40 MXN)",
       "prompt_text": "Ensalada Verde",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Ensalada Verde",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.22,
+      "audio_alaw": "/audio_clips/dish_jp_ens_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_ens_04",
+      "updated_at": "2026-09-14T19:02:08.907036"
     },
     {
       "id": "dish_jp_sash_01",
@@ -481,11 +481,11 @@
       "title": "Sashimi de Salmón ($170 MXN)",
       "prompt_text": "Sashimi de Salmón",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sashimi de Salmón",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.55,
+      "audio_alaw": "/audio_clips/dish_jp_sash_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sash_01",
+      "updated_at": "2026-09-14T19:02:08.992963"
     },
     {
       "id": "dish_jp_sash_02",
@@ -494,11 +494,11 @@
       "title": "Sashimi de Res ($150 MXN)",
       "prompt_text": "Sashimi de Res",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sashimi de Res",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.26,
+      "audio_alaw": "/audio_clips/dish_jp_sash_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sash_02",
+      "updated_at": "2026-09-14T19:02:08.995769"
     },
     {
       "id": "dish_jp_sash_03",
@@ -507,11 +507,11 @@
       "title": "Sashimi de Pescado ($100 MXN)",
       "prompt_text": "Sashimi de Pescado",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sashimi de Pescado",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_jp_sash_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sash_03",
+      "updated_at": "2026-09-14T19:02:08.997744"
     },
     {
       "id": "dish_jp_sash_04",
@@ -520,11 +520,11 @@
       "title": "Sashimi de Pulpo ($200 MXN)",
       "prompt_text": "Sashimi de Pulpo",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sashimi de Pulpo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_jp_sash_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sash_04",
+      "updated_at": "2026-09-14T19:02:09.000621"
     },
     {
       "id": "dish_jp_nig_01",
@@ -533,11 +533,11 @@
       "title": "Nigiri Ebi (Camarón) ($20 MXN)",
       "prompt_text": "Nigiri Ebi (Camarón)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Nigiri Ebi (Camarón)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.29,
+      "audio_alaw": "/audio_clips/dish_jp_nig_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_nig_01",
+      "updated_at": "2026-09-14T19:02:08.926333"
     },
     {
       "id": "dish_jp_nig_02",
@@ -546,11 +546,11 @@
       "title": "Nigiri Tako (Pulpo) ($20 MXN)",
       "prompt_text": "Nigiri Tako (Pulpo)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Nigiri Tako (Pulpo)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.25,
+      "audio_alaw": "/audio_clips/dish_jp_nig_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_nig_02",
+      "updated_at": "2026-09-14T19:02:08.930280"
     },
     {
       "id": "dish_jp_nig_03",
@@ -559,11 +559,11 @@
       "title": "Nigiri Kanikama (Cangrejo) ($15 MXN)",
       "prompt_text": "Nigiri Kanikama (Cangrejo)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Nigiri Kanikama (Cangrejo)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.25,
+      "audio_alaw": "/audio_clips/dish_jp_nig_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_nig_03",
+      "updated_at": "2026-09-14T19:02:08.933166"
     },
     {
       "id": "dish_jp_nig_04",
@@ -572,11 +572,11 @@
       "title": "Nigiri Syake (Salmón) ($20 MXN)",
       "prompt_text": "Nigiri Syake (Salmón)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Nigiri Syake (Salmón)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.25,
+      "audio_alaw": "/audio_clips/dish_jp_nig_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_nig_04",
+      "updated_at": "2026-09-14T19:02:08.937385"
     },
     {
       "id": "dish_jp_nig_05",
@@ -585,11 +585,11 @@
       "title": "Nigiri Banana (Plátano) ($15 MXN)",
       "prompt_text": "Nigiri Banana (Plátano)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Nigiri Banana (Plátano)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.35,
+      "audio_alaw": "/audio_clips/dish_jp_nig_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_nig_05",
+      "updated_at": "2026-09-14T19:02:08.940375"
     },
     {
       "id": "dish_jp_sop_01",
@@ -598,11 +598,11 @@
       "title": "Udon ($150 MXN)",
       "prompt_text": "Udon",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Udon",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.65,
+      "audio_alaw": "/audio_clips/dish_jp_sop_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sop_01",
+      "updated_at": "2026-09-14T19:02:09.003982"
     },
     {
       "id": "dish_jp_sop_02",
@@ -611,11 +611,11 @@
       "title": "Sopa Especial ($160 MXN)",
       "prompt_text": "Sopa Especial",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sopa Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_jp_sop_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sop_02",
+      "updated_at": "2026-09-14T19:02:09.006798"
     },
     {
       "id": "dish_jp_sop_03",
@@ -624,11 +624,11 @@
       "title": "Ramen ($190 MXN)",
       "prompt_text": "Ramen",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Ramen",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.85,
+      "audio_alaw": "/audio_clips/dish_jp_sop_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sop_03",
+      "updated_at": "2026-09-14T19:02:09.009087"
     },
     {
       "id": "dish_jp_yaki_01",
@@ -637,11 +637,11 @@
       "title": "Yakimeshi de Verduras ($40 MXN)",
       "prompt_text": "Yakimeshi de Verduras",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Yakimeshi de Verduras",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_jp_yaki_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_yaki_01",
+      "updated_at": "2026-09-14T19:02:09.116992"
     },
     {
       "id": "dish_jp_yaki_02",
@@ -650,11 +650,11 @@
       "title": "Yakimeshi de Carne (Res) ($75 MXN)",
       "prompt_text": "Yakimeshi de Carne (Res)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Yakimeshi de Carne (Res)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.46,
+      "audio_alaw": "/audio_clips/dish_jp_yaki_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_yaki_02",
+      "updated_at": "2026-09-14T19:02:09.120661"
     },
     {
       "id": "dish_jp_yaki_03",
@@ -663,11 +663,11 @@
       "title": "Yakimeshi de Pollo ($80 MXN)",
       "prompt_text": "Yakimeshi de Pollo",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Yakimeshi de Pollo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.55,
+      "audio_alaw": "/audio_clips/dish_jp_yaki_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_yaki_03",
+      "updated_at": "2026-09-14T19:02:09.122844"
     },
     {
       "id": "dish_jp_yaki_04",
@@ -676,11 +676,11 @@
       "title": "Yakimeshi de Camarón ($80 MXN)",
       "prompt_text": "Yakimeshi de Camarón",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Yakimeshi de Camarón",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_jp_yaki_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_yaki_04",
+      "updated_at": "2026-09-14T19:02:09.125085"
     },
     {
       "id": "dish_jp_yaki_05",
@@ -689,11 +689,11 @@
       "title": "Yakimeshi Mixto ($85 MXN)",
       "prompt_text": "Yakimeshi Mixto",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Yakimeshi Mixto",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_jp_yaki_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_yaki_05",
+      "updated_at": "2026-09-14T19:02:09.128405"
     },
     {
       "id": "dish_jp_yaki_06",
@@ -702,11 +702,11 @@
       "title": "Yakimeshi Tonkotsu ($95 MXN)",
       "prompt_text": "Yakimeshi Tonkotsu",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Yakimeshi Tonkotsu",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.9,
+      "audio_alaw": "/audio_clips/dish_jp_yaki_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_yaki_06",
+      "updated_at": "2026-09-14T19:02:09.131116"
     },
     {
       "id": "dish_jp_tepp_01",
@@ -715,11 +715,11 @@
       "title": "Teppanyaki / Teriyaki de Filete (Pescado) ($130 MXN)",
       "prompt_text": "Teppanyaki / Teriyaki de Filete (Pescado)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Teppanyaki / Teriyaki de Filete (Pescado)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 4.3,
+      "audio_alaw": "/audio_clips/dish_jp_tepp_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_tepp_01",
+      "updated_at": "2026-09-14T19:02:09.096508"
     },
     {
       "id": "dish_jp_tepp_02",
@@ -728,11 +728,11 @@
       "title": "Teppanyaki / Teriyaki de Res ($135 MXN)",
       "prompt_text": "Teppanyaki / Teriyaki de Res",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Teppanyaki / Teriyaki de Res",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.25,
+      "audio_alaw": "/audio_clips/dish_jp_tepp_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_tepp_02",
+      "updated_at": "2026-09-14T19:02:09.099626"
     },
     {
       "id": "dish_jp_tepp_03",
@@ -741,11 +741,11 @@
       "title": "Teppanyaki / Teriyaki de Pollo ($140 MXN)",
       "prompt_text": "Teppanyaki / Teriyaki de Pollo",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Teppanyaki / Teriyaki de Pollo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.35,
+      "audio_alaw": "/audio_clips/dish_jp_tepp_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_tepp_03",
+      "updated_at": "2026-09-14T19:02:09.103216"
     },
     {
       "id": "dish_jp_tepp_04",
@@ -754,11 +754,11 @@
       "title": "Teppanyaki / Teriyaki de Camarón ($145 MXN)",
       "prompt_text": "Teppanyaki / Teriyaki de Camarón",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Teppanyaki / Teriyaki de Camarón",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.3,
+      "audio_alaw": "/audio_clips/dish_jp_tepp_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_tepp_04",
+      "updated_at": "2026-09-14T19:02:09.107652"
     },
     {
       "id": "dish_jp_tepp_05",
@@ -767,11 +767,11 @@
       "title": "Teppanyaki / Teriyaki Mixto ($155 MXN)",
       "prompt_text": "Teppanyaki / Teriyaki Mixto",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Teppanyaki / Teriyaki Mixto",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.45,
+      "audio_alaw": "/audio_clips/dish_jp_tepp_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_tepp_05",
+      "updated_at": "2026-09-14T19:02:09.110761"
     },
     {
       "id": "dish_jp_tepp_06",
@@ -780,11 +780,11 @@
       "title": "Teppanyaki / Teriyaki de Salmón ($200 MXN)",
       "prompt_text": "Teppanyaki / Teriyaki de Salmón",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Teppanyaki / Teriyaki de Salmón",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.3,
+      "audio_alaw": "/audio_clips/dish_jp_tepp_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_tepp_06",
+      "updated_at": "2026-09-14T19:02:09.114461"
     },
     {
       "id": "dish_jp_pf_01",
@@ -793,11 +793,11 @@
       "title": "Verduras Salteadas ($80 MXN)",
       "prompt_text": "Verduras Salteadas",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Verduras Salteadas",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.8,
+      "audio_alaw": "/audio_clips/dish_jp_pf_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_01",
+      "updated_at": "2026-09-14T19:02:08.942767"
     },
     {
       "id": "dish_jp_pf_02",
@@ -806,11 +806,11 @@
       "title": "Sakana Furai ($135 MXN)",
       "prompt_text": "Sakana Furai",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sakana Furai",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_jp_pf_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_02",
+      "updated_at": "2026-09-14T19:02:08.945036"
     },
     {
       "id": "dish_jp_pf_03",
@@ -819,11 +819,11 @@
       "title": "Ebi Furai ($135 MXN)",
       "prompt_text": "Ebi Furai",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Ebi Furai",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.85,
+      "audio_alaw": "/audio_clips/dish_jp_pf_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_03",
+      "updated_at": "2026-09-14T19:02:08.947067"
     },
     {
       "id": "dish_jp_pf_04",
@@ -832,11 +832,11 @@
       "title": "Tori Karaage ($140 MXN)",
       "prompt_text": "Tori Karaage",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Tori Karaage",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.25,
+      "audio_alaw": "/audio_clips/dish_jp_pf_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_04",
+      "updated_at": "2026-09-14T19:02:08.949939"
     },
     {
       "id": "dish_jp_pf_05",
@@ -845,11 +845,11 @@
       "title": "Milanesa de Pollo o Res ($140 MXN)",
       "prompt_text": "Milanesa de Pollo o Res",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Milanesa de Pollo o Res",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.0,
+      "audio_alaw": "/audio_clips/dish_jp_pf_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_05",
+      "updated_at": "2026-09-14T19:02:08.953848"
     },
     {
       "id": "dish_jp_pf_06",
@@ -858,11 +858,11 @@
       "title": "Udon Plancha ($140 MXN)",
       "prompt_text": "Udon Plancha",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Udon Plancha",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_jp_pf_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_06",
+      "updated_at": "2026-09-14T19:02:08.955849"
     },
     {
       "id": "dish_jp_pf_07",
@@ -871,11 +871,11 @@
       "title": "Chow Mein ($140 MXN)",
       "prompt_text": "Chow Mein",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Chow Mein",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.95,
+      "audio_alaw": "/audio_clips/dish_jp_pf_07.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_07",
+      "updated_at": "2026-09-14T19:02:08.957641"
     },
     {
       "id": "dish_jp_pf_08",
@@ -884,11 +884,11 @@
       "title": "Brochetas Yakitori ($145 MXN)",
       "prompt_text": "Brochetas Yakitori",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Brochetas Yakitori",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_jp_pf_08.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_08",
+      "updated_at": "2026-09-14T19:02:08.960966"
     },
     {
       "id": "dish_jp_pf_09",
@@ -897,11 +897,11 @@
       "title": "Camarones Kimono ($145 MXN)",
       "prompt_text": "Camarones Kimono",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Camarones Kimono",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.58,
+      "audio_alaw": "/audio_clips/dish_jp_pf_09.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_09",
+      "updated_at": "2026-09-14T19:02:08.963329"
     },
     {
       "id": "dish_jp_pf_10",
@@ -910,11 +910,11 @@
       "title": "Camarones Philadelphia ($150 MXN)",
       "prompt_text": "Camarones Philadelphia",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Camarones Philadelphia",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_jp_pf_10.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_10",
+      "updated_at": "2026-09-14T19:02:08.966186"
     },
     {
       "id": "dish_jp_pf_11",
@@ -923,11 +923,11 @@
       "title": "Tempura Ebi ($150 MXN)",
       "prompt_text": "Tempura Ebi",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Tempura Ebi",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.35,
+      "audio_alaw": "/audio_clips/dish_jp_pf_11.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_11",
+      "updated_at": "2026-09-14T19:02:08.968490"
     },
     {
       "id": "dish_jp_pf_12",
@@ -936,11 +936,11 @@
       "title": "Spaguetti de Mariscos ($150 MXN)",
       "prompt_text": "Spaguetti de Mariscos",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Spaguetti de Mariscos",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_jp_pf_12.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_12",
+      "updated_at": "2026-09-14T19:02:08.971726"
     },
     {
       "id": "dish_jp_pf_13",
@@ -949,11 +949,11 @@
       "title": "Ebydon ($150 MXN)",
       "prompt_text": "Ebydon",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Ebydon",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.6,
+      "audio_alaw": "/audio_clips/dish_jp_pf_13.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_13",
+      "updated_at": "2026-09-14T19:02:08.973166"
     },
     {
       "id": "dish_jp_pf_14",
@@ -962,11 +962,11 @@
       "title": "Fire Mixto ($150 MXN)",
       "prompt_text": "Fire Mixto",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Fire Mixto",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.9,
+      "audio_alaw": "/audio_clips/dish_jp_pf_14.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_14",
+      "updated_at": "2026-09-14T19:02:08.974888"
     },
     {
       "id": "dish_jp_pf_15",
@@ -975,11 +975,11 @@
       "title": "Filete de Pescado Especial ($150 MXN)",
       "prompt_text": "Filete de Pescado Especial",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Filete de Pescado Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.75,
+      "audio_alaw": "/audio_clips/dish_jp_pf_15.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_15",
+      "updated_at": "2026-09-14T19:02:08.978712"
     },
     {
       "id": "dish_jp_pf_16",
@@ -988,11 +988,11 @@
       "title": "Filete de Pollo Especial ($165 MXN)",
       "prompt_text": "Filete de Pollo Especial",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Filete de Pollo Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_jp_pf_16.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_16",
+      "updated_at": "2026-09-14T19:02:08.981181"
     },
     {
       "id": "dish_jp_pf_17",
@@ -1001,11 +1001,11 @@
       "title": "Puerquitos Locos ($170 MXN)",
       "prompt_text": "Puerquitos Locos",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Puerquitos Locos",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.55,
+      "audio_alaw": "/audio_clips/dish_jp_pf_17.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pf_17",
+      "updated_at": "2026-09-14T19:02:08.984853"
     },
     {
       "id": "dish_jp_sush_01",
@@ -1014,11 +1014,11 @@
       "title": "Sushi Empanizado ($95 MXN)",
       "prompt_text": "Sushi Empanizado",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sushi Empanizado",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.25,
+      "audio_alaw": "/audio_clips/dish_jp_sush_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_01",
+      "updated_at": "2026-09-14T19:02:09.012113"
     },
     {
       "id": "dish_jp_sush_02",
@@ -1027,11 +1027,11 @@
       "title": "Sushi Philadelphia ($95 MXN)",
       "prompt_text": "Sushi Philadelphia",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sushi Philadelphia",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.25,
+      "audio_alaw": "/audio_clips/dish_jp_sush_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_02",
+      "updated_at": "2026-09-14T19:02:09.015060"
     },
     {
       "id": "dish_jp_sush_03",
@@ -1040,11 +1040,11 @@
       "title": "Sushi California ($95 MXN)",
       "prompt_text": "Sushi California",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sushi California",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.15,
+      "audio_alaw": "/audio_clips/dish_jp_sush_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_03",
+      "updated_at": "2026-09-14T19:02:09.017009"
     },
     {
       "id": "dish_jp_sush_04",
@@ -1053,11 +1053,11 @@
       "title": "Kani Roll ($95 MXN)",
       "prompt_text": "Kani Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Kani Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.75,
+      "audio_alaw": "/audio_clips/dish_jp_sush_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_04",
+      "updated_at": "2026-09-14T19:02:09.018589"
     },
     {
       "id": "dish_jp_sush_05",
@@ -1066,11 +1066,11 @@
       "title": "Esfera Dragón Ball ($95 MXN)",
       "prompt_text": "Esfera Dragón Ball",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Esfera Dragón Ball",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_jp_sush_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_05",
+      "updated_at": "2026-09-14T19:02:09.021563"
     },
     {
       "id": "dish_jp_sush_06",
@@ -1079,11 +1079,11 @@
       "title": "Chipotle Roll ($100 MXN)",
       "prompt_text": "Chipotle Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Chipotle Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.1,
+      "audio_alaw": "/audio_clips/dish_jp_sush_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_06",
+      "updated_at": "2026-09-14T19:02:09.023505"
     },
     {
       "id": "dish_jp_sush_07",
@@ -1092,11 +1092,11 @@
       "title": "Avocado Roll ($100 MXN)",
       "prompt_text": "Avocado Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Avocado Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.1,
+      "audio_alaw": "/audio_clips/dish_jp_sush_07.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_07",
+      "updated_at": "2026-09-14T19:02:09.025311"
     },
     {
       "id": "dish_jp_sush_08",
@@ -1105,11 +1105,11 @@
       "title": "Arcoíris Roll Especial (Arcogrid) ($100 MXN)",
       "prompt_text": "Arcoíris Roll Especial (Arcogrid)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Arcoíris Roll Especial (Arcogrid)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.85,
+      "audio_alaw": "/audio_clips/dish_jp_sush_08.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_08",
+      "updated_at": "2026-09-14T19:02:09.030441"
     },
     {
       "id": "dish_jp_sush_09",
@@ -1118,11 +1118,11 @@
       "title": "Hulk ($100 MXN)",
       "prompt_text": "Hulk",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Hulk",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.5,
+      "audio_alaw": "/audio_clips/dish_jp_sush_09.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_09",
+      "updated_at": "2026-09-14T19:02:09.031810"
     },
     {
       "id": "dish_jp_sush_10",
@@ -1131,11 +1131,11 @@
       "title": "Eby Roll ($100 MXN)",
       "prompt_text": "Eby Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Eby Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.75,
+      "audio_alaw": "/audio_clips/dish_jp_sush_10.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_10",
+      "updated_at": "2026-09-14T19:02:09.034351"
     },
     {
       "id": "dish_jp_sush_11",
@@ -1144,11 +1144,11 @@
       "title": "Plátano Roll ($100 MXN)",
       "prompt_text": "Plátano Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Plátano Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.95,
+      "audio_alaw": "/audio_clips/dish_jp_sush_11.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_11",
+      "updated_at": "2026-09-14T19:02:09.036167"
     },
     {
       "id": "dish_jp_sush_12",
@@ -1157,11 +1157,11 @@
       "title": "Salmón Roll ($105 MXN)",
       "prompt_text": "Salmón Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Salmón Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.2,
+      "audio_alaw": "/audio_clips/dish_jp_sush_12.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_12",
+      "updated_at": "2026-09-14T19:02:09.038220"
     },
     {
       "id": "dish_jp_sush_13",
@@ -1170,11 +1170,11 @@
       "title": "México Roll ($105 MXN)",
       "prompt_text": "México Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: México Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.0,
+      "audio_alaw": "/audio_clips/dish_jp_sush_13.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_13",
+      "updated_at": "2026-09-14T19:02:09.040518"
     },
     {
       "id": "dish_jp_sush_14",
@@ -1183,11 +1183,11 @@
       "title": "Philadelphia Empanizado ($105 MXN)",
       "prompt_text": "Philadelphia Empanizado",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Philadelphia Empanizado",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_jp_sush_14.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_14",
+      "updated_at": "2026-09-14T19:02:09.043155"
     },
     {
       "id": "dish_jp_sush_15",
@@ -1196,11 +1196,11 @@
       "title": "Furia Roll ($105 MXN)",
       "prompt_text": "Furia Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Furia Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.75,
+      "audio_alaw": "/audio_clips/dish_jp_sush_15.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_15",
+      "updated_at": "2026-09-14T19:02:09.045727"
     },
     {
       "id": "dish_jp_sush_16",
@@ -1209,11 +1209,11 @@
       "title": "Pink Salmón ($105 MXN)",
       "prompt_text": "Pink Salmón",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Pink Salmón",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_jp_sush_16.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_16",
+      "updated_at": "2026-09-14T19:02:09.048185"
     },
     {
       "id": "dish_jp_sush_17",
@@ -1222,11 +1222,11 @@
       "title": "Oishi Roll Especial ($105 MXN)",
       "prompt_text": "Oishi Roll Especial",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Oishi Roll Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_jp_sush_17.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_17",
+      "updated_at": "2026-09-14T19:02:09.051299"
     },
     {
       "id": "dish_jp_sush_18",
@@ -1235,11 +1235,11 @@
       "title": "Flamin Hot ($105 MXN)",
       "prompt_text": "Flamin Hot",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Flamin Hot",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.0,
+      "audio_alaw": "/audio_clips/dish_jp_sush_18.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_18",
+      "updated_at": "2026-09-14T19:02:09.053453"
     },
     {
       "id": "dish_jp_sush_19",
@@ -1248,11 +1248,11 @@
       "title": "Sushi Masago ($110 MXN)",
       "prompt_text": "Sushi Masago",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Sushi Masago",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.9,
+      "audio_alaw": "/audio_clips/dish_jp_sush_19.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_19",
+      "updated_at": "2026-09-14T19:02:09.055281"
     },
     {
       "id": "dish_jp_sush_20",
@@ -1261,11 +1261,11 @@
       "title": "Empanizado Especial ($115 MXN)",
       "prompt_text": "Empanizado Especial",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Empanizado Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_jp_sush_20.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_20",
+      "updated_at": "2026-09-14T19:02:09.058682"
     },
     {
       "id": "dish_jp_sush_21",
@@ -1274,11 +1274,11 @@
       "title": "Tocayo Roll ($115 MXN)",
       "prompt_text": "Tocayo Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Tocayo Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.0,
+      "audio_alaw": "/audio_clips/dish_jp_sush_21.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_21",
+      "updated_at": "2026-09-14T19:02:09.060595"
     },
     {
       "id": "dish_jp_sush_22",
@@ -1287,11 +1287,11 @@
       "title": "Mar y Tierra ($115 MXN)",
       "prompt_text": "Mar y Tierra",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Mar y Tierra",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.25,
+      "audio_alaw": "/audio_clips/dish_jp_sush_22.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_22",
+      "updated_at": "2026-09-14T19:02:09.063021"
     },
     {
       "id": "dish_jp_sush_23",
@@ -1300,11 +1300,11 @@
       "title": "Mechudo ($120 MXN)",
       "prompt_text": "Mechudo",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Mechudo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.85,
+      "audio_alaw": "/audio_clips/dish_jp_sush_23.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_23",
+      "updated_at": "2026-09-14T19:02:09.065324"
     },
     {
       "id": "dish_jp_sush_24",
@@ -1313,11 +1313,11 @@
       "title": "Eby Roll Especial ($120 MXN)",
       "prompt_text": "Eby Roll Especial",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Eby Roll Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.15,
+      "audio_alaw": "/audio_clips/dish_jp_sush_24.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_24",
+      "updated_at": "2026-09-14T19:02:09.067417"
     },
     {
       "id": "dish_jp_sush_25",
@@ -1326,11 +1326,11 @@
       "title": "Especial Ryü ($120 MXN)",
       "prompt_text": "Especial Ryü",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Especial Ryü",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.35,
+      "audio_alaw": "/audio_clips/dish_jp_sush_25.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_25",
+      "updated_at": "2026-09-14T19:02:09.069976"
     },
     {
       "id": "dish_jp_sush_26",
@@ -1339,11 +1339,11 @@
       "title": "Especial No. 1 ($120 MXN)",
       "prompt_text": "Especial No. 1",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Especial No. 1",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.9,
+      "audio_alaw": "/audio_clips/dish_jp_sush_26.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_26",
+      "updated_at": "2026-09-14T19:02:09.073109"
     },
     {
       "id": "dish_jp_sush_27",
@@ -1352,11 +1352,11 @@
       "title": "Zizi Roll Especial ($130 MXN)",
       "prompt_text": "Zizi Roll Especial",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Zizi Roll Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_jp_sush_27.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_27",
+      "updated_at": "2026-09-14T19:02:09.076012"
     },
     {
       "id": "dish_jp_sush_28",
@@ -1365,11 +1365,11 @@
       "title": "Hulk Especial ($130 MXN)",
       "prompt_text": "Hulk Especial",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Hulk Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.15,
+      "audio_alaw": "/audio_clips/dish_jp_sush_28.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_28",
+      "updated_at": "2026-09-14T19:02:09.077986"
     },
     {
       "id": "dish_jp_sush_29",
@@ -1378,11 +1378,11 @@
       "title": "Tuna Roll ($130 MXN)",
       "prompt_text": "Tuna Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Tuna Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.75,
+      "audio_alaw": "/audio_clips/dish_jp_sush_29.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_29",
+      "updated_at": "2026-09-14T19:02:09.079571"
     },
     {
       "id": "dish_jp_sush_30",
@@ -1391,11 +1391,11 @@
       "title": "Cheese Explosion (Cheese Roll) ($135 MXN)",
       "prompt_text": "Cheese Explosion (Cheese Roll)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Cheese Explosion (Cheese Roll)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.7,
+      "audio_alaw": "/audio_clips/dish_jp_sush_30.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_30",
+      "updated_at": "2026-09-14T19:02:09.082676"
     },
     {
       "id": "dish_jp_sush_31",
@@ -1404,11 +1404,11 @@
       "title": "Panchito ($140 MXN)",
       "prompt_text": "Panchito",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Panchito",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.1,
+      "audio_alaw": "/audio_clips/dish_jp_sush_31.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_31",
+      "updated_at": "2026-09-14T19:02:09.084517"
     },
     {
       "id": "dish_jp_sush_32",
@@ -1417,11 +1417,11 @@
       "title": "Tocino Roll ($150 MXN)",
       "prompt_text": "Tocino Roll",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Tocino Roll",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.9,
+      "audio_alaw": "/audio_clips/dish_jp_sush_32.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_32",
+      "updated_at": "2026-09-14T19:02:09.086264"
     },
     {
       "id": "dish_jp_sush_33",
@@ -1430,11 +1430,11 @@
       "title": "Tabla de Sushi Mixta ($300 MXN)",
       "prompt_text": "Tabla de Sushi Mixta",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Tabla de Sushi Mixta",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.7,
+      "audio_alaw": "/audio_clips/dish_jp_sush_33.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_sush_33",
+      "updated_at": "2026-09-14T19:02:09.089688"
     },
     {
       "id": "dish_jp_beb_01",
@@ -1443,11 +1443,11 @@
       "title": "Refresco (500ml) ($35 MXN)",
       "prompt_text": "Refresco (500ml)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Refresco (500ml)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.35,
+      "audio_alaw": "/audio_clips/dish_jp_beb_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_01",
+      "updated_at": "2026-09-14T19:02:08.857068"
     },
     {
       "id": "dish_jp_beb_02",
@@ -1456,11 +1456,11 @@
       "title": "Té Jazmín Frío (Vaso Individual) ($35 MXN)",
       "prompt_text": "Té Jazmín Frío (Vaso Individual)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Té Jazmín Frío (Vaso Individual)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.25,
+      "audio_alaw": "/audio_clips/dish_jp_beb_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_02",
+      "updated_at": "2026-09-14T19:02:08.862218"
     },
     {
       "id": "dish_jp_beb_03",
@@ -1469,11 +1469,11 @@
       "title": "Té Jazmín Frío (Jarra 3.5 Litros) ($100 MXN)",
       "prompt_text": "Té Jazmín Frío (Jarra 3.5 Litros)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Té Jazmín Frío (Jarra 3.5 Litros)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.3,
+      "audio_alaw": "/audio_clips/dish_jp_beb_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_03",
+      "updated_at": "2026-09-14T19:02:08.866544"
     },
     {
       "id": "dish_jp_beb_04",
@@ -1482,11 +1482,11 @@
       "title": "Limonada / Naranjada ($40 MXN)",
       "prompt_text": "Limonada / Naranjada",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Limonada / Naranjada",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.7,
+      "audio_alaw": "/audio_clips/dish_jp_beb_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_04",
+      "updated_at": "2026-09-14T19:02:08.869267"
     },
     {
       "id": "dish_jp_beb_05",
@@ -1495,11 +1495,11 @@
       "title": "Calpico 1/2 Litro ($30 MXN)",
       "prompt_text": "Calpico 1/2 Litro",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Calpico 1/2 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.53,
+      "audio_alaw": "/audio_clips/dish_jp_beb_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_05",
+      "updated_at": "2026-09-14T19:02:08.871525"
     },
     {
       "id": "dish_jp_beb_06",
@@ -1508,11 +1508,11 @@
       "title": "Calpico 1 Litro ($40 MXN)",
       "prompt_text": "Calpico 1 Litro",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Calpico 1 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.48,
+      "audio_alaw": "/audio_clips/dish_jp_beb_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_06",
+      "updated_at": "2026-09-14T19:02:08.874373"
     },
     {
       "id": "dish_jp_beb_07",
@@ -1521,11 +1521,11 @@
       "title": "Calpico (Jarra 3.5 Litros) ($110 MXN)",
       "prompt_text": "Calpico (Jarra 3.5 Litros)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Calpico (Jarra 3.5 Litros)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.65,
+      "audio_alaw": "/audio_clips/dish_jp_beb_07.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_07",
+      "updated_at": "2026-09-14T19:02:08.877888"
     },
     {
       "id": "dish_jp_beb_08",
@@ -1534,11 +1534,11 @@
       "title": "Calpico Mineral 1/2 Litro ($35 MXN)",
       "prompt_text": "Calpico Mineral 1/2 Litro",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Calpico Mineral 1/2 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.8,
+      "audio_alaw": "/audio_clips/dish_jp_beb_08.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_08",
+      "updated_at": "2026-09-14T19:02:08.881053"
     },
     {
       "id": "dish_jp_beb_09",
@@ -1547,11 +1547,11 @@
       "title": "Calpico Mineral 1 Litro ($45 MXN)",
       "prompt_text": "Calpico Mineral 1 Litro",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Calpico Mineral 1 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.8,
+      "audio_alaw": "/audio_clips/dish_jp_beb_09.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_09",
+      "updated_at": "2026-09-14T19:02:08.883379"
     },
     {
       "id": "dish_jp_beb_10",
@@ -1560,11 +1560,11 @@
       "title": "Calpico Mineral (Jarra 3.5 Litros) ($120 MXN)",
       "prompt_text": "Calpico Mineral (Jarra 3.5 Litros)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Calpico Mineral (Jarra 3.5 Litros)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.6,
+      "audio_alaw": "/audio_clips/dish_jp_beb_10.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_10",
+      "updated_at": "2026-09-14T19:02:08.886876"
     },
     {
       "id": "dish_jp_beb_11",
@@ -1573,11 +1573,11 @@
       "title": "Calpico Frutos Rojos (1/2 Litro) ($40 MXN)",
       "prompt_text": "Calpico Frutos Rojos (1/2 Litro)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Calpico Frutos Rojos (1/2 Litro)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.05,
+      "audio_alaw": "/audio_clips/dish_jp_beb_11.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_11",
+      "updated_at": "2026-09-14T19:02:08.890399"
     },
     {
       "id": "dish_jp_beb_12",
@@ -1586,11 +1586,11 @@
       "title": "Michelada ($90 MXN)",
       "prompt_text": "Michelada",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Michelada",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.75,
+      "audio_alaw": "/audio_clips/dish_jp_beb_12.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_12",
+      "updated_at": "2026-09-14T19:02:08.892153"
     },
     {
       "id": "dish_jp_beb_13",
@@ -1599,11 +1599,11 @@
       "title": "Cerveza Corona (330ml) ($40 MXN)",
       "prompt_text": "Cerveza Corona (330ml)",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Cerveza Corona (330ml)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.35,
+      "audio_alaw": "/audio_clips/dish_jp_beb_13.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_beb_13",
+      "updated_at": "2026-09-14T19:02:08.897219"
     },
     {
       "id": "dish_jp_pos_01",
@@ -1612,11 +1612,11 @@
       "title": "Brochetas Dulces de Plátano ($60 MXN)",
       "prompt_text": "Brochetas Dulces de Plátano",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Brochetas Dulces de Plátano",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_jp_pos_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pos_01",
+      "updated_at": "2026-09-14T19:02:08.987316"
     },
     {
       "id": "dish_jp_pos_02",
@@ -1625,11 +1625,11 @@
       "title": "Helado Frito ($75 MXN)",
       "prompt_text": "Helado Frito",
       "phonetic_tip": "Pronunciar claramente el nombre del platillo: Helado Frito",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.05,
+      "audio_alaw": "/audio_clips/dish_jp_pos_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_jp_pos_02",
+      "updated_at": "2026-09-14T19:02:08.990281"
     },
     {
       "id": "dish_sn_paq_04",
@@ -1638,11 +1638,11 @@
       "title": "Promo Hot Dog (3 piezas) ($70 MXN)",
       "prompt_text": "Promo Hot Dog (3 piezas)",
       "phonetic_tip": "Pronunciar claramente: Promo Hot Dog (3 piezas)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.55,
+      "audio_alaw": "/audio_clips/dish_sn_paq_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_paq_04",
+      "updated_at": "2026-09-14T19:02:09.256128"
     },
     {
       "id": "dish_sn_com_04",
@@ -1651,11 +1651,11 @@
       "title": "Combo Nuggets ($110 MXN)",
       "prompt_text": "Combo Nuggets",
       "phonetic_tip": "Pronunciar claramente: Combo Nuggets",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.05,
+      "audio_alaw": "/audio_clips/dish_sn_com_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_com_04",
+      "updated_at": "2026-09-14T19:02:09.190661"
     },
     {
       "id": "dish_sn_com_03",
@@ -1664,11 +1664,11 @@
       "title": "Combo Individual 2 ($140 MXN)",
       "prompt_text": "Combo Individual 2",
       "phonetic_tip": "Pronunciar claramente: Combo Individual 2",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.95,
+      "audio_alaw": "/audio_clips/dish_sn_com_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_com_03",
+      "updated_at": "2026-09-14T19:02:09.187260"
     },
     {
       "id": "dish_sn_com_02",
@@ -1677,11 +1677,11 @@
       "title": "Combo Individual 1 ($145 MXN)",
       "prompt_text": "Combo Individual 1",
       "phonetic_tip": "Pronunciar claramente: Combo Individual 1",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.9,
+      "audio_alaw": "/audio_clips/dish_sn_com_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_com_02",
+      "updated_at": "2026-09-14T19:02:09.181215"
     },
     {
       "id": "dish_sn_paq_03",
@@ -1690,11 +1690,11 @@
       "title": "Paquete 3 ($150 MXN)",
       "prompt_text": "Paquete 3",
       "phonetic_tip": "Pronunciar claramente: Paquete 3",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_sn_paq_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_paq_03",
+      "updated_at": "2026-09-14T19:02:09.252559"
     },
     {
       "id": "dish_sn_com_01",
@@ -1703,11 +1703,11 @@
       "title": "Combo Ryu Especial ($150 MXN)",
       "prompt_text": "Combo Ryu Especial",
       "phonetic_tip": "Pronunciar claramente: Combo Ryu Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.8,
+      "audio_alaw": "/audio_clips/dish_sn_com_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_com_01",
+      "updated_at": "2026-09-14T19:02:09.178068"
     },
     {
       "id": "dish_sn_paq_01",
@@ -1716,11 +1716,11 @@
       "title": "Paquete Mix ($200 MXN)",
       "prompt_text": "Paquete Mix",
       "phonetic_tip": "Pronunciar claramente: Paquete Mix",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_sn_paq_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_paq_01",
+      "updated_at": "2026-09-14T19:02:09.248276"
     },
     {
       "id": "dish_sn_paq_05",
@@ -1729,11 +1729,11 @@
       "title": "Promo Tortas (3 Tortas Teleras) ($200 MXN)",
       "prompt_text": "Promo Tortas (3 Tortas Teleras)",
       "phonetic_tip": "Pronunciar claramente: Promo Tortas (3 Tortas Teleras)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.55,
+      "audio_alaw": "/audio_clips/dish_sn_paq_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_paq_05",
+      "updated_at": "2026-09-14T19:02:09.259711"
     },
     {
       "id": "dish_sn_paq_02",
@@ -1742,11 +1742,11 @@
       "title": "Pa' Que Compartas ($210 MXN)",
       "prompt_text": "Pa' Que Compartas",
       "phonetic_tip": "Pronunciar claramente: Pa' Que Compartas",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_sn_paq_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_paq_02",
+      "updated_at": "2026-09-14T19:02:09.250420"
     },
     {
       "id": "dish_sn_paq_06",
@@ -1755,11 +1755,11 @@
       "title": "Caja Ryu Mix ($420 MXN)",
       "prompt_text": "Caja Ryu Mix",
       "phonetic_tip": "Pronunciar claramente: Caja Ryu Mix",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_sn_paq_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_paq_06",
+      "updated_at": "2026-09-14T19:02:09.262180"
     },
     {
       "id": "dish_sn_ham_01",
@@ -1768,11 +1768,11 @@
       "title": "Hamburguesa de Res ($55 MXN)",
       "prompt_text": "Hamburguesa de Res",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa de Res",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_sn_ham_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_01",
+      "updated_at": "2026-09-14T19:02:09.192982"
     },
     {
       "id": "dish_sn_ham_02",
@@ -1781,11 +1781,11 @@
       "title": "Hamburguesa de Pollo a la Plancha ($55 MXN)",
       "prompt_text": "Hamburguesa de Pollo a la Plancha",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa de Pollo a la Plancha",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.1,
+      "audio_alaw": "/audio_clips/dish_sn_ham_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_02",
+      "updated_at": "2026-09-14T19:02:09.196923"
     },
     {
       "id": "dish_sn_ham_03",
@@ -1794,11 +1794,11 @@
       "title": "Hamburguesa de Pollo Empanizado ($65 MXN)",
       "prompt_text": "Hamburguesa de Pollo Empanizado",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa de Pollo Empanizado",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.2,
+      "audio_alaw": "/audio_clips/dish_sn_ham_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_03",
+      "updated_at": "2026-09-14T19:02:09.200268"
     },
     {
       "id": "dish_sn_ham_04",
@@ -1807,11 +1807,11 @@
       "title": "Hamburguesa de Camarón ($70 MXN)",
       "prompt_text": "Hamburguesa de Camarón",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa de Camarón",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_sn_ham_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_04",
+      "updated_at": "2026-09-14T19:02:09.203133"
     },
     {
       "id": "dish_sn_ham_08",
@@ -1820,11 +1820,11 @@
       "title": "Hamburguesa Hawaiana ($80 MXN)",
       "prompt_text": "Hamburguesa Hawaiana",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa Hawaiana",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_sn_ham_08.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_08",
+      "updated_at": "2026-09-14T19:02:09.215777"
     },
     {
       "id": "dish_sn_ham_10",
@@ -1833,11 +1833,11 @@
       "title": "Hamburguesa Big Ryu ($95 MXN)",
       "prompt_text": "Hamburguesa Big Ryu",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa Big Ryu",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.8,
+      "audio_alaw": "/audio_clips/dish_sn_ham_10.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_10",
+      "updated_at": "2026-09-14T19:02:09.222720"
     },
     {
       "id": "dish_sn_ham_07",
@@ -1846,11 +1846,11 @@
       "title": "Hamburguesa Especial ($100 MXN)",
       "prompt_text": "Hamburguesa Especial",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_sn_ham_07.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_07",
+      "updated_at": "2026-09-14T19:02:09.212473"
     },
     {
       "id": "dish_sn_ham_09",
@@ -1859,11 +1859,11 @@
       "title": "Hamburguesa Cielo Mar y Tierra ($120 MXN)",
       "prompt_text": "Hamburguesa Cielo Mar y Tierra",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa Cielo Mar y Tierra",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.3,
+      "audio_alaw": "/audio_clips/dish_sn_ham_09.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_09",
+      "updated_at": "2026-09-14T19:02:09.218960"
     },
     {
       "id": "dish_sn_ham_05",
@@ -1872,11 +1872,11 @@
       "title": "Hamburguesa Ranchera Especial ($125 MXN)",
       "prompt_text": "Hamburguesa Ranchera Especial",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa Ranchera Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.1,
+      "audio_alaw": "/audio_clips/dish_sn_ham_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_05",
+      "updated_at": "2026-09-14T19:02:09.206551"
     },
     {
       "id": "dish_sn_ham_06",
@@ -1885,11 +1885,11 @@
       "title": "Hamburguesa Carolina Especial ($125 MXN)",
       "prompt_text": "Hamburguesa Carolina Especial",
       "phonetic_tip": "Pronunciar claramente: Hamburguesa Carolina Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.05,
+      "audio_alaw": "/audio_clips/dish_sn_ham_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_ham_06",
+      "updated_at": "2026-09-14T19:02:09.209916"
     },
     {
       "id": "dish_sn_hd_01",
@@ -1898,11 +1898,11 @@
       "title": "Hot Dog Sencillo ($25 MXN)",
       "prompt_text": "Hot Dog Sencillo",
       "phonetic_tip": "Pronunciar claramente: Hot Dog Sencillo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_sn_hd_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_hd_01",
+      "updated_at": "2026-09-14T19:02:09.224951"
     },
     {
       "id": "dish_sn_hd_02",
@@ -1911,11 +1911,11 @@
       "title": "Hot Dog Supremo ($90 MXN)",
       "prompt_text": "Hot Dog Supremo",
       "phonetic_tip": "Pronunciar claramente: Hot Dog Supremo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.45,
+      "audio_alaw": "/audio_clips/dish_sn_hd_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_hd_02",
+      "updated_at": "2026-09-14T19:02:09.227475"
     },
     {
       "id": "dish_sn_hd_03",
@@ -1924,11 +1924,11 @@
       "title": "Hot Dog Godzilla ($135 MXN)",
       "prompt_text": "Hot Dog Godzilla",
       "phonetic_tip": "Pronunciar claramente: Hot Dog Godzilla",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.2,
+      "audio_alaw": "/audio_clips/dish_sn_hd_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_hd_03",
+      "updated_at": "2026-09-14T19:02:09.229546"
     },
     {
       "id": "dish_sn_tor_01",
@@ -1937,11 +1937,11 @@
       "title": "Torta de Telera ($90 MXN)",
       "prompt_text": "Torta de Telera",
       "phonetic_tip": "Pronunciar claramente: Torta de Telera",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.0,
+      "audio_alaw": "/audio_clips/dish_sn_tor_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_tor_01",
+      "updated_at": "2026-09-14T19:02:09.304437"
     },
     {
       "id": "dish_sn_tor_02",
@@ -1950,11 +1950,11 @@
       "title": "Torta Ranchera Especial ($125 MXN)",
       "prompt_text": "Torta Ranchera Especial",
       "phonetic_tip": "Pronunciar claramente: Torta Ranchera Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_sn_tor_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_tor_02",
+      "updated_at": "2026-09-14T19:02:09.307100"
     },
     {
       "id": "dish_sn_tor_03",
@@ -1963,11 +1963,11 @@
       "title": "Torta Carolina Especial ($125 MXN)",
       "prompt_text": "Torta Carolina Especial",
       "phonetic_tip": "Pronunciar claramente: Torta Carolina Especial",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.9,
+      "audio_alaw": "/audio_clips/dish_sn_tor_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_tor_03",
+      "updated_at": "2026-09-14T19:02:09.310036"
     },
     {
       "id": "dish_sn_snk_01",
@@ -1976,11 +1976,11 @@
       "title": "Dedos de Queso ($95 MXN)",
       "prompt_text": "Dedos de Queso",
       "phonetic_tip": "Pronunciar claramente: Dedos de Queso",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.1,
+      "audio_alaw": "/audio_clips/dish_sn_snk_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_snk_01",
+      "updated_at": "2026-09-14T19:02:09.270771"
     },
     {
       "id": "dish_sn_snk_04",
@@ -1989,11 +1989,11 @@
       "title": "Aros de Cebolla ($90 MXN)",
       "prompt_text": "Aros de Cebolla",
       "phonetic_tip": "Pronunciar claramente: Aros de Cebolla",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.25,
+      "audio_alaw": "/audio_clips/dish_sn_snk_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_snk_04",
+      "updated_at": "2026-09-14T19:02:09.284428"
     },
     {
       "id": "dish_sn_pap_02",
@@ -2002,11 +2002,11 @@
       "title": "Papas a la Francesa ($65 MXN)",
       "prompt_text": "Papas a la Francesa",
       "phonetic_tip": "Pronunciar claramente: Papas a la Francesa",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_sn_pap_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_pap_02",
+      "updated_at": "2026-09-14T19:02:09.245188"
     },
     {
       "id": "dish_sn_pap_01",
@@ -2015,11 +2015,11 @@
       "title": "Papas Gajo ($80 MXN)",
       "prompt_text": "Papas Gajo",
       "phonetic_tip": "Pronunciar claramente: Papas Gajo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.0,
+      "audio_alaw": "/audio_clips/dish_sn_pap_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_pap_01",
+      "updated_at": "2026-09-14T19:02:09.243033"
     },
     {
       "id": "dish_sn_snk_02",
@@ -2028,11 +2028,11 @@
       "title": "Alitas (Orden individual 10 piezas) ($100 MXN)",
       "prompt_text": "Alitas (Orden individual 10 piezas)",
       "phonetic_tip": "Pronunciar claramente: Alitas (Orden individual 10 piezas)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.65,
+      "audio_alaw": "/audio_clips/dish_sn_snk_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_snk_02",
+      "updated_at": "2026-09-14T19:02:09.277058"
     },
     {
       "id": "dish_sn_snk_03",
@@ -2041,11 +2041,11 @@
       "title": "Boneless (Orden individual 10 piezas) ($110 MXN)",
       "prompt_text": "Boneless (Orden individual 10 piezas)",
       "phonetic_tip": "Pronunciar claramente: Boneless (Orden individual 10 piezas)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.85,
+      "audio_alaw": "/audio_clips/dish_sn_snk_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_snk_03",
+      "updated_at": "2026-09-14T19:02:09.282116"
     },
     {
       "id": "dish_sn_pak_ali_10",
@@ -2054,11 +2054,11 @@
       "title": "Pack 10 Alitas ($130 MXN)",
       "prompt_text": "Pack 10 Alitas",
       "phonetic_tip": "Pronunciar claramente: Pack 10 Alitas",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.65,
+      "audio_alaw": "/audio_clips/dish_sn_pak_ali_10.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_pak_ali_10",
+      "updated_at": "2026-09-14T19:02:09.231835"
     },
     {
       "id": "dish_sn_pak_ali_15",
@@ -2067,11 +2067,11 @@
       "title": "Pack 15 Alitas ($170 MXN)",
       "prompt_text": "Pack 15 Alitas",
       "phonetic_tip": "Pronunciar claramente: Pack 15 Alitas",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.65,
+      "audio_alaw": "/audio_clips/dish_sn_pak_ali_15.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_pak_ali_15",
+      "updated_at": "2026-09-14T19:02:09.235962"
     },
     {
       "id": "dish_sn_pak_ali_20",
@@ -2080,11 +2080,11 @@
       "title": "Pack 20 Alitas ($260 MXN)",
       "prompt_text": "Pack 20 Alitas",
       "phonetic_tip": "Pronunciar claramente: Pack 20 Alitas",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.55,
+      "audio_alaw": "/audio_clips/dish_sn_pak_ali_20.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_pak_ali_20",
+      "updated_at": "2026-09-14T19:02:09.238260"
     },
     {
       "id": "dish_sn_pak_ali_30",
@@ -2093,11 +2093,11 @@
       "title": "Pack 30 Alitas ($390 MXN)",
       "prompt_text": "Pack 30 Alitas",
       "phonetic_tip": "Pronunciar claramente: Pack 30 Alitas",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_sn_pak_ali_30.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_pak_ali_30",
+      "updated_at": "2026-09-14T19:02:09.241029"
     },
     {
       "id": "dish_sn_top_02",
@@ -2106,11 +2106,11 @@
       "title": "Queso Amarillo ($5 MXN)",
       "prompt_text": "Queso Amarillo",
       "phonetic_tip": "Pronunciar claramente: Queso Amarillo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.3,
+      "audio_alaw": "/audio_clips/dish_sn_top_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_top_02",
+      "updated_at": "2026-09-14T19:02:09.288632"
     },
     {
       "id": "dish_sn_top_04",
@@ -2119,11 +2119,11 @@
       "title": "Cebolla Asada ($10 MXN)",
       "prompt_text": "Cebolla Asada",
       "phonetic_tip": "Pronunciar claramente: Cebolla Asada",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.55,
+      "audio_alaw": "/audio_clips/dish_sn_top_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_top_04",
+      "updated_at": "2026-09-14T19:02:09.293332"
     },
     {
       "id": "dish_sn_top_06",
@@ -2132,11 +2132,11 @@
       "title": "Jamón ($10 MXN)",
       "prompt_text": "Jamón",
       "phonetic_tip": "Pronunciar claramente: Jamón",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.65,
+      "audio_alaw": "/audio_clips/dish_sn_top_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_top_06",
+      "updated_at": "2026-09-14T19:02:09.296955"
     },
     {
       "id": "dish_sn_top_01",
@@ -2145,11 +2145,11 @@
       "title": "Tocino ($15 MXN)",
       "prompt_text": "Tocino",
       "phonetic_tip": "Pronunciar claramente: Tocino",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.6,
+      "audio_alaw": "/audio_clips/dish_sn_top_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_top_01",
+      "updated_at": "2026-09-14T19:02:09.285886"
     },
     {
       "id": "dish_sn_top_03",
@@ -2158,11 +2158,11 @@
       "title": "Queso Oaxaca ($15 MXN)",
       "prompt_text": "Queso Oaxaca",
       "phonetic_tip": "Pronunciar claramente: Queso Oaxaca",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.15,
+      "audio_alaw": "/audio_clips/dish_sn_top_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_top_03",
+      "updated_at": "2026-09-14T19:02:09.290580"
     },
     {
       "id": "dish_sn_top_05",
@@ -2171,11 +2171,11 @@
       "title": "Piña ($20 MXN)",
       "prompt_text": "Piña",
       "phonetic_tip": "Pronunciar claramente: Piña",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.55,
+      "audio_alaw": "/audio_clips/dish_sn_top_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_top_05",
+      "updated_at": "2026-09-14T19:02:09.295436"
     },
     {
       "id": "dish_sn_top_07",
@@ -2184,11 +2184,11 @@
       "title": "Salsa Ranch ($20 MXN)",
       "prompt_text": "Salsa Ranch",
       "phonetic_tip": "Pronunciar claramente: Salsa Ranch",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.1,
+      "audio_alaw": "/audio_clips/dish_sn_top_07.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_top_07",
+      "updated_at": "2026-09-14T19:02:09.299739"
     },
     {
       "id": "dish_sn_top_08",
@@ -2197,11 +2197,11 @@
       "title": "Aderezo Extra ($20 MXN)",
       "prompt_text": "Aderezo Extra",
       "phonetic_tip": "Pronunciar claramente: Aderezo Extra",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.35,
+      "audio_alaw": "/audio_clips/dish_sn_top_08.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_top_08",
+      "updated_at": "2026-09-14T19:02:09.301944"
     },
     {
       "id": "dish_sn_beb_10",
@@ -2210,11 +2210,11 @@
       "title": "Botella de Agua 500ml ($12 MXN)",
       "prompt_text": "Botella de Agua 500ml",
       "phonetic_tip": "Pronunciar claramente: Botella de Agua 500ml",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.7,
+      "audio_alaw": "/audio_clips/dish_sn_beb_10.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_10",
+      "updated_at": "2026-09-14T19:02:09.164809"
     },
     {
       "id": "dish_sn_beb_11",
@@ -2223,11 +2223,11 @@
       "title": "Botella de Agua 1 Litro ($15 MXN)",
       "prompt_text": "Botella de Agua 1 Litro",
       "phonetic_tip": "Pronunciar claramente: Botella de Agua 1 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.8,
+      "audio_alaw": "/audio_clips/dish_sn_beb_11.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_11",
+      "updated_at": "2026-09-14T19:02:09.168384"
     },
     {
       "id": "dish_sn_beb_01",
@@ -2236,11 +2236,11 @@
       "title": "Refresco (500ml) ($35 MXN)",
       "prompt_text": "Refresco (500ml)",
       "phonetic_tip": "Pronunciar claramente: Refresco (500ml)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.75,
+      "audio_alaw": "/audio_clips/dish_sn_beb_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_01",
+      "updated_at": "2026-09-14T19:02:09.134835"
     },
     {
       "id": "dish_sn_beb_02",
@@ -2249,11 +2249,11 @@
       "title": "Té Jazmín Frío ($35 MXN)",
       "prompt_text": "Té Jazmín Frío",
       "phonetic_tip": "Pronunciar claramente: Té Jazmín Frío",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.35,
+      "audio_alaw": "/audio_clips/dish_sn_beb_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_02",
+      "updated_at": "2026-09-14T19:02:09.136887"
     },
     {
       "id": "dish_sn_beb_03",
@@ -2262,11 +2262,11 @@
       "title": "Limonada / Naranjada ($40 MXN)",
       "prompt_text": "Limonada / Naranjada",
       "phonetic_tip": "Pronunciar claramente: Limonada / Naranjada",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.05,
+      "audio_alaw": "/audio_clips/dish_sn_beb_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_03",
+      "updated_at": "2026-09-14T19:02:09.140516"
     },
     {
       "id": "dish_sn_beb_04",
@@ -2275,11 +2275,11 @@
       "title": "Calpico 1/2 Litro ($30 MXN)",
       "prompt_text": "Calpico 1/2 Litro",
       "phonetic_tip": "Pronunciar claramente: Calpico 1/2 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.65,
+      "audio_alaw": "/audio_clips/dish_sn_beb_04.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_04",
+      "updated_at": "2026-09-14T19:02:09.142818"
     },
     {
       "id": "dish_sn_beb_05",
@@ -2288,11 +2288,11 @@
       "title": "Calpico 1 Litro ($40 MXN)",
       "prompt_text": "Calpico 1 Litro",
       "phonetic_tip": "Pronunciar claramente: Calpico 1 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_sn_beb_05.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_05",
+      "updated_at": "2026-09-14T19:02:09.146200"
     },
     {
       "id": "dish_sn_beb_06",
@@ -2301,11 +2301,11 @@
       "title": "Calpico Mineral 1/2 Litro ($35 MXN)",
       "prompt_text": "Calpico Mineral 1/2 Litro",
       "phonetic_tip": "Pronunciar claramente: Calpico Mineral 1/2 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.5,
+      "audio_alaw": "/audio_clips/dish_sn_beb_06.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_06",
+      "updated_at": "2026-09-14T19:02:09.149703"
     },
     {
       "id": "dish_sn_beb_07",
@@ -2314,11 +2314,11 @@
       "title": "Calpico Mineral 1 Litro ($45 MXN)",
       "prompt_text": "Calpico Mineral 1 Litro",
       "phonetic_tip": "Pronunciar claramente: Calpico Mineral 1 Litro",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.1,
+      "audio_alaw": "/audio_clips/dish_sn_beb_07.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_07",
+      "updated_at": "2026-09-14T19:02:09.153148"
     },
     {
       "id": "dish_sn_beb_08",
@@ -2327,11 +2327,11 @@
       "title": "Calpico Frutos Rojos (1/2 Litro) ($40 MXN)",
       "prompt_text": "Calpico Frutos Rojos (1/2 Litro)",
       "phonetic_tip": "Pronunciar claramente: Calpico Frutos Rojos (1/2 Litro)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.35,
+      "audio_alaw": "/audio_clips/dish_sn_beb_08.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_08",
+      "updated_at": "2026-09-14T19:02:09.157720"
     },
     {
       "id": "dish_sn_beb_09",
@@ -2340,11 +2340,11 @@
       "title": "Michelada ($90 MXN)",
       "prompt_text": "Michelada",
       "phonetic_tip": "Pronunciar claramente: Michelada",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.8,
+      "audio_alaw": "/audio_clips/dish_sn_beb_09.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_09",
+      "updated_at": "2026-09-14T19:02:09.159732"
     },
     {
       "id": "dish_sn_beb_12",
@@ -2353,11 +2353,11 @@
       "title": "Cerveza Corona (330ml) ($40 MXN)",
       "prompt_text": "Cerveza Corona (330ml)",
       "phonetic_tip": "Pronunciar claramente: Cerveza Corona (330ml)",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 3.2,
+      "audio_alaw": "/audio_clips/dish_sn_beb_12.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_beb_12",
+      "updated_at": "2026-09-14T19:02:09.174283"
     },
     {
       "id": "dish_sn_pos_01",
@@ -2366,11 +2366,11 @@
       "title": "Helado Frito ($60 MXN)",
       "prompt_text": "Helado Frito",
       "phonetic_tip": "Pronunciar claramente: Helado Frito",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.05,
+      "audio_alaw": "/audio_clips/dish_sn_pos_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_pos_01",
+      "updated_at": "2026-09-14T19:02:09.264811"
     },
     {
       "id": "dish_sn_pos_02",
@@ -2379,11 +2379,11 @@
       "title": "Brochetas de Plátano Frito ($55 MXN)",
       "prompt_text": "Brochetas de Plátano Frito",
       "phonetic_tip": "Pronunciar claramente: Brochetas de Plátano Frito",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.15,
+      "audio_alaw": "/audio_clips/dish_sn_pos_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_sn_pos_02",
+      "updated_at": "2026-09-14T19:02:09.268567"
     },
     {
       "id": "dish_it_pla_01",
@@ -2392,11 +2392,11 @@
       "title": "Lasagna Tradicional ($150 MXN)",
       "prompt_text": "Lasagna Tradicional",
       "phonetic_tip": "Platillo italiano: Lasagna Tradicional",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_it_pla_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_it_pla_01",
+      "updated_at": "2026-09-14T19:02:08.807812"
     },
     {
       "id": "dish_it_pla_02",
@@ -2405,11 +2405,11 @@
       "title": "Boloñesa ($120 MXN)",
       "prompt_text": "Boloñesa",
       "phonetic_tip": "Platillo italiano: Boloñesa",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.3,
+      "audio_alaw": "/audio_clips/dish_it_pla_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_it_pla_02",
+      "updated_at": "2026-09-14T19:02:08.810018"
     },
     {
       "id": "dish_it_pla_03",
@@ -2418,11 +2418,11 @@
       "title": "Fettuccine Alfredo ($100 MXN)",
       "prompt_text": "Fettuccine Alfredo",
       "phonetic_tip": "Platillo italiano: Fettuccine Alfredo",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_it_pla_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_it_pla_03",
+      "updated_at": "2026-09-14T19:02:08.812715"
     },
     {
       "id": "dish_ita_panini_bbq",
@@ -2431,11 +2431,11 @@
       "title": "Panini o Pita BBQ",
       "prompt_text": "Panini de BBQ",
       "phonetic_tip": "Especialidad de Panini: BBQ",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/dish_ita_panini_bbq.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_panini_bbq",
+      "updated_at": "2026-09-14T19:02:08.839010"
     },
     {
       "id": "dish_ita_panini_chipotle",
@@ -2444,11 +2444,11 @@
       "title": "Panini o Pita Chipotle",
       "prompt_text": "Panini de Chipotle",
       "phonetic_tip": "Especialidad de Panini: Chipotle",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.3,
+      "audio_alaw": "/audio_clips/dish_ita_panini_chipotle.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_panini_chipotle",
+      "updated_at": "2026-09-14T19:02:08.847339"
     },
     {
       "id": "dish_ita_panini_cheesesteak",
@@ -2457,11 +2457,11 @@
       "title": "Panini o Pita Cheesesteak",
       "prompt_text": "Panini de Cheesesteak",
       "phonetic_tip": "Especialidad de Panini: Cheesesteak",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.3,
+      "audio_alaw": "/audio_clips/dish_ita_panini_cheesesteak.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_panini_cheesesteak",
+      "updated_at": "2026-09-14T19:02:08.843700"
     },
     {
       "id": "dish_ita_panini_pollo_clásico",
@@ -2470,11 +2470,11 @@
       "title": "Panini o Pita Pollo Clásico",
       "prompt_text": "Panini de Pollo Clásico",
       "phonetic_tip": "Especialidad de Panini: Pollo Clásico",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.8,
+      "audio_alaw": "/audio_clips/dish_ita_panini_pollo_clásico.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_panini_pollo_clásico",
+      "updated_at": "2026-09-14T19:02:08.850441"
     },
     {
       "id": "dish_ita_panini_pollo_crispy",
@@ -2483,11 +2483,11 @@
       "title": "Panini o Pita Pollo Crispy",
       "prompt_text": "Panini de Pollo Crispy",
       "phonetic_tip": "Especialidad de Panini: Pollo Crispy",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/dish_ita_panini_pollo_crispy.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_panini_pollo_crispy",
+      "updated_at": "2026-09-14T19:02:08.853562"
     },
     {
       "id": "dish_ita_panini_carnes_frías",
@@ -2496,11 +2496,11 @@
       "title": "Panini o Pita Carnes Frías",
       "prompt_text": "Panini de Carnes Frías",
       "phonetic_tip": "Especialidad de Panini: Carnes Frías",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.7,
+      "audio_alaw": "/audio_clips/dish_ita_panini_carnes_frías.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_panini_carnes_frías",
+      "updated_at": "2026-09-14T19:02:08.841623"
     },
     {
       "id": "dish_ita_ensalada_bbq",
@@ -2509,11 +2509,11 @@
       "title": "Ensalada Italiana BBQ",
       "prompt_text": "Ensalada de BBQ",
       "phonetic_tip": "Ensalada: BBQ",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/dish_ita_ensalada_bbq.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_ensalada_bbq",
+      "updated_at": "2026-09-14T19:02:08.826631"
     },
     {
       "id": "dish_ita_ensalada_chipotle",
@@ -2522,11 +2522,11 @@
       "title": "Ensalada Italiana Chipotle",
       "prompt_text": "Ensalada de Chipotle",
       "phonetic_tip": "Ensalada: Chipotle",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.7,
+      "audio_alaw": "/audio_clips/dish_ita_ensalada_chipotle.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_ensalada_chipotle",
+      "updated_at": "2026-09-14T19:02:08.831876"
     },
     {
       "id": "dish_ita_ensalada_cheese-ranch",
@@ -2535,11 +2535,11 @@
       "title": "Ensalada Italiana Cheese-Ranch",
       "prompt_text": "Ensalada de Cheese-Ranch",
       "phonetic_tip": "Ensalada: Cheese-Ranch",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.85,
+      "audio_alaw": "/audio_clips/dish_ita_ensalada_cheese-ranch.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_ensalada_cheese-ranch",
+      "updated_at": "2026-09-14T19:02:08.829460"
     },
     {
       "id": "dish_ita_ensalada_piña_hot",
@@ -2548,11 +2548,11 @@
       "title": "Ensalada Italiana Piña Hot",
       "prompt_text": "Ensalada de Piña Hot",
       "phonetic_tip": "Ensalada: Piña Hot",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.85,
+      "audio_alaw": "/audio_clips/dish_ita_ensalada_piña_hot.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_ensalada_piña_hot",
+      "updated_at": "2026-09-14T19:02:08.836700"
     },
     {
       "id": "dish_ita_ensalada_crispy",
@@ -2561,11 +2561,11 @@
       "title": "Ensalada Italiana Crispy",
       "prompt_text": "Ensalada de Crispy",
       "phonetic_tip": "Ensalada: Crispy",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.3,
+      "audio_alaw": "/audio_clips/dish_ita_ensalada_crispy.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_ita_ensalada_crispy",
+      "updated_at": "2026-09-14T19:02:08.833969"
     },
     {
       "id": "dish_it_sod_01",
@@ -2574,11 +2574,11 @@
       "title": "Soda Italiana Fresa-Boba ($45 MXN)",
       "prompt_text": "Soda Italiana Fresa-Boba",
       "phonetic_tip": "Bebida italiana: Soda Italiana Fresa-Boba",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.3,
+      "audio_alaw": "/audio_clips/dish_it_sod_01.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_it_sod_01",
+      "updated_at": "2026-09-14T19:02:08.815953"
     },
     {
       "id": "dish_it_sod_02",
@@ -2587,11 +2587,11 @@
       "title": "Soda Italiana Piña-Boba ($45 MXN)",
       "prompt_text": "Soda Italiana Piña-Boba",
       "phonetic_tip": "Bebida italiana: Soda Italiana Piña-Boba",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.45,
+      "audio_alaw": "/audio_clips/dish_it_sod_02.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_it_sod_02",
+      "updated_at": "2026-09-14T19:02:08.820887"
     },
     {
       "id": "dish_it_sod_03",
@@ -2600,11 +2600,11 @@
       "title": "Soda Italiana Mora Azul-Boba ($45 MXN)",
       "prompt_text": "Soda Italiana Mora Azul-Boba",
       "phonetic_tip": "Bebida italiana: Soda Italiana Mora Azul-Boba",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.8,
+      "audio_alaw": "/audio_clips/dish_it_sod_03.alaw",
+      "audio_wav": "/api/voice-studio/audio/dish_it_sod_03",
+      "updated_at": "2026-09-14T19:02:08.824504"
     },
     {
       "id": "tok_un",
@@ -2613,11 +2613,11 @@
       "title": "Un",
       "prompt_text": "un",
       "phonetic_tip": "Pausa corta después de la palabra.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": "2026-09-13T20:23:19.975754"
+      "status": "recorded",
+      "duration_sec": 0.45,
+      "audio_alaw": "/audio_clips/tok_un.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_un",
+      "updated_at": "2026-09-14T19:02:09.572738"
     },
     {
       "id": "tok_una",
@@ -2626,11 +2626,11 @@
       "title": "Una",
       "prompt_text": "una",
       "phonetic_tip": "Pausa corta.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.4,
+      "audio_alaw": "/audio_clips/tok_una.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_una",
+      "updated_at": "2026-09-14T19:02:09.573954"
     },
     {
       "id": "tok_una_orden",
@@ -2639,11 +2639,11 @@
       "title": "Una orden de",
       "prompt_text": "una orden de",
       "phonetic_tip": "Fluido y natural.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.05,
+      "audio_alaw": "/audio_clips/tok_una_orden.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_una_orden",
+      "updated_at": "2026-09-14T19:02:09.575827"
     },
     {
       "id": "tok_dos",
@@ -2652,11 +2652,11 @@
       "title": "Dos",
       "prompt_text": "dos",
       "phonetic_tip": "Pausa corta.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.45,
+      "audio_alaw": "/audio_clips/tok_dos.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_dos",
+      "updated_at": "2026-09-14T19:02:09.556772"
     },
     {
       "id": "tok_tres",
@@ -2665,11 +2665,11 @@
       "title": "Tres",
       "prompt_text": "tres",
       "phonetic_tip": "Pausa corta.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.5,
+      "audio_alaw": "/audio_clips/tok_tres.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_tres",
+      "updated_at": "2026-09-14T19:02:09.571585"
     },
     {
       "id": "tok_cuatro",
@@ -2678,11 +2678,11 @@
       "title": "Cuatro",
       "prompt_text": "cuatro",
       "phonetic_tip": "Pausa corta.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.55,
+      "audio_alaw": "/audio_clips/tok_cuatro.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_cuatro",
+      "updated_at": "2026-09-14T19:02:09.553085"
     },
     {
       "id": "tok_cinco",
@@ -2691,11 +2691,11 @@
       "title": "Cinco",
       "prompt_text": "cinco",
       "phonetic_tip": "Pausa corta.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.8,
+      "audio_alaw": "/audio_clips/tok_cinco.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_cinco",
+      "updated_at": "2026-09-14T19:02:09.550557"
     },
     {
       "id": "tok_seis",
@@ -2704,11 +2704,11 @@
       "title": "Seis",
       "prompt_text": "seis",
       "phonetic_tip": "Pausa corta.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.75,
+      "audio_alaw": "/audio_clips/tok_seis.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_seis",
+      "updated_at": "2026-09-14T19:02:09.564726"
     },
     {
       "id": "tok_y",
@@ -2717,11 +2717,11 @@
       "title": "Y (Conector)",
       "prompt_text": "y",
       "phonetic_tip": "Conector natural entre platillos.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.35,
+      "audio_alaw": "/audio_clips/tok_y.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_y",
+      "updated_at": "2026-09-14T19:02:09.576937"
     },
     {
       "id": "tok_con",
@@ -2730,11 +2730,11 @@
       "title": "Con",
       "prompt_text": "con",
       "phonetic_tip": "Conector natural.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.4,
+      "audio_alaw": "/audio_clips/tok_con.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_con",
+      "updated_at": "2026-09-14T19:02:09.551637"
     },
     {
       "id": "tok_sin",
@@ -2743,11 +2743,11 @@
       "title": "Sin",
       "prompt_text": "sin",
       "phonetic_tip": "Ej. 'sin cebolla'.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.8,
+      "audio_alaw": "/audio_clips/tok_sin.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_sin",
+      "updated_at": "2026-09-14T19:02:09.566262"
     },
     {
       "id": "tok_pesos",
@@ -2756,11 +2756,11 @@
       "title": "Pesos",
       "prompt_text": "pesos",
       "phonetic_tip": "Cierre de precio.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.65,
+      "audio_alaw": "/audio_clips/tok_pesos.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_pesos",
+      "updated_at": "2026-09-14T19:02:09.560058"
     },
     {
       "id": "tok_total_serian",
@@ -2769,11 +2769,11 @@
       "title": "El total sería",
       "prompt_text": "el total sería de",
       "phonetic_tip": "Introducción al precio.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/tok_total_serian.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_total_serian",
+      "updated_at": "2026-09-14T19:02:09.570338"
     },
     {
       "id": "tok_efectivo",
@@ -2782,11 +2782,11 @@
       "title": "En efectivo",
       "prompt_text": "en efectivo",
       "phonetic_tip": "Claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 0.95,
+      "audio_alaw": "/audio_clips/tok_efectivo.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_efectivo",
+      "updated_at": "2026-09-14T19:02:09.558620"
     },
     {
       "id": "tok_tarjeta",
@@ -2795,11 +2795,11 @@
       "title": "Con tarjeta",
       "prompt_text": "con tarjeta",
       "phonetic_tip": "Claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.15,
+      "audio_alaw": "/audio_clips/tok_tarjeta.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_tarjeta",
+      "updated_at": "2026-09-14T19:02:09.568277"
     },
     {
       "id": "tok_domicilio",
@@ -2808,11 +2808,11 @@
       "title": "Para entrega a domicilio",
       "prompt_text": "para entrega a domicilio",
       "phonetic_tip": "Fluido.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.65,
+      "audio_alaw": "/audio_clips/tok_domicilio.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_domicilio",
+      "updated_at": "2026-09-14T19:02:09.555498"
     },
     {
       "id": "tok_recoger",
@@ -2821,11 +2821,11 @@
       "title": "Para pasar a recoger",
       "prompt_text": "para pasar a recoger a sucursal",
       "phonetic_tip": "Fluido.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.35,
+      "audio_alaw": "/audio_clips/tok_recoger.alaw",
+      "audio_wav": "/api/voice-studio/audio/tok_recoger",
+      "updated_at": "2026-09-14T19:02:09.563144"
     },
     {
       "id": "num_80",
@@ -2834,11 +2834,11 @@
       "title": "80 pesos",
       "prompt_text": "ochenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.35,
+      "audio_alaw": "/audio_clips/num_80.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_80",
+      "updated_at": "2026-09-14T19:02:09.548991"
     },
     {
       "id": "num_100",
@@ -2847,11 +2847,11 @@
       "title": "100 pesos",
       "prompt_text": "cien pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.05,
+      "audio_alaw": "/audio_clips/num_100.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_100",
+      "updated_at": "2026-09-14T19:02:09.512769"
     },
     {
       "id": "num_120",
@@ -2860,11 +2860,11 @@
       "title": "120 pesos",
       "prompt_text": "ciento veinte pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.75,
+      "audio_alaw": "/audio_clips/num_120.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_120",
+      "updated_at": "2026-09-14T19:02:09.515514"
     },
     {
       "id": "num_140",
@@ -2873,11 +2873,11 @@
       "title": "140 pesos",
       "prompt_text": "ciento cuarenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.55,
+      "audio_alaw": "/audio_clips/num_140.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_140",
+      "updated_at": "2026-09-14T19:02:09.518216"
     },
     {
       "id": "num_150",
@@ -2886,11 +2886,11 @@
       "title": "150 pesos",
       "prompt_text": "ciento cincuenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.85,
+      "audio_alaw": "/audio_clips/num_150.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_150",
+      "updated_at": "2026-09-14T19:02:09.520877"
     },
     {
       "id": "num_160",
@@ -2899,11 +2899,11 @@
       "title": "160 pesos",
       "prompt_text": "ciento sesenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.95,
+      "audio_alaw": "/audio_clips/num_160.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_160",
+      "updated_at": "2026-09-14T19:02:09.523515"
     },
     {
       "id": "num_180",
@@ -2912,11 +2912,11 @@
       "title": "180 pesos",
       "prompt_text": "ciento ochenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.85,
+      "audio_alaw": "/audio_clips/num_180.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_180",
+      "updated_at": "2026-09-14T19:02:09.525843"
     },
     {
       "id": "num_200",
@@ -2925,11 +2925,11 @@
       "title": "200 pesos",
       "prompt_text": "doscientos pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.4,
+      "audio_alaw": "/audio_clips/num_200.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_200",
+      "updated_at": "2026-09-14T19:02:09.528058"
     },
     {
       "id": "num_220",
@@ -2938,11 +2938,11 @@
       "title": "220 pesos",
       "prompt_text": "doscientos veinte pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.75,
+      "audio_alaw": "/audio_clips/num_220.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_220",
+      "updated_at": "2026-09-14T19:02:09.530411"
     },
     {
       "id": "num_250",
@@ -2951,11 +2951,11 @@
       "title": "250 pesos",
       "prompt_text": "doscientos cincuenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.7,
+      "audio_alaw": "/audio_clips/num_250.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_250",
+      "updated_at": "2026-09-14T19:02:09.532718"
     },
     {
       "id": "num_280",
@@ -2964,11 +2964,11 @@
       "title": "280 pesos",
       "prompt_text": "doscientos ochenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.65,
+      "audio_alaw": "/audio_clips/num_280.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_280",
+      "updated_at": "2026-09-14T19:02:09.535032"
     },
     {
       "id": "num_300",
@@ -2977,11 +2977,11 @@
       "title": "300 pesos",
       "prompt_text": "trescientos pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.5,
+      "audio_alaw": "/audio_clips/num_300.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_300",
+      "updated_at": "2026-09-14T19:02:09.537362"
     },
     {
       "id": "num_350",
@@ -2990,11 +2990,11 @@
       "title": "350 pesos",
       "prompt_text": "trescientos cincuenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.8,
+      "audio_alaw": "/audio_clips/num_350.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_350",
+      "updated_at": "2026-09-14T19:02:09.539816"
     },
     {
       "id": "num_400",
@@ -3003,11 +3003,11 @@
       "title": "400 pesos",
       "prompt_text": "cuatrocientos pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.6,
+      "audio_alaw": "/audio_clips/num_400.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_400",
+      "updated_at": "2026-09-14T19:02:09.542056"
     },
     {
       "id": "num_450",
@@ -3016,11 +3016,11 @@
       "title": "450 pesos",
       "prompt_text": "cuatrocientos cincuenta pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 2.0,
+      "audio_alaw": "/audio_clips/num_450.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_450",
+      "updated_at": "2026-09-14T19:02:09.544813"
     },
     {
       "id": "num_500",
@@ -3029,11 +3029,11 @@
       "title": "500 pesos",
       "prompt_text": "quinientos pesos",
       "phonetic_tip": "Precio claro.",
-      "status": "pending",
-      "duration_sec": 0.0,
-      "audio_alaw": null,
-      "audio_wav": null,
-      "updated_at": null
+      "status": "recorded",
+      "duration_sec": 1.25,
+      "audio_alaw": "/audio_clips/num_500.alaw",
+      "audio_wav": "/api/voice-studio/audio/num_500",
+      "updated_at": "2026-09-14T19:02:09.546959"
     }
   ]
 }
